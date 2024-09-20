@@ -1,0 +1,8 @@
+<!-- components/sidebar.html -->
+<div class="sidebar" ng-controller="MainController">
+    <ul class="nav nav-pills nav-stacked">
+        <li ng-repeat="item in menuItems">
+            <a href="{{item.link}}">{{item.name}}</a>
+        </li>
+    </ul>
+</div>
