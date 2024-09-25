@@ -1,5 +1,46 @@
 <div ng-include="'/customer/views/components/carousel.html'"></div>
 <!-- components/home.html -->
 <div class="container p-3">
-    <b>SẢN PHẨM BÁN CHẠY</b>
+    <!-- Sản phẩm bán chạy   -->
+    <div class="d-flex justify-content-between align-items-center">
+        <b class="mb-0">SẢN PHẨM BÁN CHẠY</b>
+        <a href="#"><b class="text-end">Xem tất cả</b></a>
+    </div>
+    <br>
+    <div ng-controller = "HomeController" class="row">
+        <div class="col-2" ng-repeat="x in bestSellers">
+            <div class="card">
+                <img src="/images/{{x.anh}}" class="card-img-top" alt="..." style="width: 150px;height: 150px ; margin: auto">
+                <div class="card-body">
+                    <h5 class="card-title  text-truncate">{{x.ten}}</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <b class="card-text text-danger me-2">{{ x.gia_ban | currencyVND }}</b>
+                        <p class="mb-0 small">{{ x.tong_san_pham_ban_duoc }} sold</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sản phẩm mới nhất   -->
+    <div class="p-3 d-flex justify-content-between align-items-center">
+        <b class="mb-0">SẢN PHẨM MỚI NHẤT</b>
+        <a href="#"><b class="text-end">Xem tất cả</b></a>
+    </div>
+    <br>
+    <div ng-controller = "HomeController" class="row">
+        <div class="col-2" ng-repeat="x in bestSellers">
+            <div class="card">
+                <img src="/images/{{x.anh}}" class="card-img-top" alt="..." style="width: 150px;height: 150px ; margin: auto">
+                <div class="card-body">
+                    <h5 class="card-title  text-truncate">{{x.ten}}</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <b class="card-text text-danger me-2">{{ x.gia_ban | currencyVND }}</b>
+                        <p class="mb-0 small">{{ x.tong_san_pham_ban_duoc }} sold</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
