@@ -43,11 +43,7 @@ app.filter('currencyVND', function() {
 });
 
 app.controller('SanPhamController', function($scope) {
-    $scope.users = [
-        {name: 'User 1'},
-        {name: 'User 2'},
-        {name: 'User 3'}
-    ];
+
 });
 
 app.controller('SettingsController', function($scope) {
