@@ -43,9 +43,7 @@ app.filter('currencyVND', function() {
     };
 });
 
-app.controller('SanPhamController', function($scope) {
 
-});
 
 app.controller('SettingsController', function($scope) {
     $scope.message = "This is the settings page.";

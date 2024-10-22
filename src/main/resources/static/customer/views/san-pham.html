@@ -1,5 +1,59 @@
 <br><br><br><br><br>
 
 <div class="container">
-    Sản phẩm
+    <div class="row">
+        <div class="col-3">Tìm kiểm sản phẩm</div>
+        <div class="col-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="#!san-pham">Sản phẩm</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <!-- List Group -->
+        <div class="col-3">
+            <ul class="list-group">
+                <li class="list-group-item">An item</li>
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">A third item</li>
+                <li class="list-group-item">A fourth item</li>
+                <li class="list-group-item">And a fifth one</li>
+                <li class="list-group-item">And a fifth one</li>
+            </ul>
+        </div>
+
+        <!-- Trưng bày sản phẩm -->
+        <div class="col-9" ng-controller="SanPhamController">
+            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4">
+                <div class="col" ng-repeat="x in sp">
+                    <div class="product-item">
+                        <img src="/images/{{x.anh}}" class="card-img-top" alt="..." style="width: 150px;height: 150px; margin: auto">
+                        <div class="card-body">
+                            <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                {{x.ten_san_pham}}
+                            </h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <b class="card-text text-danger">{{ x.gia_ban | currencyVND }}</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-auto p-2" style="width: 200px;">
+                <nav aria-label="Page navigation example" >
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#" name="page">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
 </div>

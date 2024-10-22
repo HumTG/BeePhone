@@ -1,7 +1,10 @@
 package org.example.beephone.repository;
 
+import org.example.beephone.dto.SanPhamCustom;
 import org.example.beephone.dto.Top5Seller;
 import org.example.beephone.entity.san_pham;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +24,12 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
             "GROUP BY sp.ten , ctsp.gia_ban,asp.anh_1\n" +
             "ORDER BY SUM(hdct.so_luong) DESC limit 5")
     List<Top5Seller> getTop5Seller();
+
+
+    @Query("SELECT new org.example.beephone.dto.SanPhamCustom(sp.id, sp.ma_san_pham , nsx.ten, sp.ten,sp.mo_ta,sp.trang_thai,ctsp.gia_ban , asp.anh_1) \n" +
+            "FROM san_pham sp\n" +
+            "JOIN anh_san_pham asp on sp.id = asp.id_san_pham\n" +
+            "JOIN nha_san_xuat nsx on sp.id_nha_san_xuat = nsx.id \n" +
+            "JOIN chi_tiet_san_pham ctsp on ctsp.id_san_pham = sp.id")
+    Page<SanPhamCustom> getSanPhamPage(Pageable pageable);
 }

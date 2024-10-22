@@ -344,14 +344,14 @@ VALUES
 INSERT INTO [anh_san_pham] ([id_san_pham], [anh_1], [anh_2], [anh_3], [anh_4], [anh_5])
 VALUES 
     (1, 'anh1_spigen_tough_armor.png', 'anh2_spigen_tough_armor.png', 'anh3_spigen_tough_armor.png', 'anh4_spigen_tough_armor.png', 'anh5_spigen_tough_armor.png'),
-    (2, 'anh1_uag_monarch.png', 'anh2_uag_monarch.png', 'anh3_uag_monarch.png', 'anh4_uag_monarch.png', 'anh5_uag_monarch.png'),
-    (3, 'anh1_otterbox_defender.png', 'anh2_otterbox_defender.png', 'anh3_otterbox_defender.png', 'anh4_otterbox_defender.png', 'anh5_otterbox_defender.png'),
-    (4, 'anh1_caseology_parallax.png', 'anh2_caseology_parallax.png', 'anh3_caseology_parallax.png', 'anh4_caseology_parallax.png', 'anh5_caseology_parallax.png'),
-    (5, 'anh1_ringke_fusion_x.png', 'anh2_ringke_fusion_x.png', 'anh3_ringke_fusion_x.png', 'anh4_ringke_fusion_x.png', 'anh5_ringke_fusion_x.png'),
+    (2, 'anh_3.webp', 'anh2_uag_monarch.png', 'anh3_uag_monarch.png', 'anh4_uag_monarch.png', 'anh5_uag_monarch.png'),
+    (3, 'anh_4.webp', 'anh2_otterbox_defender.png', 'anh3_otterbox_defender.png', 'anh4_otterbox_defender.png', 'anh5_otterbox_defender.png'),
+    (4, 'anh_6.jpg', 'anh2_caseology_parallax.png', 'anh3_caseology_parallax.png', 'anh4_caseology_parallax.png', 'anh5_caseology_parallax.png'),
+    (5, 'anh_2.jpg', 'anh2_ringke_fusion_x.png', 'anh3_ringke_fusion_x.png', 'anh4_ringke_fusion_x.png', 'anh5_ringke_fusion_x.png'),
     (6, 'anh1_spigen_liquid_air.png', 'anh2_spigen_liquid_air.png', 'anh3_spigen_liquid_air.png', 'anh4_spigen_liquid_air.png', 'anh5_spigen_liquid_air.png'),
-    (7, 'anh1_uag_plasma.png', 'anh2_uag_plasma.png', 'anh3_uag_plasma.png', 'anh4_uag_plasma.png', 'anh5_uag_plasma.png'),
+    (7, 'anh_5.jpg', 'anh2_uag_plasma.png', 'anh3_uag_plasma.png', 'anh4_uag_plasma.png', 'anh5_uag_plasma.png'),
     (8, 'anh1_otterbox_commuter.png', 'anh2_otterbox_commuter.png', 'anh3_otterbox_commuter.png', 'anh4_otterbox_commuter.png', 'anh5_otterbox_commuter.png'),
-    (9, 'anh1_caseology_skyfall.png', 'anh2_caseology_skyfall.png', 'anh3_caseology_skyfall.png', 'anh4_caseology_skyfall.png', 'anh5_caseology_skyfall.png'),
+    (9, 'anh_1.jpg', 'anh2_caseology_skyfall.png', 'anh3_caseology_skyfall.png', 'anh4_caseology_skyfall.png', 'anh5_caseology_skyfall.png'),
     (10, 'anh1_ringke_onyx.png', 'anh2_ringke_onyx.png', 'anh3_ringke_onyx.png', 'anh4_ringke_onyx.png', 'anh5_ringke_onyx.png');
 
 	-- Thêm dữ liệu vào bảng [khach_hang]
