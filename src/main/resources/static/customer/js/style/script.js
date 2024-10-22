@@ -1,152 +1,45 @@
-(function($) {
 
-  "use strict";
 
-  var initPreloader = function() {
-    $(document).ready(function($) {
-    var Body = $('body');
-        Body.addClass('preloader-site');
-    });
-    $(window).load(function() {
-        $('.preloader-wrapper').fadeOut();
-        $('body').removeClass('preloader-site');
-    });
-  }
-
-  // init Chocolat light box
-	var initChocolat = function() {
-		Chocolat(document.querySelectorAll('.image-link'), {
-		  imageSize: 'contain',
-		  loop: true,
-		})
-	}
-
-  var initSwiper = function() {
-
-    var swiper = new Swiper(".main-swiper", {
-      speed: 500,
-      pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
-      },
+// show giao diện tìm kiếm
+function searchPopup() {
+    // Mở hộp thoại tìm kiếm khi nhấn nút tìm kiếm
+    $('#header-nav').on('click', '.search-button', function(e) {
+        e.preventDefault();
+        $('.search-popup').toggleClass('is-visible');
     });
 
-    var category_swiper = new Swiper(".category-carousel", {
-      slidesPerView: 6,
-      spaceBetween: 30,
-      speed: 500,
-      navigation: {
-        nextEl: ".category-carousel-next",
-        prevEl: ".category-carousel-prev",
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 2,
-        },
-        768: {
-          slidesPerView: 3,
-        },
-        991: {
-          slidesPerView: 4,
-        },
-        1500: {
-          slidesPerView: 6,
-        },
-      }
+    // Đóng hộp thoại tìm kiếm khi nhấn nút đóng
+    $('#header-nav').on('click', '.btn-close-search', function(e) {
+        e.preventDefault();
+        $('.search-popup').toggleClass('is-visible');
     });
 
-    var brand_swiper = new Swiper(".brand-carousel", {
-      slidesPerView: 4,
-      spaceBetween: 30,
-      speed: 500,
-      navigation: {
-        nextEl: ".brand-carousel-next",
-        prevEl: ".brand-carousel-prev",
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 2,
-        },
-        768: {
-          slidesPerView: 2,
-        },
-        991: {
-          slidesPerView: 3,
-        },
-        1500: {
-          slidesPerView: 4,
-        },
-      }
+    // Mở hộp thoại tìm kiếm từ các phần tử có class `search-popup-trigger`
+    $(".search-popup-trigger").on("click", function(e) {
+        e.preventDefault();
+        $(".search-popup").addClass("is-visible");
+        // Tự động focus vào phần tử tìm kiếm sau 350ms
+        setTimeout(function() {
+            $(".search-popup").find("#search-popup").focus();
+        }, 350);
     });
 
-    var products_swiper = new Swiper(".products-carousel", {
-      slidesPerView: 5,
-      spaceBetween: 30,
-      speed: 500,
-      navigation: {
-        nextEl: ".products-carousel-next",
-        prevEl: ".products-carousel-prev",
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 1,
-        },
-        768: {
-          slidesPerView: 3,
-        },
-        991: {
-          slidesPerView: 4,
-        },
-        1500: {
-          slidesPerView: 6,
-        },
-      }
-    });
-  }
-
-  var initProductQty = function(){
-
-    $('.product-qty').each(function(){
-
-      var $el_product = $(this);
-      var quantity = 0;
-
-      $el_product.find('.quantity-right-plus').click(function(e){
-          e.preventDefault();
-          var quantity = parseInt($el_product.find('#quantity').val());
-          $el_product.find('#quantity').val(quantity + 1);
-      });
-
-      $el_product.find('.quantity-left-minus').click(function(e){
-          e.preventDefault();
-          var quantity = parseInt($el_product.find('#quantity').val());
-          if(quantity>0){
-            $el_product.find('#quantity').val(quantity - 1);
-          }
-      });
-
+    // Đóng hộp thoại tìm kiếm khi click vào các phần tử liên quan hoặc ngoài popup
+    $(".search-popup").on("click", function(e) {
+        if ($(e.target).is(".search-popup-close") ||
+            $(e.target).is(".search-popup-close svg") ||
+            $(e.target).is(".search-popup-close path") ||
+            $(e.target).is(".search-popup")) {
+            e.preventDefault();
+            $(this).removeClass("is-visible");
+        }
     });
 
-  }
-
-  // init jarallax parallax
-  var initJarallax = function() {
-    jarallax(document.querySelectorAll(".jarallax"));
-
-    jarallax(document.querySelectorAll(".jarallax-keep-img"), {
-      keepImg: true,
+    // Đóng hộp thoại tìm kiếm khi nhấn phím ESC
+    $(document).keyup(function(e) {
+        if (e.which === 27) { // Phím ESC có mã là 27
+            $(".search-popup").removeClass("is-visible");
+        }
     });
-  }
+};
 
-  // document ready
-  $(document).ready(function() {
-    
-    initPreloader();
-    initSwiper();
-    initProductQty();
-    initJarallax();
-    initChocolat();
-
-  }); // End of a document
-
-})(jQuery);

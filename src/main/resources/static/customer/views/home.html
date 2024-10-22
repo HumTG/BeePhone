@@ -1,65 +1,31 @@
-<div ng-include="'/customer/views/components/carousel.html'"></div>
+<div ng-include="'/customer/views/components/sidebar.html'"></div>
 <!-- components/home.html -->
-<div class="container p-3">
-    <!-- Sản phẩm bán chạy   -->
-    <div class="d-flex justify-content-between align-items-center">
-        <b class="mb-0">SẢN PHẨM BÁN CHẠY</b>
-        <a href="#"><b class="text-end">Xem tất cả</b></a>
-    </div>
-    <br>
-    <div ng-controller="HomeController" class="row">
-        <div class="col-2" ng-repeat="x in bestSellers">
-            <div class="card">
-                <img src="/images/{{x.anh}}" class="card-img-top" alt="..."
-                     style="width: 150px;height: 150px ; margin: auto">
-                <div class="card-body">
-                    <h5 class="card-title  text-truncate">{{x.ten}}</h5>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <b class="card-text text-danger me-2">{{ x.gia_ban | currencyVND }}</b>
-                        <p class="mb-0 small">{{ x.tong_san_pham_ban_duoc }} sold</p>
-                    </div>
-
-                </div>
+<section id="mobile-products" class="product-store position-relative padding-large no-padding-top">
+    <div class="container">
+        <!-- Sản phẩm bán chạy   -->
+        <div class="display-header d-flex justify-content-between pb-3">
+            <h2 class="display-7 text-dark text-uppercase">Sản phẩm</h2>
+            <div class="btn-right">
+                <a href="#!san-pham" class="btn btn-medium btn-normal text-uppercase">Go to Shop</a>
             </div>
         </div>
-    </div>
-    <!-- Sản phẩm mới nhất   -->
-    <div class="p-3 d-flex justify-content-between align-items-center">
-        <b class="mb-0">SẢN PHẨM MỚI NHẤT</b>
-        <a href="#"><b class="text-end">Xem tất cả</b></a>
-    </div>
-    <br>
-    <div ng-controller="HomeController" class="row">
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab">
-                <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+        <br>
+        <div ng-controller="HomeController" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
 
-                    <div class="col-2" ng-repeat="x in bestSellers">
-                        <div class="product-item">
-                            <span class="badge bg-success position-absolute m-3">-30%</span>
-                            <a href="#" class="btn-wishlist">
-                                <svg width="-24" height="24">
-                                    <i class="bi bi-heart"></i>
-                                </svg>
-                            </a>
-                            <figure>
-                                <a href="index.html" title="Product Title">
-                                    <img src="/images/{{x.anh}}" class="tab-image">
-                                </a>
-                            </figure>
-                            <h5 class="card-title  text-truncate">{{x.ten}}</h5>
-                            <span class="qty">{{ x.tong_san_pham_ban_duoc }} sold</span><span class="rating"><svg
-                                width="24" height="24" class="text-primary"><use
-                                xlink:href="#star-solid"></use></svg> 4.5</span>
-                            <span class="price">{{ x.gia_ban | currencyVND }}</span>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <a href="#" class="nav-link">Add to Cart </a>
-                            </div>
+            <div class="col" ng-repeat="x in bestSellers">
+                <div class="product-item">
+                    <img src="/images/{{x.anh}}" class="card-img-top" alt="..."
+                         style="width: 150px;height: 150px ; margin: auto">
+                    <div class="card-body">
+                        <h5 class="card-title  text-truncate">{{x.ten}}</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <b class="card-text text-danger me-2">{{ x.gia_ban | currencyVND }}</b>
+                            <p class="mb-0 small">{{ x.tong_san_pham_ban_duoc }} sold</p>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-</div>
+    <div class="swiper-pagination position-absolute text-center"></div>
+</section>

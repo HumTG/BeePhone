@@ -1,31 +1,117 @@
-<!-- Top Bar -->
-<div class="header-top">
-    <a href="#" style="color:white; text-decoration:underline;">Tra cứu đơn hàng </a>
-</div>
-<!-- Narbar -->
-<nav class="navbar navbar-expand-lg bg-white">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <img src="/customer/images/BEEPHONE.png">
-        </a>
+<!-- Giao diện search-->
+<div class="search-popup">
+    <div class="search-popup-container">
 
-        <!-- Search Bar -->
-        <form class="d-flex search-bar mx-auto">
-            <input class="form-control" type="search" placeholder=" Nhập tên sản phẩm muốn tìm" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">
-                <i class="bi bi-search"></i>
+        <form role="search" method="get" class="search-form" action="">
+            <input type="search" id="search-form" class="search-field" placeholder="Type and press enter" value=""
+                   name="s"/>
+            <button type="submit" class="search-submit">
+                <svg class="search">
+                    <use xlink:href="#search"></use>
+                </svg>
             </button>
         </form>
 
-        <!-- Links and Icons -->
-        <div class="d-flex align-items-center icons-group">
-            <i class="bi bi-person-circle"></i>
-            <i class="bi bi-heart">
-                <span class="badge">3</span>
-            </i>
-            <i class="bi bi-cart3">
-                <span class="badge">2</span>
-            </i>
-        </div>
+        <h5 class="cat-list-title">Browse Categories</h5>
+
+        <ul class="cat-list">
+            <li class="cat-list-item">
+                <a href="#" title="Mobile Phones">Mobile Phones</a>
+            </li>
+            <li class="cat-list-item">
+                <a href="#" title="Smart Watches">Smart Watches</a>
+            </li>
+            <li class="cat-list-item">
+                <a href="#" title="Headphones">Headphones</a>
+            </li>
+            <li class="cat-list-item">
+                <a href="#" title="Accessories">Accessories</a>
+            </li>
+            <li class="cat-list-item">
+                <a href="#" title="Monitors">Monitors</a>
+            </li>
+            <li class="cat-list-item">
+                <a href="#" title="Speakers">Speakers</a>
+            </li>
+            <li class="cat-list-item">
+                <a href="#" title="Memory Cards">Memory Cards</a>
+            </li>
+        </ul>
+
     </div>
-</nav>
+</div>
+
+<!-- Header -->
+<header id="header" class="site-header header-scrolled position-fixed text-black bg-light">
+    <nav id="header-nav" class="navbar navbar-expand-lg px-3 mb-3">
+        <div class="container-fluid">
+            <div class="logo">
+                <a href="/index"><span class="bee">Bee</span><span class="phone">Phone</span></a>
+            </div>
+            <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <svg class="navbar-icon">
+                    <use xlink:href="#navbar-icon"></use>
+                </svg>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
+                <div class="offcanvas-header px-4 pb-0">
+                    <a class="navbar-brand" href="index.html">
+                        <h1 class="text-warning">BeePhone</h1>
+                    </a>
+                    <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas"
+                            aria-label="Close"
+                            data-bs-target="#bdNavbar"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul id="navbar"
+                        class="navbar-nav text-uppercase justify-content-end align-items-center flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link me-4 active" href="#billboard">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link me-4" href="#company-services">Dịch vụ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link me-4" href="#mobile-products">Sản phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link me-4" href="#smart-watches">Tuyển dụng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link me-4" href="#yearly-sale">Liên Hệ</a>
+                        </li>
+                        <li class="nav-item">
+                            <div class="user-items ps-5">
+                                <ul class="d-flex justify-content-end list-unstyled">
+                                    <li class="search-item pe-3">
+                                        <a href="#" class="search-button" onclick="searchPopup()">
+                                            <svg class="search">
+                                                <use xlink:href="#search"></use>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                    <li class="pe-3">
+                                        <a href="#">
+                                            <svg class="user">
+                                                <use xlink:href="#user"></use>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="cart.html">
+                                            <svg class="cart">
+                                                <use xlink:href="#cart"></use>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

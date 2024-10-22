@@ -19,6 +19,6 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
             "JOIN anh_san_pham asp on asp.id_san_pham = sp.id\n" +
             "Where hd.trang_thai = 6\n" +
             "GROUP BY sp.ten , ctsp.gia_ban,asp.anh_1\n" +
-            "ORDER BY SUM(hdct.so_luong) DESC limit 6")
+            "ORDER BY SUM(hdct.so_luong) DESC limit 5")
     List<Top5Seller> getTop5Seller();
 }
