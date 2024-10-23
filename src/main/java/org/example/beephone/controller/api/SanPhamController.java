@@ -20,6 +20,6 @@ public class SanPhamController {
 
     @GetMapping("/san-pham")
     public ResponseEntity<?> getSanPham(@RequestParam(defaultValue = "0")Integer page){
-        return ResponseEntity.ok(service.getPage(page).getContent());
+        return ResponseEntity.ok(service.getPage(page));
     }
 }

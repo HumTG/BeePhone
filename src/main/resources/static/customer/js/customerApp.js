@@ -10,10 +10,6 @@ app.config(function($routeProvider) {
             templateUrl : "/customer/views/san-pham.html",
             controller : "SanPhamController"
         })
-        // .when("/settings", {
-        //     templateUrl : "settings.html",
-        //     controller : "SettingsController"
-        // })
         .otherwise({
             redirectTo: '/'
         });
@@ -43,8 +39,3 @@ app.filter('currencyVND', function() {
     };
 });
 
-
-
-app.controller('SettingsController', function($scope) {
-    $scope.message = "This is the settings page.";
-});

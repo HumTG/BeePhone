@@ -45,11 +45,21 @@
             <div class="mx-auto p-2" style="width: 200px;">
                 <nav aria-label="Page navigation example" >
                     <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="#" name="page">Previous</a></li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        <!-- Nút Previous -->
+                        <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
+                            <a class="page-link" href="" ng-click="changePage(currentPage - 1)">Previous</a>
+                        </li>
+
+                        <!-- Nút số trang -->
+                        <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
+                            ng-class="{ 'active': $index === currentPage }">
+                            <a class="page-link" href="" ng-click="changePage($index)">{{$index + 1}}</a>
+                        </li>
+
+                        <!-- Nút Next -->
+                        <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
+                            <a class="page-link" href="" ng-click="changePage(currentPage + 1)">Next</a>
+                        </li>
                     </ul>
                 </nav>
             </div>
