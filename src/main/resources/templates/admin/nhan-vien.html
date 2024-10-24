@@ -9,6 +9,7 @@
 
   <!-- Fonts and icons -->
   <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script>
     WebFont.load({
       google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -27,16 +28,19 @@
     });
   </script>
 
+
   <!-- CSS Files -->
   <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
   <link rel="stylesheet" href="assets/css/plugins.min.css" />
   <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+  <!-- ANGULAR  -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link rel="stylesheet" href="assets/css/demo.css" />
 </head>
 
-<body>
+<body ng-app="NhanVienApp">
   <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
@@ -273,9 +277,113 @@
         <!-- End Navbar -->
       </div>
 
-      <div class="container">
+      <div class="container" ng-controller="NhanVienController">
         <div class="page-inner">
-          <h1>Quản lý Nhân Viên</h1>
+          <h5>Quản lý Tài Khoản Nhân Viên</h5>
+          <div class="alert alert-light" role="alert">
+            <h5><i class="bi bi-funnel-fill"></i>Bộ lọc</h5>
+            <hr>
+              <div class="row mb-3">
+                <!-- Tìm kiếm -->
+                <div class="col-md-4">
+                  <label for="search" class="form-label">Tìm kiếm:</label>
+                  <input type="text" class="form-control" id="search" placeholder="Tìm kiếm tên và sđt...">
+                </div>
+                <!-- Ngày sinh từ -->
+                <div class="col-md-3">
+                  <label for="dob_from" class="form-label">Ngày sinh từ:</label>
+                  <input type="date" class="form-control" id="dob_from">
+                </div>
+                <!-- Ngày sinh đến -->
+                <div class="col-md-3">
+                  <label for="dob_to" class="form-label">Ngày sinh đến:</label>
+                  <input type="date" class="form-control" id="dob_to">
+                </div>
+              </div>
+
+              <div class="row mb-3">
+
+                <!-- Trạng thái -->
+                <div class="col-md-2">
+                  <label for="status" class="form-label">Trạng thái:</label>
+                  <select class="form-select" id="status">
+                    <option selected>Tất cả</option>
+                    <option value="1">Kích hoạt</option>
+                    <option value="2">Không kích hoạt</option>
+                  </select>
+                </div>
+                <!-- Khoảng tuổi -->
+                <div class="col-md-8">
+                  <label for="ageRange" class="form-label">Khoảng tuổi:</label>
+                  <input type="range" class="form-range" id="ageRange" min="18" max="60">
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center">
+                <!-- Nút Tìm kiếm và Làm mới -->
+                <button type="button" class="btn btn-primary me-2">Tìm kiếm</button>
+                <button type="reset" class="btn btn-danger">Làm mới bộ lọc</button>
+              </div>
+          </div>
+          <div class="alert alert-light" role="alert">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5><i class="bi bi-list"></i> Danh sách nhân viên</h5>
+              <button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button>
+            </div>
+          <!--   Danh sách nhân viên         -->
+            <table class="table table-striped">
+              <thead >
+              <tr class="text-bg-warning">
+                <th scope="col">STT</th>
+                <th scope="col">Ảnh</th>
+                <th scope="col">Họ Và Tên</th>
+                <th scope="col">SĐT</th>
+                <th scope="col">Ngày Sinh</th>
+                <th scope="col">Giới Tính</th>
+                <th scope="col">Trạng Thái</th>
+                <th scope="col">Hành Động</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="x in nv">
+                <td>{{$index+1}}</td>
+                <td>
+                  <img src="/admin/images/{{x.hinh_anh}}" style="width: 100px ; height: 90px">
+                </td>
+                <td>{{x.ho_ten}}</td>
+                <td>{{x.sdt}}</td>
+                <td>{{ x.ngay_sinh | date:'dd/MM/yyyy' }}</td>
+                <td>{{x.gioi_tinh == 0 ? 'Nam' : 'Nữ'}}</td>
+                <td>{{x.trang_thai == 1 ? 'Kích hoạt' :  'Ngừng Kích Hoạt'}}</td>
+                <td>
+                  <button class="btn btn-warning"><a><i class="bi bi-eye"></i></a></button>
+                  <button class="btn btn-success"><a><i class="bi bi-pencil"></i></a></button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="mx-auto p-2" style="width: 200px;">
+              <nav aria-label="Page navigation example" >
+                <ul class="pagination">
+                  <!-- Nút Previous -->
+                  <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
+                    <a class="page-link" href="" ng-click="changePage(currentPage - 1)">Previous</a>
+                  </li>
+
+                  <!-- Nút số trang -->
+                  <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
+                      ng-class="{ 'active': $index === currentPage }">
+                    <a class="page-link" href="" ng-click="changePage($index)">{{$index + 1}}</a>
+                  </li>
+
+                  <!-- Nút Next -->
+                  <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
+                    <a class="page-link" href="" ng-click="changePage(currentPage + 1)">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -408,6 +516,9 @@
       fillColor: "rgba(255, 165, 52, .14)",
     });
   </script>
+
+  <!-- AngularJS -->
+  <script th:src="@{/admin/js/NhanVienController.js}"></script>
 </body>
 
 </html>
