@@ -28,4 +28,24 @@ app.controller('NhanVienController', function($scope, $http) {
             $scope.getData($scope.currentPage);
         }
     };
+
+
+
+    // Hàm để mở modal và hiển thị thông tin chi tiết
+    $scope.openDetail = function(id) {
+        var hostNV = "http://localhost:8080/rest/nhan-vien/"+id;
+        $http.get(hostNV)
+            .then(function(response) {
+                // Lưu dữ liệu vào scope để hiển thị
+                $scope.nvct = response.data;
+                console.log(response.data)
+                console.log(id)
+            })
+            .catch(function(error) {
+                console.error('Error fetching data:', error);
+            });
+        var detailModal = new bootstrap.Modal(document.getElementById('detailModal')); // Sử dụng Bootstrap Modal
+        detailModal.show(); // Hiển thị modal
+    };
+
 });

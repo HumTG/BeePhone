@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,7 +49,11 @@ public class nhan_vien {
     @Column(name = "hinh_anh")
     private String  hinh_anh ;
 
+    @Column(name = "dia_chi")
+    private String  dia_chi ;
+
     @Column(name = "trang_thai")
     private int  trang_thai ;
+
 
 }
