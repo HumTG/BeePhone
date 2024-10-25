@@ -29,6 +29,17 @@ app.controller('NhanVienController', function($scope, $http) {
         }
     };
 
+    // Hàm hiển thị thông báo thành công (Success)
+    $scope.showSuccessToast = function(message) {
+        toastr.success(message, 'Success', {
+            closeButton: true,
+            progressBar: true,
+            timeOut: 3000
+        });
+
+
+    };
+
 
 
     // Hàm để mở modal và hiển thị thông tin chi tiết
@@ -38,8 +49,24 @@ app.controller('NhanVienController', function($scope, $http) {
             .then(function(response) {
                 // Lưu dữ liệu vào scope để hiển thị
                 $scope.nvct = response.data;
-                console.log(response.data)
+
+                // Chuyển đổi giới tính
+                if ($scope.nvct.gioi_tinh === 0) {
+                    $scope.nvct.gioi_tinh_display = 'Nam';
+                } else {
+                    $scope.nvct.gioi_tinh_display = 'Nữ';
+                }
+
+                // Kiểm tra và chuyển đổi 'ngay_sinh' thành kiểu Date
+                if ($scope.nvct.ngay_sinh) {
+                    // Chuyển đổi từ chuỗi 'yyyy-MM-dd' sang đối tượng Date
+                    $scope.nvct.ngay_sinh = new Date($scope.nvct.ngay_sinh);
+                }
+
+                // $scope.showSuccessToast('Dữ liệu đã được lưu thành công!');
                 console.log(id)
+
+
             })
             .catch(function(error) {
                 console.error('Error fetching data:', error);
