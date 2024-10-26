@@ -1,7 +1,21 @@
 var app = angular.module('NhanVienApp', []);
 var host = "http://localhost:8080/rest/nhan-vien";
 
-app.controller('NhanVienController', function($scope, $http) {
+app.controller('NhanVienController', function($scope, $http ) {
+
+    var successMessage = localStorage.getItem('successMessage');
+    if (successMessage) {
+        // Hiển thị toastr thông báo
+        toastr.success(successMessage, 'Thành công', {
+            closeButton: true,
+            progressBar: true,
+            timeOut: 3000
+        });
+
+        // Xóa thông báo sau khi hiển thị
+        localStorage.removeItem('successMessage');
+    }
+
     // Khởi tạo tham số phân trang
     $scope.currentPage = 0;
 
@@ -29,18 +43,6 @@ app.controller('NhanVienController', function($scope, $http) {
         }
     };
 
-    // Hàm hiển thị thông báo thành công (Success)
-    $scope.showSuccessToast = function(message) {
-        toastr.success(message, 'Success', {
-            closeButton: true,
-            progressBar: true,
-            timeOut: 3000
-        });
-
-
-    };
-
-
 
     // Hàm để mở modal và hiển thị thông tin chi tiết
     $scope.openDetail = function(id) {
@@ -66,13 +68,66 @@ app.controller('NhanVienController', function($scope, $http) {
                 // $scope.showSuccessToast('Dữ liệu đã được lưu thành công!');
                 console.log(id)
 
-
             })
             .catch(function(error) {
                 console.error('Error fetching data:', error);
             });
         var detailModal = new bootstrap.Modal(document.getElementById('detailModal')); // Sử dụng Bootstrap Modal
         detailModal.show(); // Hiển thị modal
+    };
+
+    $scope.imageSrc = null; // Lưu ảnh đã chọn
+    $scope.imageName = null; // Lưu tên ảnh đã chọn
+
+    $scope.triggerFileInput = function () {
+        document.getElementById('fileInput').click();
+    };
+
+    $scope.uploadFile = function (files) {
+        if (files && files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $scope.$apply(function () {
+                    $scope.imageSrc = e.target.result; // Hiển thị ảnh
+                });
+            };
+            $scope.imageName = files[0].name ;
+            reader.readAsDataURL(files[0]); // Đọc ảnh dưới dạng URL
+            console.log('Tên file đã chọn:', files[0].name); // In ra tên file trong console
+        }
+    };
+
+    // Thêm nhân viên
+    $scope.confirmAddNhanVien = function() {
+        var nhanVienData = {
+            ho_ten: $scope.nhanVien.ho_ten,
+            email: $scope.nhanVien.email,
+            sdt: $scope.nhanVien.sdt,
+            ngay_sinh: new Date($scope.nhanVien.ngay_sinh).toISOString().split('T')[0],
+            gioi_tinh: $scope.nhanVien.gioi_tinh,
+            dia_chi: $scope.nhanVien.dia_chi,
+            trang_thai: $scope.nhanVien.trang_thai,
+            hinh_anh: $scope.imageName
+        };
+
+        $http.post('http://localhost:8080/rest/nhan-vien', nhanVienData)
+            .then(function(response) {
+                localStorage.setItem('successMessage', 'Nhân viên đã được thêm thành công!');
+                window.location.href = 'http://localhost:8080/admin/nhan-vien';
+            })
+            .catch(function(error) {
+                console.error('Lỗi khi thêm nhân viên:', error);
+                toastr.error('Có lỗi xảy ra!', 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    timeOut: 3000
+                });
+            });
+
+        // Ẩn modal sau khi xác nhận
+        var modalElement = document.getElementById('confirmModal');
+        var modal = bootstrap.Modal.getInstance(modalElement);
+        modal.hide();
     };
 
 });

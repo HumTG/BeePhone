@@ -15,5 +15,4 @@ public interface NhanVienRepository extends JpaRepository<nhan_vien,Integer> {
     @Query("select nv from nhan_vien nv order by nv.id desc ")
     Page<nhan_vien> getNhanVienDESCID(Pageable pageable);
 
-
 }
