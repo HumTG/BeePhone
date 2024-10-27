@@ -1,0 +1,6 @@
+/*dùng để xử lý toast vì xung đột với bootstrap.main.css*/
+.custom-toast {
+    background-color: #01DF01 !important; /* Màu nền */
+    color: #FFFFFF !important; /* Màu chữ */
+    opacity: 1 !important; /* Đảm bảo không trong suốt */
+}

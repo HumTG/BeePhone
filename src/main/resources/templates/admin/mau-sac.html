@@ -32,11 +32,13 @@
   <link rel="stylesheet" href="assets/css/plugins.min.css" />
   <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
 
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link rel="stylesheet" href="assets/css/demo.css" />
 </head>
 
-<body>
+<body ng-app="MauSacApp">
   <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
@@ -273,9 +275,80 @@
         <!-- End Navbar -->
       </div>
 
-      <div class="container">
+      <div class="container" ng-controller="MauSacController">
         <div class="page-inner">
           <h1>Quản lý Màu Sắc</h1>
+
+<!--          open-->
+          <div class="container">
+            <div class="row" style="border: 0.2px solid black;border-radius: 20px;background-color: white" >
+              <div class="col-4 p-5 mb-4"  >
+                <h2>Thêm màu</h2> <br> <br>
+                <form method="post" action="">
+                  Mã màu : <input type="text" class="form-control" ng-model="formData.ma_mau_sac"/> <br>
+
+                  Tên màu : <input type="text" class="form-control" ng-model="formData.ten"/> <br>
+
+                  Trạng thái
+                  <div class="d-flex">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault1" value= "1" checked
+                             ng-model="formData.trang_thai">
+                      <label class="form-check-label" for="flexRadioDefault1">
+                        Còn
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault2"
+                             value="0" ng-model="formData.trang_thai">
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        Dừng
+                      </label>
+                    </div>
+                  </div>
+                  <br> <br>
+                  <button type="submit" class="btn btn-primary" ng-click="addMS($event)">ADD</button>
+                  <button type="submit" class="btn btn-warning" ng-click="updateMS($event)">UPDATE</button>
+                </form>
+
+              </div>
+
+              <!--     <div class="col-1 p-4 mb-4"> <button type="submit" class="btn btn-primary" ng-click="toaTest($event)">toa</button></div>-->
+              <div class="col-8 p-5 mb-4" >
+                <h2>Danh sách màu sắc</h2>
+                <br><br>
+                <table class="table">
+                  <thead class="border-top border-dark">
+                  <tr>
+                    <th>STT</th>
+                    <th>Mã màu sắc</th>
+                    <th>Tên màu sắc</th>
+                    <th>Trạng thái</th>
+                    <th>Function</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr class="table-primary" ng-repeat="ms in listMS">
+                    <td>{{$index + 1}}</td>
+                    <td>{{ms.ma_mau_sac}}</td>
+                    <td>{{ms.ten}}</td>
+                    <td>{{ms.trang_thai == 1 ? 'Còn' : 'Dừng'}}</td>
+                    <td>
+                      <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary" ng-click="deleteMS($event,ms.id)">X</button>
+                        <button type="button" class="btn btn-secondary" ng-click="fillData($event,ms)">fILL</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+<!--          end-->
         </div>
       </div>
 
@@ -408,6 +481,8 @@
       fillColor: "rgba(255, 165, 52, .14)",
     });
   </script>
+
+  <script th:src="@{/admin/js/MauSacController.js}"></script>
 </body>
 
 </html>
