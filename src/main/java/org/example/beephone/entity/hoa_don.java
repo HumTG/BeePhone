@@ -24,12 +24,21 @@ public class hoa_don {
 
     private String ma_hoa_don ;
 
+    // Liên kết Many-to-One đến KhachHang
+    @ManyToOne
+    @JoinColumn(name = "id_khach_hang")  // Tên cột trong bảng `hoa_don` kết nối với bảng `khach_hang`
+    private khach_hang khachHang;
+
     private Date ngay_tao ;
 
     private BigDecimal tien_sau_giam_gia ;
+
     private BigDecimal thanh_tien  ;
+
     private int phuong_thuc_thanh_toan  ;
+
     private String mo_ta  ;
+
     private int trang_thai  ;
 
 
