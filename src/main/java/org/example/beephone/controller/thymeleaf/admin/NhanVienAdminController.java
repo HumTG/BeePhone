@@ -9,4 +9,11 @@ public class NhanVienAdminController {
     public String index(){
         return "admin/nhan-vien";
     }
+
+    @GetMapping("admin/create-nhan-vien")
+    public String add(){
+        return "admin/create-nhan-vien";
+    }
+
+
 }

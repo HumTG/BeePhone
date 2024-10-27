@@ -7,8 +7,12 @@
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
   <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
+
   <!-- Fonts and icons -->
   <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
   <script>
     WebFont.load({
       google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -27,18 +31,49 @@
     });
   </script>
 
+
   <!-- CSS Files -->
   <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
   <link rel="stylesheet" href="assets/css/plugins.min.css" />
   <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+  <!-- ANGULAR  -->
 
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-
   <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link rel="stylesheet" href="assets/css/demo.css" />
+  <link rel="stylesheet" href="/admin/assets/css/demo.css" />
+  <!-- Toastr CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+  <style>
+    .avatar-upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 150px;
+      height: 150px;
+      border: 2px dashed #ddd;
+      border-radius: 50%;
+      overflow: hidden; /* Giới hạn ảnh trong vòng tròn */
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+    }
+
+    .avatar-upload img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Giúp ảnh vừa khít với khu vực upload */
+      border-radius: 50%; /* Giữ hình dạng tròn cho ảnh */
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+  </style>
 </head>
 
-<body ng-app="NSXApp">
+<body ng-app="NhanVienApp">
   <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
@@ -85,7 +120,7 @@
                 <p>Quản Lý Hóa Đơn</p>
               </a>
             </li>
-            <li class="nav-item active submenu">
+            <li class="nav-item">
               <a data-bs-toggle="collapse" href="#forms">
                 <i class="fas fa-calendar"></i>
                 <p>Quản Lý Sản Phẩm</p>
@@ -98,7 +133,7 @@
                       <span class="sub-item">Sản Phẩm</span>
                     </a>
                   </li>
-                  <li class="active">
+                  <li>
                     <a href="/admin/nha-san-xuat">
                       <span class="sub-item">Nhà Sản Xuất</span>
                     </a>
@@ -116,7 +151,7 @@
                 </ul>
               </div>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active submenu">
               <a data-bs-toggle="collapse" href="#tables">
                 <i class="fas fa-user"></i>
                 <p>Quản Lý Tài Khoản</p>
@@ -124,7 +159,7 @@
               </a>
               <div class="collapse" id="tables">
                 <ul class="nav nav-collapse">
-                  <li>
+                  <li class="active">
                     <a href="/admin/nhan-vien">
                       <span class="sub-item">Nhân Viên</span>
                     </a>
@@ -275,81 +310,124 @@
         <!-- End Navbar -->
       </div>
 
-      <div class="container" ng-controller="NSXController">
+      <div class="container" ng-controller="NhanVienController">
         <div class="page-inner">
-          <h1>Quản lý nhà sản xuất</h1>
+          <h2 class="text-center">Thêm Tài Khoản Nhân Viên</h2>
+          <form ng-submit="addNhanVien()" novalidate>
+            <div class="row">
+              <!-- Upload ảnh section -->
+              <div class="alert alert-light col-3 me-5" role="alert">
+                <p class="fw-bold text-center">Upload ảnh</p>
+                <div class="avatar-upload mx-auto" ng-click="triggerFileInput()"
+                     ng-style="{'background-image': imageSrc ? 'url(' + imageSrc + ')' : 'none'}">
+                  <span ng-if="!imageSrc">+</span>
+                  <p ng-if="!imageSrc">Upload</p>
+                  <input type="file" id="fileInput" accept="image/*"
+                         onchange="angular.element(this).scope().uploadFile(this.files)"
+                         style="display: none;">
+                </div>
+              </div>
 
-        <div class="container">
-          <div class="row" style="border: 0.2px solid black;border-radius: 20px;background-color: white" >
-            <div class="col-4 p-5 mb-4"  >
-              <h2>Thêm nhà sản xuất</h2> <br> <br>
-              <form method="post" action="">
-                Mã nhà sản xuất : <input type="text" class="form-control" ng-model="formData.ma_nha_san_xuat"/> <br>
+              <!-- Thông tin nhân viên -->
+              <div class="alert alert-light col-8" role="alert">
+                <h5 class="text-center mb-4">Thông tin nhân viên</h5>
 
-                Tên nhà sản xuất : <input type="text" class="form-control" ng-model="formData.ten"/> <br>
-
-                Trạng thái
-                <div class="d-flex">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault1" value= "1" checked
-                           ng-model="formData.trang_thai">
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      Còn
-                    </label>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="hoTen" class="form-label">Họ tên</label>
+                    <input type="text" class="form-control" id="hoTen"
+                           ng-model="nhanVien.ho_ten" required
+                           placeholder="Nhập họ tên" />
                   </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault2"
-                           value="0" ng-model="formData.trang_thai">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Dừng
-                    </label>
+                  <div class="col-md-6">
+                    <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                    <input type="date" class="form-control" id="ngaySinh"
+                           ng-model="nhanVien.ngay_sinh" required />
                   </div>
                 </div>
-                <br> <br>
-                <button type="submit" class="btn btn-primary" ng-click="addNSX($event)">ADD</button>
-                <button type="submit" class="btn btn-warning" ng-click="updateNSX($event)">UPDATE</button>
-              </form>
 
-            </div>
-
-            <div class="col-8 p-5 mb-4" >
-              <h2>Danh sách nhà sản xuất</h2>
-              <br><br>
-              <table class="table">
-                <thead class="border-top border-dark">
-                <tr>
-                  <th>STT</th>
-                  <th>Mã nhà sản xuất</th>
-                  <th>Tên nhà sản xuất</th>
-                  <th>Trạng thái</th>
-                  <th>Function</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="table-primary" ng-repeat="nsx in listNSX">
-                  <td>{{$index + 1}}</td>
-                  <td>{{nsx.ma_nha_san_xuat}}</td>
-                  <td>{{nsx.ten}}</td>
-                  <td>{{nsx.trang_thai == 1 ? 'Còn' : 'Dừng'}}</td>
-                  <td>
-                    <div class="d-flex gap-2">
-                      <button type="button" class="btn btn-secondary" ng-click="deleteNSX($event,nsx.id)">X</button>
-                      <button type="button" class="btn btn-secondary" ng-click="fillNSX($event,nsx)">FILL</button>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Giới tính</label><br>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio"
+                             ng-model="nhanVien.gioi_tinh" value="0" id="gioiTinhNam" checked />
+                      <label class="form-check-label" for="gioiTinhNam">Nam</label>
                     </div>
-                  </td>
-                </tr>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio"
+                             ng-model="nhanVien.gioi_tinh" value="1" id="gioiTinhNu" />
+                      <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email"
+                           ng-model="nhanVien.email" required placeholder="Nhập email" />
+                  </div>
+                </div>
 
-                </tbody>
-              </table>
-                           </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="sdt" class="form-label">Số điện thoại</label>
+                    <input type="tel" class="form-control" id="sdt"
+                           ng-model="nhanVien.sdt" required
+                           placeholder="Nhập số điện thoại" pattern="^\d{10,11}$"
+                           title="Số điện thoại phải có 10-11 chữ số" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="trangThai" class="form-label">Trạng thái</label>
+                    <select class="form-select" id="trangThai"
+                            ng-model="nhanVien.trang_thai" required>
+                      <option value="" disabled selected>Chọn trạng thái</option>
+                      <option value="1">Kích hoạt</option>
+                      <option value="0">Ngừng kích hoạt</option>
+                    </select>
+                  </div>
+                </div>
 
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <label for="diaChi" class="form-label">Địa chỉ</label>
+                    <input type="text" class="form-control" id="diaChi"
+                           ng-model="nhanVien.dia_chi" required placeholder="Nhập địa chỉ" />
+                  </div>
+                </div>
+
+                <div class="text-end">
+                  <!-- Nút Thêm Nhân Viên -->
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                    Thêm
+                  </button>
+                  <a href="/admin/nhan-vien" class="btn btn-outline-secondary ms-2">Hủy</a>
+                </div>
+              </div>
             </div>
+          </form>
 
+
+
+          <!-- Modal Xác Nhận -->
+          <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="confirmModalLabel">Xác nhận</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Bạn có chắc chắn muốn thêm nhân viên này không?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                  <button type="button" class="btn btn-primary" ng-click="confirmAddNhanVien()">Đồng ý</button>
+                </div>
+              </div>
+            </div>
           </div>
 
+
         </div>
-
-
       </div>
 
     </div>
@@ -482,7 +560,11 @@
     });
   </script>
 
-  <script th:src="@{/admin/js/NSXController.js}"></script>
+  <!-- Toastr JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <!-- AngularJS -->
+  <script th:src="@{/admin/js/NhanVienController.js}"></script>
 </body>
 
 </html>
