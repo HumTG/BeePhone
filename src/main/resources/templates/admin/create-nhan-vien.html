@@ -43,6 +43,34 @@
   <link rel="stylesheet" href="/admin/assets/css/demo.css" />
   <!-- Toastr CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+  <style>
+    .avatar-upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 150px;
+      height: 150px;
+      border: 2px dashed #ddd;
+      border-radius: 50%;
+      overflow: hidden; /* Giới hạn ảnh trong vòng tròn */
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+    }
+
+    .avatar-upload img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Giúp ảnh vừa khít với khu vực upload */
+      border-radius: 50%; /* Giữ hình dạng tròn cho ảnh */
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+  </style>
 </head>
 
 <body ng-app="NhanVienApp">
@@ -284,188 +312,121 @@
 
       <div class="container" ng-controller="NhanVienController">
         <div class="page-inner">
-          <h5>Quản lý Tài Khoản Nhân Viên</h5>
-          <div class="alert alert-light" role="alert">
-            <h5><i class="bi bi-funnel-fill"></i>Bộ lọc</h5>
-            <hr>
-              <div class="row mb-3">
-                <!-- Tìm kiếm -->
-                <div class="col-md-4">
-                  <label for="search" class="form-label">Tìm kiếm:</label>
-                  <input type="text" class="form-control" id="search" placeholder="Tìm kiếm tên và sđt...">
-                </div>
-                <!-- Ngày sinh từ -->
-                <div class="col-md-3">
-                  <label for="dob_from" class="form-label">Ngày sinh từ:</label>
-                  <input type="date" class="form-control" id="dob_from">
-                </div>
-                <!-- Ngày sinh đến -->
-                <div class="col-md-3">
-                  <label for="dob_to" class="form-label">Ngày sinh đến:</label>
-                  <input type="date" class="form-control" id="dob_to">
+          <h2 class="text-center">Thêm Tài Khoản Nhân Viên</h2>
+          <form ng-submit="addNhanVien()" novalidate>
+            <div class="row">
+              <!-- Upload ảnh section -->
+              <div class="alert alert-light col-3 me-5" role="alert">
+                <p class="fw-bold text-center">Upload ảnh</p>
+                <div class="avatar-upload mx-auto" ng-click="triggerFileInput()"
+                     ng-style="{'background-image': imageSrc ? 'url(' + imageSrc + ')' : 'none'}">
+                  <span ng-if="!imageSrc">+</span>
+                  <p ng-if="!imageSrc">Upload</p>
+                  <input type="file" id="fileInput" accept="image/*"
+                         onchange="angular.element(this).scope().uploadFile(this.files)"
+                         style="display: none;">
                 </div>
               </div>
 
-              <div class="row mb-3">
+              <!-- Thông tin nhân viên -->
+              <div class="alert alert-light col-8" role="alert">
+                <h5 class="text-center mb-4">Thông tin nhân viên</h5>
 
-                <!-- Trạng thái -->
-                <div class="col-md-2">
-                  <label for="status" class="form-label">Trạng thái:</label>
-                  <select class="form-select" id="status">
-                    <option selected>Tất cả</option>
-                    <option value="1">Kích hoạt</option>
-                    <option value="2">Không kích hoạt</option>
-                  </select>
-                </div>
-                <!-- Khoảng tuổi -->
-                <div class="col-md-8">
-                  <label for="ageRange" class="form-label">Khoảng tuổi:</label>
-                  <input type="range" class="form-range" id="ageRange" min="18" max="60">
-                </div>
-              </div>
-
-              <div class="d-flex justify-content-center">
-                <!-- Nút Tìm kiếm và Làm mới -->
-                <button type="button" class="btn btn-primary me-2">Tìm kiếm</button>
-                <button type="reset" class="btn btn-danger">Làm mới bộ lọc</button>
-              </div>
-          </div>
-          <div class="alert alert-light" role="alert">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5><i class="bi bi-list"></i> Danh sách nhân viên</h5>
-              <a href="/admin/create-nhan-vien"><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button></a>
-            </div>
-          <!--   Danh sách nhân viên         -->
-            <table class="table table-striped">
-              <thead class="table-warning">
-              <tr class="text-bg-warning text-center text-white">
-                <th scope="col">STT</th>
-                <th scope="col">Ảnh</th>
-                <th scope="col">Họ Và Tên</th>
-                <th scope="col">SĐT</th>
-                <th scope="col">Ngày Sinh</th>
-                <th scope="col">Giới Tính</th>
-                <th scope="col">Trạng Thái</th>
-                <th scope="col">Hành Động</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr ng-repeat="x in nv">
-                <td>{{$index+1}}</td>
-                <td>
-                  <img src="/admin/images/{{x.hinh_anh}}" style="width: 100px ; height: 90px">
-                </td>
-                <td>{{x.ho_ten}}</td>
-                <td>{{x.sdt}}</td>
-                <td>{{ x.ngay_sinh | date:'dd/MM/yyyy' }}</td>
-                <td>{{x.gioi_tinh == 0 ? 'Nam' : 'Nữ'}}</td>
-                <td>{{x.trang_thai == 1 ? 'Đang làm việc' :  'Ngưng hoạt động'}}</td>
-                <td>
-                  <button class="btn btn-warning" ng-click="openDetail(x.id)">
-                    <i class="bi bi-eye"></i>
-                  </button>
-                  <button class="btn btn-success"><a><i class="bi bi-pencil"></i></a></button>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-            <div class="mx-auto p-2" style="width: 200px;">
-              <nav aria-label="Page navigation example" >
-                <ul class="pagination">
-                  <!-- Nút Previous -->
-                  <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
-                    <a class="page-link" href="" ng-click="changePage(currentPage - 1)">Previous</a>
-                  </li>
-
-                  <!-- Nút số trang -->
-                  <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
-                      ng-class="{ 'active': $index === currentPage }">
-                    <a class="page-link" href="" ng-click="changePage($index)">{{$index + 1}}</a>
-                  </li>
-
-                  <!-- Nút Next -->
-                  <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
-                    <a class="page-link" href="" ng-click="changePage(currentPage + 1)">Next</a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-
-        <!--     Show lên thông tin chi tiết của nhân viên         -->
-            <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">Thông tin nhân viên</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="hoTen" class="form-label">Họ tên</label>
+                    <input type="text" class="form-control" id="hoTen"
+                           ng-model="nhanVien.ho_ten" required
+                           placeholder="Nhập họ tên" />
                   </div>
-                  <div class="modal-body">
-                    <div class="row">
-                      <!-- Hình ảnh đại diện -->
-                      <div class="col-md-4 text-center">
-                        <img src="/admin/images/{{nvct.hinh_anh}}" alt="Ảnh đại diện" class="img-thumbnail rounded-circle" style="border-radius: 50%;width: 150px;height: 150px;">
-                        <p><strong>Ảnh đại diện</strong></p>
-                      </div>
+                  <div class="col-md-6">
+                    <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                    <input type="date" class="form-control" id="ngaySinh"
+                           ng-model="nhanVien.ngay_sinh" required />
+                  </div>
+                </div>
 
-                      <!-- Thông tin nhân viên -->
-                      <div class="col-md-7">
-                        <form>
-                          <div class="row mb-3">
-                            <div class="col">
-                              <label for="tenKhachHang" class="form-label">Mã nhân viên</label>
-                              <input type="text" class="form-control" id="tenKhachHang" ng-model="nvct.ma_nhan_vien" disabled>
-                            </div>
-                            <div class="col">
-                              <label for="sdt" class="form-label">Họ tên </label>
-                              <input type="text" class="form-control" id="hoTen" ng-model="nvct.ho_ten" disabled>
-                            </div>
-                            <div class="col">
-                              <label for="gioiTinh" class="form-label">Giới tính</label>
-                              <input type="text" class="form-control" id="gioiTinh" ng-model="nvct.gioi_tinh_display" disabled>
-                            </div>
-                          </div>
-                          <div class="row mb-3">
-                            <div class="col">
-                              <label for="email" class="form-label">Chức vụ</label>
-                              <input type="email" class="form-control" id="chucVu" ng-model="nvct.chucVu.ten_chuc_vu" disabled>
-                            </div>
-                            <div class="col">
-                              <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                              <input type="date" class="form-control" id="ngaySinh" ng-model="nvct.ngay_sinh" disabled>
-                            </div>
-                          </div>
-
-                          <div class="row mb-3">
-                            <div class="col">
-                              <label  class="form-label">SDT</label>
-                              <input type="text" class="form-control" id="sdt" ng-model="nvct.sdt" disabled>
-                            </div>
-                            <div class="col">
-                              <label  class="form-label">Email</label>
-                              <input type="text" class="form-control" id="email" ng-model="nvct.email" disabled>
-                            </div>
-                          </div>
-
-                          <div class="row mb-3">
-                            <div class="col">
-                              <label  class="form-label">Địa chỉ</label>
-                              <input type="text" class="form-control" id="diaChi" ng-model="nvct.dia_chi" disabled>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Giới tính</label><br>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio"
+                             ng-model="nhanVien.gioi_tinh" value="0" id="gioiTinhNam" checked />
+                      <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio"
+                             ng-model="nhanVien.gioi_tinh" value="1" id="gioiTinhNu" />
+                      <label class="form-check-label" for="gioiTinhNu">Nữ</label>
                     </div>
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email"
+                           ng-model="nhanVien.email" required placeholder="Nhập email" />
                   </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="sdt" class="form-label">Số điện thoại</label>
+                    <input type="tel" class="form-control" id="sdt"
+                           ng-model="nhanVien.sdt" required
+                           placeholder="Nhập số điện thoại" pattern="^\d{10,11}$"
+                           title="Số điện thoại phải có 10-11 chữ số" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="trangThai" class="form-label">Trạng thái</label>
+                    <select class="form-select" id="trangThai"
+                            ng-model="nhanVien.trang_thai" required>
+                      <option value="" disabled selected>Chọn trạng thái</option>
+                      <option value="1">Kích hoạt</option>
+                      <option value="0">Ngừng kích hoạt</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <label for="diaChi" class="form-label">Địa chỉ</label>
+                    <input type="text" class="form-control" id="diaChi"
+                           ng-model="nhanVien.dia_chi" required placeholder="Nhập địa chỉ" />
+                  </div>
+                </div>
+
+                <div class="text-end">
+                  <!-- Nút Thêm Nhân Viên -->
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                    Thêm
+                  </button>
+                  <a href="/admin/nhan-vien" class="btn btn-outline-secondary ms-2">Hủy</a>
                 </div>
               </div>
             </div>
-        <!--   END MODEL         -->
+          </form>
 
 
+
+          <!-- Modal Xác Nhận -->
+          <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="confirmModalLabel">Xác nhận</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Bạn có chắc chắn muốn thêm nhân viên này không?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                  <button type="button" class="btn btn-primary" ng-click="confirmAddNhanVien()">Đồng ý</button>
+                </div>
+              </div>
+            </div>
           </div>
+
+
         </div>
       </div>
 

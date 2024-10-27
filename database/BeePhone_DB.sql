@@ -156,6 +156,7 @@ CREATE TABLE [nhan_vien] (
   [ngay_sinh] Date,
   [gioi_tinh] INT,
   [hinh_anh] Varchar(100),
+  [dia_chi] Nvarchar(100),
   [trang_thai] INT,
   PRIMARY KEY ([id]),
   CONSTRAINT [FK_nhan_vien.id_chuc_vu]
@@ -238,18 +239,6 @@ CREATE TABLE [tuyen_dung] (
   [ngay_tao] Date,
   [trang_thai] INT,
   PRIMARY KEY ([id])
-);
-
-CREATE TABLE [dia_chi_nhan_vien] (
-  [id] INT IDENTITY,
-  [id_nhan_vien] INT,
-  [ma_dia_chi] Nvarchar(50),
-  [dia_chi] Nvarchar(200),
-  [trang_thai] INT,
-  PRIMARY KEY ([id]),
-  CONSTRAINT [FK_dia_chi_nhan_vien.id_nhan_vien]
-    FOREIGN KEY ([id_nhan_vien])
-      REFERENCES [nhan_vien]([id])
 );
 
 CREATE TABLE [danh_gia] (
@@ -343,16 +332,16 @@ VALUES
 	-- Thêm dữ liệu vào bảng [anh_san_pham]
 INSERT INTO [anh_san_pham] ([id_san_pham], [anh_1], [anh_2], [anh_3], [anh_4], [anh_5])
 VALUES 
-    (1, 'anh1_spigen_tough_armor.png', 'anh2_spigen_tough_armor.png', 'anh3_spigen_tough_armor.png', 'anh4_spigen_tough_armor.png', 'anh5_spigen_tough_armor.png'),
+    (1, 'anh_7.jpg', 'anh2_spigen_tough_armor.png', 'anh3_spigen_tough_armor.png', 'anh4_spigen_tough_armor.png', 'anh5_spigen_tough_armor.png'),
     (2, 'anh_3.webp', 'anh2_uag_monarch.png', 'anh3_uag_monarch.png', 'anh4_uag_monarch.png', 'anh5_uag_monarch.png'),
     (3, 'anh_4.webp', 'anh2_otterbox_defender.png', 'anh3_otterbox_defender.png', 'anh4_otterbox_defender.png', 'anh5_otterbox_defender.png'),
     (4, 'anh_6.jpg', 'anh2_caseology_parallax.png', 'anh3_caseology_parallax.png', 'anh4_caseology_parallax.png', 'anh5_caseology_parallax.png'),
     (5, 'anh_2.jpg', 'anh2_ringke_fusion_x.png', 'anh3_ringke_fusion_x.png', 'anh4_ringke_fusion_x.png', 'anh5_ringke_fusion_x.png'),
-    (6, 'anh1_spigen_liquid_air.png', 'anh2_spigen_liquid_air.png', 'anh3_spigen_liquid_air.png', 'anh4_spigen_liquid_air.png', 'anh5_spigen_liquid_air.png'),
+    (6, 'anh_8.jpg', 'anh2_spigen_liquid_air.png', 'anh3_spigen_liquid_air.png', 'anh4_spigen_liquid_air.png', 'anh5_spigen_liquid_air.png'),
     (7, 'anh_5.jpg', 'anh2_uag_plasma.png', 'anh3_uag_plasma.png', 'anh4_uag_plasma.png', 'anh5_uag_plasma.png'),
-    (8, 'anh1_otterbox_commuter.png', 'anh2_otterbox_commuter.png', 'anh3_otterbox_commuter.png', 'anh4_otterbox_commuter.png', 'anh5_otterbox_commuter.png'),
+    (8, 'anh_9.jpg', 'anh2_otterbox_commuter.png', 'anh3_otterbox_commuter.png', 'anh4_otterbox_commuter.png', 'anh5_otterbox_commuter.png'),
     (9, 'anh_1.jpg', 'anh2_caseology_skyfall.png', 'anh3_caseology_skyfall.png', 'anh4_caseology_skyfall.png', 'anh5_caseology_skyfall.png'),
-    (10, 'anh1_ringke_onyx.png', 'anh2_ringke_onyx.png', 'anh3_ringke_onyx.png', 'anh4_ringke_onyx.png', 'anh5_ringke_onyx.png');
+    (10, 'anh_10.jpg', 'anh2_ringke_onyx.png', 'anh3_ringke_onyx.png', 'anh4_ringke_onyx.png', 'anh5_ringke_onyx.png');
 
 	-- Thêm dữ liệu vào bảng [khach_hang]
 INSERT INTO [khach_hang] ([ma_khach_hang], [tai_khoan], [ho_ten], [email], [sdt], [mat_khau], [ngay_sinh], [gioi_tinh], [trang_thai])
@@ -389,32 +378,40 @@ VALUES
     (N'CV010', N'Nhân viên Marketing', 1);
 
 	-- Thêm dữ liệu vào bảng [nhan_vien]
-INSERT INTO [nhan_vien] ([ma_nhan_vien], [ho_ten], [id_chuc_vu], [email], [sdt], [mat_khau], [ngay_sinh], [gioi_tinh], [hinh_anh], [trang_thai])
+INSERT INTO [nhan_vien] ([ma_nhan_vien], [ho_ten], [id_chuc_vu], [email], [sdt], [mat_khau], [ngay_sinh], [gioi_tinh], [hinh_anh],[dia_chi],[trang_thai])
 VALUES 
-    (N'NV001', N'Nguyễn Văn A', 1, 'nguyenvana@example.com', '0123456789', 'password1', '1990-01-15', 1, 'hinh_anh_a.png', 1),
-    (N'NV002', N'Trần Thị B', 2, 'tranthib@example.com', '0123456780', 'password2', '1992-05-20', 0, 'hinh_anh_b.png', 1),
-    (N'NV003', N'Lê Văn C', 3, 'levanc@example.com', '0123456781', 'password3', '1988-03-10', 1, 'hinh_anh_c.png', 1),
-    (N'NV004', N'Phạm Thị D', 4, 'phamthid@example.com', '0123456782', 'password4', '1995-07-25', 0, 'hinh_anh_d.png', 1),
-    (N'NV005', N'Nguyễn Thế E', 5, 'nguyenthe@example.com', '0123456783', 'password5', '1996-11-30', 1, 'hinh_anh_e.png', 1),
-    (N'NV006', N'Trần Văn F', 6, 'tranvanf@example.com', '0123456784', 'password6', '1991-02-15', 1, 'hinh_anh_f.png', 1),
-    (N'NV007', N'Lê Thị G', 7, 'lethig@example.com', '0123456785', 'password7', '1993-04-20', 0, 'hinh_anh_g.png', 1),
-    (N'NV008', N'Nguyễn Văn H', 8, 'nguyenh@example.com', '0123456786', 'password8', '1989-06-18', 1, 'hinh_anh_h.png', 1),
-    (N'NV009', N'Phạm Văn I', 9, 'phamvi@example.com', '0123456787', 'password9', '1990-09-12', 1, 'hinh_anh_i.png', 1),
-    (N'NV010', N'Trần Thị J', 10, 'tranthij@example.com', '0123456788', 'password10', '1995-12-28', 0, 'hinh_anh_j.png', 1);
+    (N'NV001', N'Nguyễn Văn A', 1, 'nguyenvana@example.com', '0123456789', 'password1', '1990-01-15', 1, 'anh_17.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM', 1),
+    (N'NV002', N'Trần Thị B', 2, 'tranthib@example.com', '0123456780', 'password2', '1992-05-20', 0, 'anh_17.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+    (N'NV003', N'Lê Văn C', 3, 'levanc@example.com', '0123456781', 'password3', '1988-03-10', 1, 'anh_17.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+    (N'NV004', N'Phạm Thị D', 4, 'phamthid@example.com', '0123456782', 'password4', '1995-07-25', 0, 'anh_17.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+    (N'NV005', N'Nguyễn Thế E', 5, 'nguyenthe@example.com', '0123456783', 'password5', '1996-11-30', 1, 'anh_17.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+    (N'NV006', N'Trần Văn F', 6, 'tranvanf@example.com', '0123456784', 'password6', '1991-02-15', 1, 'anh_17.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+    (N'NV007', N'Lê Thị G', 7, 'lethig@example.com', '0123456785', 'password7', '1993-04-20', 0, 'hanh_17.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+    (N'NV008', N'Nguyễn Văn H', 8, 'nguyenh@example.com', '0123456786', 'password8', '1989-06-18', 1, 'anh_17.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+    (N'NV009', N'Phạm Văn I', 9, 'phamvi@example.com', '0123456787', 'password9', '1990-09-12', 1, 'anh_18.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+    (N'NV010', N'Trần Thị J', 10, 'tranthij@example.com', '0123456788', 'password10', '1995-12-28', 0, 'anh_20.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV011', 'Nguyen Van A', 1, 'nguyenvana@email.com', '0123456789', 'password1', '1990-01-01', 1, 'anh_19.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV012', 'Nguyen Van B', 2, 'nguyenvanb@email.com', '0123456788', 'password2', '1990-02-02', 1, 'anh_18.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV013', 'Nguyen Van C', 3, 'nguyenvanc@email.com', '0123456787', 'password3', '1990-03-03', 1, 'anh_17.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+	('NV014', 'Nguyen Van D', 1, 'nguyenvand@email.com', '0123456786', 'password4', '1990-04-04', 1, 'anh_16.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+	('NV015', 'Nguyen Van E', 2, 'nguyenvane@email.com', '0123456785', 'password5', '1990-05-05', 1, 'anh_15.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+	('NV016', 'Nguyen Van F', 3, 'nguyenvanf@email.com', '0123456784', 'password6', '1990-06-06', 1, 'anh_14.jpeg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+	('NV017', 'Nguyen Van G', 1, 'nguyenvang@email.com', '0123456783', 'password7', '1990-07-07', 1, 'anh_14.jpeg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV018', 'Nguyen Van H', 2, 'nguyenvanh@email.com', '0123456782', 'password8', '1990-08-08', 1, 'anh_13.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV019', 'Nguyen Van I', 3, 'nguyenvani@email.com', '0123456781', 'password9', '1990-09-09', 1, 'anh_12.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV020', 'Nguyen Van J', 1, 'nguyenvanj@email.com', '0123456780', 'password10', '1990-10-10', 1, 'anh_11.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+	('NV021', 'Nguyen Van K', 2, 'nguyenvank@email.com', '0123456779', 'password11', '1990-11-11', 1, 'anh_10.jpg', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+	('NV022', 'Nguyen Van L', 3, 'nguyenvanl@email.com', '0123456778', 'password12', '1990-12-12', 1, 'anh_9.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV023', 'Nguyen Van M', 1, 'nguyenvanm@email.com', '0123456777', 'password13', '1991-01-01', 1, 'anh_8.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV024', 'Nguyen Van N', 2, 'nguyenvann@email.com', '0123456776', 'password14', '1991-02-02', 1, 'anh_7.webp',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV025', 'Nguyen Van O', 3, 'nguyenvano@email.com', '0123456775', 'password15', '1991-03-03', 1, 'anh_6.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV026', 'Nguyen Van P', 1, 'nguyenvanp@email.com', '0123456774', 'password16', '1991-04-04', 1, 'anh_5.webp',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV027', 'Nguyen Van Q', 2, 'nguyenvanq@email.com', '0123456773', 'password17', '1991-05-05', 1, 'anh_4.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV028', 'Nguyen Van R', 3, 'nguyenvanr@email.com', '0123456772', 'password18', '1991-06-06', 1, 'anh_3.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1),
+	('NV029', 'Nguyen Van S', 1, 'nguyenvans@email.com', '0123456771', 'password19', '1991-07-07', 1, 'anh_2.webp', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM',1),
+	('NV030', 'Nguyen Van T', 2, 'nguyenvant@email.com', '0123456770', 'password20', '1991-08-08', 1, 'img_1.jpg',N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM' ,1);
 
--- Thêm dữ liệu vào bảng [dia_chi_nhan_vien]
-INSERT INTO [dia_chi_nhan_vien] ([id_nhan_vien], [ma_dia_chi], [dia_chi], [trang_thai])
-VALUES 
-    (1, N'DCNV001', N'Số 1, Đường ABC, Phường 1, Quận 1, TP.HCM', 1),
-    (1, N'DCNV002', N'Số 3, Đường DEF, Phường 2, Quận 1, TP.HCM', 1),
-    (2, N'DCNV003', N'Số 5, Đường GHI, Phường 1, Quận 3, TP.HCM', 1),
-    (3, N'DCNV004', N'Số 7, Đường JKL, Phường 2, Quận 2, TP.HCM', 1),
-    (4, N'DCNV005', N'Số 9, Đường MNO, Phường 1, Quận 4, TP.HCM', 1),
-    (5, N'DCNV006', N'Số 11, Đường PQR, Phường 3, Quận 5, TP.HCM', 1),
-    (6, N'DCNV007', N'Số 13, Đường STU, Phường 2, Quận 6, TP.HCM', 1),
-    (7, N'DCNV008', N'Số 15, Đường VWX, Phường 1, Quận 7, TP.HCM', 1),
-    (8, N'DCNV009', N'Số 17, Đường YZ, Phường 2, Quận 8, TP.HCM', 1),
-    (9, N'DCNV010', N'Số 19, Đường ABCD, Phường 3, Quận 9, TP.HCM', 1);
+
 
 	-- Thêm dữ liệu vào bảng [khuyen_mai]
 INSERT INTO [khuyen_mai] ([ma_khuyen_mai], [gia_tri], [ngay_bat_dau], [ngay_ket_thuc], [ngay_tao], [trang_thai])

@@ -8,31 +8,23 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Entity
-@Table(name = "san_pham")
-public class san_pham {
+@Table(name = "chuc_vu")
+public class chuc_vu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id ;
+    private Integer id ;
 
-    @Column(name = "ma_san_pham")
-    private String ma_san_pham ;
+    @Column(name = "ma_chuc_vu")
+    private String  ma_chuc_vu ;
 
-    @ManyToOne
-    @JoinColumn(name = "id_nha_san_xuat")
-    private nha_san_xuat nhaSanXuat ;
-
-    @Column(name = "ten")
-    private String ten ;
-
-    @Column(name = "mo_ta")
-    private String mo_ta ;
+    @Column(name = "ten_chuc_vu")
+    private String  ten_chuc_vu ;
 
     @Column(name = "trang_thai")
     private int trang_thai ;
-
-
 }

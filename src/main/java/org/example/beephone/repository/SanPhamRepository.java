@@ -29,7 +29,7 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
     @Query("SELECT new org.example.beephone.dto.SanPhamCustom(sp.id, sp.ma_san_pham , nsx.ten, sp.ten,sp.mo_ta,sp.trang_thai,ctsp.gia_ban , asp.anh_1) \n" +
             "FROM san_pham sp\n" +
             "JOIN anh_san_pham asp on sp.id = asp.id_san_pham\n" +
-            "JOIN nha_san_xuat nsx on sp.id_nha_san_xuat = nsx.id \n" +
+            "JOIN nha_san_xuat nsx on sp.nhaSanXuat.id  = nsx.id \n" +
             "JOIN chi_tiet_san_pham ctsp on ctsp.id_san_pham = sp.id")
     Page<SanPhamCustom> getSanPhamPage(Pageable pageable);
 }
