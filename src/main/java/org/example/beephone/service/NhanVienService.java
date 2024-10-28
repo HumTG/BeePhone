@@ -59,6 +59,10 @@ public class NhanVienService {
         return savedNhanVien;
     }
 
+    public nhan_vien update(nhan_vien nhanVien) {
+        return nhanVienRepository.save(nhanVien);
+    }
+
     // Hàm gửi email thông báo đăng ký
     private void sendRegistrationEmail(nhan_vien nhanVien, String password) {
         String subject = "Đăng ký tài khoản thành công";

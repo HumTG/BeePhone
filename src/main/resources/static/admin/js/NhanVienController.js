@@ -130,4 +130,61 @@ app.controller('NhanVienController', function($scope, $http ) {
         modal.hide();
     };
 
+    // Update nhân viên
+    $scope.openUpdateModal = function(nhanVien) {
+        $scope.selectedNhanVien = angular.copy(nhanVien);
+
+        // Chuyển đổi 'ngay_sinh' từ chuỗi sang đối tượng Date (nếu tồn tại)
+        if ($scope.selectedNhanVien.ngay_sinh) {
+            $scope.selectedNhanVien.ngay_sinh = new Date($scope.selectedNhanVien.ngay_sinh);
+        }
+
+        // Đảm bảo các giá trị giới tính và trạng thái được chuyển đúng kiểu
+        $scope.selectedNhanVien.gioi_tinh = parseInt($scope.selectedNhanVien.gioi_tinh);
+        $scope.selectedNhanVien.trang_thai = parseInt($scope.selectedNhanVien.trang_thai, 10);
+
+        var updateModal = new bootstrap.Modal(document.getElementById('updateNhanVienModal'));
+        updateModal.show(); // Hiển thị modal
+    };
+
+
+
+    $scope.updateNhanVien = function() {
+        var nhanVienData = {
+            ho_ten: $scope.selectedNhanVien.ho_ten,
+            email: $scope.selectedNhanVien.email,
+            sdt: $scope.selectedNhanVien.sdt,
+            ngay_sinh: new Date($scope.selectedNhanVien.ngay_sinh).toISOString().split('T')[0],
+            dia_chi: $scope.selectedNhanVien.dia_chi,
+            gioi_tinh: $scope.selectedNhanVien.gioi_tinh,
+            trang_thai: $scope.selectedNhanVien.trang_thai,
+            hinh_anh: $scope.selectedNhanVien.hinh_anh
+        };
+
+        $http.put('http://localhost:8080/rest/nhan-vien/' + $scope.selectedNhanVien.id, nhanVienData)
+            .then(function(response) {
+                toastr.success('Cập nhật nhân viên thành công!', 'Thành công', {
+                    closeButton: true,
+                    progressBar: true,
+                    timeOut: 3000
+                });
+
+                $scope.getData($scope.currentPage); // Tải lại dữ liệu sau khi cập nhật
+
+                var modalElement = document.getElementById('updateNhanVienModal');
+                var modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide(); // Đóng modal sau khi cập nhật
+            })
+            .catch(function(error) {
+                console.error('Lỗi khi cập nhật nhân viên:', error);
+                toastr.error('Có lỗi xảy ra khi cập nhật nhân viên!', 'Lỗi', {
+                    closeButton: true,
+                    progressBar: true,
+                    timeOut: 3000
+                });
+            });
+    };
+
+
+
 });

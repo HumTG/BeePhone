@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 public class NhanVienController {
 
@@ -32,4 +34,26 @@ public class NhanVienController {
         nhan_vien newNhanVien = service.add(nhanVien);
         return ResponseEntity.ok(newNhanVien);
     }
+
+    @PutMapping("/rest/nhan-vien/{id}")
+    public ResponseEntity<?> updateNhanVien(@PathVariable Integer id, @RequestBody nhan_vien updatedNhanVien) {
+        Optional<nhan_vien> existingNhanVien = Optional.ofNullable(service.detail(id));
+        if (existingNhanVien.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        nhan_vien nhanVien = existingNhanVien.get();
+        // Cập nhật thông tin
+        nhanVien.setHo_ten(updatedNhanVien.getHo_ten());
+        nhanVien.setEmail(updatedNhanVien.getEmail());
+        nhanVien.setSdt(updatedNhanVien.getSdt());
+        nhanVien.setNgay_sinh(updatedNhanVien.getNgay_sinh());
+        nhanVien.setGioi_tinh(updatedNhanVien.getGioi_tinh());
+        nhanVien.setDia_chi(updatedNhanVien.getDia_chi());
+        nhanVien.setTrang_thai(updatedNhanVien.getTrang_thai());
+
+        service.update(nhanVien);
+        return ResponseEntity.ok(nhanVien);
+    }
+
 }

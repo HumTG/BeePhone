@@ -364,7 +364,10 @@
                                 <button class="btn btn-warning" ng-click="openDetail(x.id)">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                <button class="btn btn-success"><a><i class="bi bi-pencil"></i></a></button>
+                                <!-- Nút Sửa Nhân Viên -->
+                                <button class="btn btn-success" ng-click="openUpdateModal(x)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
                             </td>
                         </tr>
                         </tbody>
@@ -463,8 +466,84 @@
                         </div>
                     </div>
                     <!--   END MODEL         -->
+                    <!-- Modal Cập Nhật Nhân Viên -->
+                    <div class="modal fade" id="updateNhanVienModal" tabindex="-1" aria-labelledby="updateNhanVienModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateNhanVienModalLabel">Cập nhật thông tin nhân viên</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form name="updateNhanVienForm" ng-submit="updateNhanVien()" novalidate>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="hoTen" class="form-label">Họ tên</label>
+                                                <input type="text" class="form-control" id="hoTen" ng-model="selectedNhanVien.ho_ten" required />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                                                <input type="date" class="form-control" id="ngaySinh" ng-model="selectedNhanVien.ngay_sinh" required />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="sdt" class="form-label">Số điện thoại</label>
+                                                <input type="tel" class="form-control" id="sdt" ng-model="selectedNhanVien.sdt" required />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" ng-model="selectedNhanVien.email" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Giới tính</label><br />
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="gioiTinhNam"
+                                                           ng-model="selectedNhanVien.gioi_tinh" ng-value="0" />
+                                                    <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="gioiTinhNu"
+                                                           ng-model="selectedNhanVien.gioi_tinh" ng-value="1" />
+                                                    <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                                                </div>
+                                            </div>
 
 
+
+                                            <div class="col-md-6">
+                                                <label for="trangThai" class="form-label">Trạng thái</label>
+                                                <select class="form-select" id="trangThai" ng-model="selectedNhanVien.trang_thai">
+                                                    <option ng-value="1">Kích hoạt</option>
+                                                    <option ng-value="0">Ngừng kích hoạt</option>
+                                                </select>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="diaChi" class="form-label">Địa chỉ</label>
+                                            <input type="text" class="form-control" id="diaChi" ng-model="selectedNhanVien.dia_chi" required />
+                                        </div>
+
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--    end model cập nhật nhân viên                -->
                 </div>
             </div>
         </div>
