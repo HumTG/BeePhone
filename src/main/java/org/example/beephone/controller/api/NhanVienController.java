@@ -4,11 +4,13 @@ import jakarta.validation.Valid;
 import org.example.beephone.entity.nhan_vien;
 import org.example.beephone.service.NhanVienService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.List;
 
 @RestController
 public class NhanVienController {
@@ -55,5 +57,22 @@ public class NhanVienController {
         service.update(nhanVien);
         return ResponseEntity.ok(nhanVien);
     }
+
+    // API Bộ lọc nhân viên
+    // API tìm kiếm nhân viên với phân trang
+    @GetMapping("/rest/nhan-vien/filter")
+    public Page<nhan_vien> filterNhanVien(
+            @RequestParam(required = false) String tenSdt,
+            @RequestParam(required = false) String ngaySinhTu,
+            @RequestParam(required = false) String ngaySinhDen,
+            @RequestParam(required = false) Integer trangThai,
+            @RequestParam(required = false) Integer maxTuoi,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        return service.filterNhanVien(tenSdt, ngaySinhTu, ngaySinhDen, trangThai, maxTuoi, page, size);
+    }
+
+
 
 }

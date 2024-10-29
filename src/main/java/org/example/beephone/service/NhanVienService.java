@@ -13,6 +13,10 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.stream.Collectors;
 
 @Service
 public class NhanVienService {
@@ -99,6 +103,21 @@ public class NhanVienService {
         }
         return maNV.toString();
     }
+
+    public Page<nhan_vien> filterNhanVien(String tenSdt, String ngaySinhTu, String ngaySinhDen,
+                                          Integer trangThai, Integer maxTuoi, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Date dateFrom = (ngaySinhTu != null && !ngaySinhTu.isEmpty()) ? Date.valueOf(ngaySinhTu) : null;
+        Date dateTo = (ngaySinhDen != null && !ngaySinhDen.isEmpty()) ? Date.valueOf(ngaySinhDen) : null;
+
+        // Gọi repository với các điều kiện tìm kiếm
+        return nhanVienRepository.searchNhanVien(tenSdt, dateFrom, dateTo, trangThai, maxTuoi, pageable);
+    }
+
+
+
 
 
 }
