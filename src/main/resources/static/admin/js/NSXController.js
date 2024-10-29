@@ -33,10 +33,13 @@ $scope.getData();
     $scope.addNSX = function (event){
         event.preventDefault();
         $scope.formData.id = null;
+        if ($scope.textNull() == 0||$scope.checkTrungMa() == 0){
+            return;
+        }
+
         $http.post("http://localhost:8080/rest/add-nha-san-xuat",$scope.formData).then(function (respone) {
             $scope.getData();
-            console.log("Thành công",respone)
-            alert("thêm thành công");
+            toastr.success('Thêm thành công', 'OK');
             $scope.clearDataForm();
         })  .catch(function (error) {
             console.error("Đã có lỗi xảy ra", error);
@@ -52,8 +55,7 @@ $scope.getData();
 
         $http.get("http://localhost:8080/rest/delete-nha-san-xuat/" + id).then(function(response) {
             if (response.status === 200) {
-                console.log("xóa thành công")
-                alert("Xóa thành công")
+                toastr.success('Xóa thành công', 'OK');
                 $scope.getData();
             } else {
                 console.error("Error: ", status);
@@ -78,6 +80,8 @@ $scope.getData();
         $scope.formData.ma_nha_san_xuat = "";
         $scope.formData.ten = "";
         $scope.formData.trang_thai = "1"
+        document.getElementById("errMa").innerText = ""
+        document.getElementById("errTen").innerText = ""
     }
 
 //Update
@@ -88,15 +92,49 @@ $scope.getData();
                 alert("Hãy chọn 1 nhà sản xuất")
                 return;
         }
+        if ($scope.textNull() == 0){
+            return;
+        }
         $http.post("http://localhost:8080/rest/add-nha-san-xuat",$scope.formData).then(function (respone) {
             $scope.getData();
             console.log("Sửa thành công",respone)
+            toastr.success('Sửa thành công', 'OK');
             $scope.clearDataForm();
         })  .catch(function (error) {
             // Xử lý khi gặp lỗi
             console.error("Đã có lỗi xảy ra", error);
             alert("Có lỗi xảy ra khi gửi dữ liệu. Vui lòng thử lại.");
         });
+    }
+
+    //check trung ma js
+    $scope.checkTrungMa = function (){
+        let isDuplicate = false;
+
+        $scope.listNSX.forEach(function(item) {
+            if(item.ma_nha_san_xuat === $scope.formData.ma_nha_san_xuat){
+                isDuplicate = true;
+                toastr.error("Đã trùng mã nhà sản xuất","Lỗi")
+            }
+        });
+
+        return isDuplicate ? 0 : 1;
+    }
+
+    $scope.textNull = function (){
+        let err = false;
+        var ma = $scope.formData.ma_nha_san_xuat
+        var  ten = $scope.formData.ten
+        if(ma.trim().length == 0){
+            document.getElementById("errMa").innerText = "Không để trống mã NSX"
+            err = true
+        }
+        if(ten.trim().length == 0){
+            document.getElementById("errTen").innerText = "Không để trống tên NSX"
+            err = true
+        }
+
+        return err ? 0 : 1;
     }
 
 });

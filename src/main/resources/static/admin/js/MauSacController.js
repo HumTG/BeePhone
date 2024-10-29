@@ -28,10 +28,14 @@ $scope.getData = function (){
 //add dl
     $scope.addMS = function (event){
         event.preventDefault();
+        if ($scope.textNull() == 0||$scope.validate() == 0){
+            return;
+        }
+
         $scope.formData.id = null;
         $http.post("http://localhost:8080/rest/add-mau-sac",$scope.formData).then(function (respone) {
             $scope.getData();
-            alert("thêm thành công")
+            toastr.success('Thêm thành công', 'OK');
             $scope.clearDataForm();
         })  .catch(function (error) {
             console.error("Đã có lỗi xảy ra", error);
@@ -46,7 +50,7 @@ $scope.deleteMS = function (event,id){
 
         $http.delete("http://localhost:8080/rest/delete-mau-sac/" + id).then(function(response) {
             if (response.status === 200) {
-                console.log("xóa thành công")
+                toastr.success('Xóa thành công', 'OK');
                 $scope.getData();
             } else {
                 console.error("Error: ", status);
@@ -62,7 +66,10 @@ $scope.deleteMS = function (event,id){
         event.preventDefault();
         ms.trang_thai = String(ms.trang_thai);
         $scope.formData = angular.copy(ms);
-        console.log($scope.formData);
+        window.scrollTo({
+            top: 0,
+            behavior : "smooth"
+        });
     }
 
 
@@ -72,6 +79,8 @@ $scope.deleteMS = function (event,id){
         $scope.formData.ma_mau_sac = "";
         $scope.formData.ten = "";
         $scope.formData.trang_thai = "1"
+        document.getElementById("errTen").innerText = ""
+        document.getElementById("errMa").innerText = ""
     }
 
 //update
@@ -82,9 +91,13 @@ $scope.deleteMS = function (event,id){
             alert("Hãy chọn 1 màu sắc")
             return;
         }
+        if ($scope.textNull() == 0){
+            return;
+        }
+
         $http.post("http://localhost:8080/rest/add-mau-sac",$scope.formData).then(function (respone) {
             $scope.getData();
-           alert("Sửa thành công")
+            toastr.success('Sửa thành công', 'OK');
             $scope.clearDataForm();
         })  .catch(function (error) {
             // Xử lý khi gặp lỗi
@@ -93,6 +106,35 @@ $scope.deleteMS = function (event,id){
         });
     }
 
+//check trung ma js
+$scope.validate = function (){
+    let isDuplicate = false;
+
+    $scope.listMS.forEach(function(item) {
+        if(item.ma_mau_sac === $scope.formData.ma_mau_sac){
+            isDuplicate = true;
+            toastr.error("Đã trùng mã màu sắc","Lỗi")
+        }
+    });
+
+    return isDuplicate ? 0 : 1;
+}
+
+$scope.textNull = function (){
+  let err = false;
+  var ma = $scope.formData.ma_mau_sac
+  var  ten = $scope.formData.ten
+  if(ma.trim().length == 0){
+      document.getElementById("errMa").innerText = "Không để trống mã màu"
+      err = true
+  }
+    if(ten.trim().length == 0){
+        document.getElementById("errTen").innerText = "Không để trống tên màu"
+        err = true
+    }
+
+    return err ? 0 : 1;
+}
 
 })
 
