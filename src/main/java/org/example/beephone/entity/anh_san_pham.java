@@ -18,8 +18,9 @@ public class anh_san_pham {
     @Column(name = "id")
     private int id ;
 
-    @JoinColumn(name = "id_san_pham")
-    private int id_san_pham ;
+    @JoinColumn(name = "id_san_pham_chi_tiet")
+    @ManyToOne
+    private chi_tiet_san_pham chiTietSanPham ;
 
     private String anh_1 ;
     private String anh_2 ;

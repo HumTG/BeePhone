@@ -125,16 +125,16 @@ CREATE TABLE [gio_hang_chi_tiet] (
 
 CREATE TABLE [anh_san_pham] (
   [id] INT IDENTITY,
-  [id_san_pham] INT,
+  [id_san_pham_chi_tiet] INT,
   [anh_1] Varchar(200),
   [anh_2] Varchar(200),
   [anh_3] Varchar(200),
   [anh_4] Varchar(200),
   [anh_5] Varchar(200),
   PRIMARY KEY ([id]),
-  CONSTRAINT [FK_anh_san_pham.id_san_pham]
-    FOREIGN KEY ([id_san_pham])
-      REFERENCES [san_pham]([id])
+  CONSTRAINT [FK_anh_san_pham.id_san_pham_chi_tiet]
+    FOREIGN KEY ([id_san_pham_chi_tiet])
+      REFERENCES [chi_tiet_san_pham]([id])
 );
 
 CREATE TABLE [chuc_vu] (
@@ -164,15 +164,16 @@ CREATE TABLE [nhan_vien] (
       REFERENCES [chuc_vu]([id])
 );
 
-CREATE TABLE [khuyen_mai] (
-  [id] INT IDENTITY,
-  [ma_khuyen_mai] Nvarchar(50),
-  [gia_tri] Float,
-  [ngay_bat_dau] Date,
-  [ngay_ket_thuc] Date,
-  [ngay_tao] Date,
-  [trang_thai] INT,
-  PRIMARY KEY ([id])
+CREATE TABLE "khuyen_mai" (
+  "id" INT IDENTITY,
+  "ma_khuyen_mai" Nvarchar(50),
+  "gia_tri" Float,
+  "gia_tri_toi_thieu" Decimal,
+  "ngay_bat_dau" Date,
+  "ngay_ket_thuc" Date,
+  "ngay_tao" Date,
+  "trang_thai" INT,
+  PRIMARY KEY ("id")
 );
 
 CREATE TABLE [hoa_don] (
@@ -330,7 +331,7 @@ VALUES
     (10, 5, 5, NULL, 40, 190000, 210000, '2024-09-05', N'Ốp lưng Ringke Onyx - chất liệu kim loại, màu hồng.', 1);
 
 	-- Thêm dữ liệu vào bảng [anh_san_pham]
-INSERT INTO [anh_san_pham] ([id_san_pham], [anh_1], [anh_2], [anh_3], [anh_4], [anh_5])
+INSERT INTO [anh_san_pham] ([id_san_pham_chi_tiet], [anh_1], [anh_2], [anh_3], [anh_4], [anh_5])
 VALUES 
     (1, 'anh_7.jpg', 'anh2_spigen_tough_armor.png', 'anh3_spigen_tough_armor.png', 'anh4_spigen_tough_armor.png', 'anh5_spigen_tough_armor.png'),
     (2, 'anh_3.webp', 'anh2_uag_monarch.png', 'anh3_uag_monarch.png', 'anh4_uag_monarch.png', 'anh5_uag_monarch.png'),
