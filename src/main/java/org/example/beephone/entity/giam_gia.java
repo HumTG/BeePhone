@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
+
+
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,19 +24,19 @@ public class giam_gia {
     private int id ;
 
     @Column(name = "ma_giam_gia")
-    private String ma_giam_gia ;
+    private String maGiamGia ;
 
     @Column(name = "ten")
     private String ten ;
 
     @Column(name = "gia_tri")
-    private float gia_tri ;
+    private float giaTri ;
 
     @Column(name = "ngay_bat_dau")
-    private Date ngay_bat_dau ;
+    private Date ngayBatDau ;
 
     @Column(name = "ngay_ket_thuc")
-    private Date ngay_ket_thuc ;
+    private Date ngayKetThuc ;
 
     @Column(name = "trang_thai")
     private int trang_thai ;

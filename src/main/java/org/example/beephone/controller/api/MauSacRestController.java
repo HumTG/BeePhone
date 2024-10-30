@@ -1,7 +1,7 @@
 package org.example.beephone.controller.api;
 
 import org.example.beephone.entity.mau_sac;
-import org.example.beephone.service.MauSacService;
+import org.example.beephone.service.impl.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

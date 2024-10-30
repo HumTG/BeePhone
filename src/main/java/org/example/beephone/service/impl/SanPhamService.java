@@ -1,4 +1,4 @@
-package org.example.beephone.service;
+package org.example.beephone.service.impl;
 
 import org.example.beephone.dto.SanPhamCustom;
 import org.example.beephone.dto.SanPhamDTO;

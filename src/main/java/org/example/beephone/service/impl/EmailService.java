@@ -1,4 +1,4 @@
-package org.example.beephone.service;
+package org.example.beephone.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

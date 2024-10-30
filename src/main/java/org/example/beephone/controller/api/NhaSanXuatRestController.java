@@ -1,8 +1,7 @@
 package org.example.beephone.controller.api;
 
-import org.example.beephone.entity.chat_lieu;
 import org.example.beephone.entity.nha_san_xuat;
-import org.example.beephone.service.NhaSanXuatService;
+import org.example.beephone.service.impl.NhaSanXuatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

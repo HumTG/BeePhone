@@ -1,4 +1,4 @@
-package org.example.beephone.service;
+package org.example.beephone.service.impl;
 
 import org.example.beephone.entity.nha_san_xuat;
 import org.example.beephone.repository.NhaSanXuatRepository;

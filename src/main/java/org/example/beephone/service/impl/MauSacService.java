@@ -1,4 +1,4 @@
-package org.example.beephone.service;
+package org.example.beephone.service.impl;
 
 import org.example.beephone.entity.mau_sac;
 import org.example.beephone.repository.MauSacRepository;

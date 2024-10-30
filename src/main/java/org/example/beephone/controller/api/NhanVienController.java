@@ -2,7 +2,7 @@ package org.example.beephone.controller.api;
 
 import jakarta.validation.Valid;
 import org.example.beephone.entity.nhan_vien;
-import org.example.beephone.service.NhanVienService;
+import org.example.beephone.service.impl.NhanVienService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.List;
 
 @RestController
 public class NhanVienController {

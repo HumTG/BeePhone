@@ -1,6 +1,6 @@
 package org.example.beephone.controller.api;
 
-import org.example.beephone.service.KhachHangService;
+import org.example.beephone.service.impl.KhachHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

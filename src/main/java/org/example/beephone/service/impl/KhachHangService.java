@@ -1,4 +1,4 @@
-package org.example.beephone.service;
+package org.example.beephone.service.impl;
 
 import org.example.beephone.entity.khach_hang;
 import org.example.beephone.entity.nhan_vien;
