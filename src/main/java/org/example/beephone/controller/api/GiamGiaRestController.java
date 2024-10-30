@@ -27,7 +27,7 @@ public class GiamGiaRestController {
         return ResponseEntity.ok(giamGiaService.getAll());
     }
 
-    @PostMapping()
+    @PostMapping("/add")
     public ResponseEntity<?> createGiaGia(@RequestBody GiamGiaDTO giamGiaDTO){
         return  ResponseEntity.ok(giamGiaService.createGiamGia(giamGiaDTO));
     }
