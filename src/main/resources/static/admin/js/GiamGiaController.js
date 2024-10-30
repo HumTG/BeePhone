@@ -31,4 +31,11 @@ app.controller('GiamGiaController',function ($scope,$http){
 
     $scope.getData($scope.currentPage)
 
+    $scope.changePage = function(page) {
+        if (page >= 0 && page < $scope.totalPages) {
+            $scope.currentPage = page;
+            $scope.getData($scope.currentPage);
+        }
+    };
+
 })
