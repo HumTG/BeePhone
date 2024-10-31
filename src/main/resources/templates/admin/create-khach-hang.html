@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>BeePhone - Admin</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Fonts and icons -->
+    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: {families: ["Public Sans:300,400,500,600,700"]},
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["assets/css/fonts.min.css"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="assets/css/plugins.min.css"/>
+    <link rel="stylesheet" href="assets/css/kaiadmin.min.css"/>
+    <link rel="stylesheet" href="assets/css/demo.css"/>
+
+    <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .has-error {
+            border-color: red !important;
+        }
+        .form-control.ng-touched.ng-invalid {
+            border-color: red;
+        }
+    </style>
+</head>
+
+<body ng-app="KhachHangApp">
+<!-- Giữ nguyên phần sidebar và header như cũ -->
+
+<!--Content-->
+<div class="container d-flex justify-content-center align-items-center vh-100"
+     ng-controller="KhachHangController">
+    <div class="bg-white p-5 rounded shadow" style="width: 800px;">
+        <h2 class="text-center mb-4">Thêm Tài Khoản Khách Hàng</h2>
+        <form name="customerForm" ng-submit="submitForm()" novalidate>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="hoTen" class="form-label">Họ và tên</label>
+                    <input type="text"
+                           class="form-control"
+                           id="hoTen"
+                           name="hoTen"
+                           ng-model="newCustomer.ho_ten"
+                           ng-pattern="/^[a-zA-ZÀ-ỹ\s]+$/"
+                           ng-minlength="2"
+                           required>
+                    <div class="error-message" ng-messages="customerForm.hoTen.$error" ng-if="customerForm.hoTen.$touched || customerForm.$submitted">
+                        <span ng-message="required">Họ tên không được để trống</span>
+                        <span ng-message="minlength">Họ tên phải có ít nhất 2 ký tự</span>
+                        <span ng-message="pattern">Họ tên chỉ được chứa chữ cái và khoảng trắng</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                    <input type="date"
+                           class="form-control"
+                           id="ngaySinh"
+                           name="ngaySinh"
+                           ng-model="newCustomer.ngay_sinh"
+                           required
+                           max="{{maxDate}}"
+                           min="{{minDate}}">
+                    <div class="error-message" ng-messages="customerForm.ngaySinh.$error" ng-if="customerForm.ngaySinh.$touched || customerForm.$submitted">
+                        <span ng-message="required">Ngày sinh không được để trống</span>
+                        <span ng-message="min">Tuổi không được quá 100</span>
+                        <span ng-message="max">Phải đủ 18 tuổi</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email"
+                           class="form-control"
+                           id="email"
+                           name="email"
+                           ng-model="newCustomer.email"
+                           required
+                           ng-pattern="/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/">
+                    <div class="error-message" ng-messages="customerForm.email.$error" ng-if="customerForm.email.$touched || customerForm.$submitted">
+                        <span ng-message="required">Email không được để trống</span>
+                        <span ng-message="email">Email không đúng định dạng</span>
+                        <span ng-message="pattern">Email không đúng định dạng</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="sdt" class="form-label">Số điện thoại</label>
+                    <input type="text"
+                           class="form-control"
+                           id="sdt"
+                           name="sdt"
+                           ng-model="newCustomer.sdt"
+                           required
+                           ng-pattern="/^(0[3|5|7|8|9])+([0-9]{8})$/">
+                    <div class="error-message" ng-messages="customerForm.sdt.$error" ng-if="customerForm.sdt.$touched || customerForm.$submitted">
+                        <span ng-message="required">Số điện thoại không được để trống</span>
+                        <span ng-message="pattern">Số điện thoại không đúng định dạng (10 số, bắt đầu bằng 03, 05, 07, 08, 09)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Giới tính</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="gioiTinh"
+                               ng-model="newCustomer.gioi_tinh"
+                               value="0"
+                               id="gioiTinhNam"
+                               required>
+                        <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="gioiTinh"
+                               ng-model="newCustomer.gioi_tinh"
+                               value="1"
+                               id="gioiTinhNu">
+                        <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="trangThai" class="form-label">Trạng thái</label>
+                    <select class="form-select"
+                            id="trangThai"
+                            name="trangThai"
+                            ng-model="newCustomer.trang_thai"
+                            required>
+                        <option value="" disabled selected>Chọn trạng thái</option>
+                        <option value="1">Kích hoạt</option>
+                        <option value="0">Ngừng kích hoạt</option>
+                    </select>
+                    <div class="error-message" ng-messages="customerForm.trangThai.$error" ng-if="customerForm.trangThai.$touched || customerForm.$submitted">
+                        <span ng-message="required">Vui lòng chọn trạng thái</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="diaChi" class="form-label">Địa chỉ</label>
+                    <input type="text"
+                           class="form-control"
+                           id="diaChi"
+                           name="diaChi"
+                           ng-model="newCustomer.dia_chi"
+                           required
+                           ng-minlength="5">
+                    <div class="error-message" ng-messages="customerForm.diaChi.$error" ng-if="customerForm.diaChi.$touched || customerForm.$submitted">
+                        <span ng-message="required">Địa chỉ không được để trống</span>
+                        <span ng-message="minlength">Địa chỉ phải có ít nhất 5 ký tự</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary" ng-disabled="customerForm.$invalid">Thêm</button>
+                <a href="/admin/khach-hang" class="btn btn-outline-secondary ms-2">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="assets/js/core/popper.min.js"></script>
+<script src="assets/js/core/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-messages.js"></script>
+
+<!-- Controller -->
+<script>
+    angular.module('KhachHangApp', ['ngMessages'])
+        .controller('KhachHangController', function($scope) {
+            // Khởi tạo đối tượng newCustomer
+            $scope.newCustomer = {
+                ho_ten: '',
+                ngay_sinh: '',
+                email: '',
+                sdt: '',
+                gioi_tinh: '0',
+                trang_thai: '',
+                dia_chi: ''
+            };
+
+            // Tính toán ngày tối đa và tối thiểu cho ngày sinh
+            var today = new Date();
+            var maxDate = new Date();
+            maxDate.setFullYear(today.getFullYear() - 18);
+            var minDate = new Date();
+            minDate.setFullYear(today.getFullYear() - 100);
+
+            $scope.maxDate = maxDate.toISOString().split('T')[0];
+            $scope.minDate = minDate.toISOString().split('T')[0];
+
+            // Hàm xử lý submit form
+            $scope.submitForm = function() {
+                if ($scope.customerForm.$valid) {
+                    // Hiển thị modal xác nhận
+                    $('#confirmModal').modal('show');
+                }
+            };
+
+            // Hàm thêm khách hàng
+            $scope.addCustomer = function() {
+                // Xử lý logic thêm khách hàng ở đây
+                console.log('Thêm khách hàng:', $scope.newCustomer);
+                // Đóng modal
+                $('#confirmModal').modal('hide');
+                // Reset form
+                $scope.customerForm.$setPristine();
+                $scope.customerForm.$setUntouched();
+                $scope.newCustomer = {
+                    ho_ten: '',
+                    ngay_sinh: '',
+                    email: '',
+                    sdt: '',
+                    gioi_tinh: '0',
+                    trang_thai: '',
+                    dia_chi: ''
+                };
+            };
+        });
+</script>
+</body>
+</html>
