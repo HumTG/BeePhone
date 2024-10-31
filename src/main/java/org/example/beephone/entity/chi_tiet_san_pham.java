@@ -23,7 +23,20 @@ public class chi_tiet_san_pham {
     private int id ;
 
     @JoinColumn(name = "id_san_pham")
-    private int id_san_pham ;
+    @ManyToOne
+    private san_pham sanPham ;
+
+    @JoinColumn(name = "id_chat_lieu")
+    @ManyToOne
+    private chat_lieu chatLieu ;
+
+    @JoinColumn(name = "id_mau_sac")
+    @ManyToOne
+    private mau_sac mauSac ;
+
+    @JoinColumn(name = "id_giam_gia")
+    @ManyToOne
+    private giam_gia giamGia ;
 
     private int so_luong ;
 

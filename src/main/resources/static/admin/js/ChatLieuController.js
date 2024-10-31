@@ -30,11 +30,13 @@ $scope.getData = function (){
 
 $scope.addCL = function (event){
     event.preventDefault();
-    // $scope.formData.trang_thai = Number($scope.formData.trang_thai);
+    if ($scope.textNull() == 0||$scope.checkMa() == 0){
+        return;
+    }
+
     $scope.formData.id = null;
     $http.post("http://localhost:8080/rest/add-chat-lieu",$scope.formData).then(function (respone) {
         $scope.getData();
-        $scope.toaTest(event);
         toastr.success('Thêm thành công', 'OK');
         console.log("Thành công",respone)
         $scope.clearDataForm();
@@ -54,7 +56,6 @@ $scope.deleteCL = function (event,id){
     $http.get("http://localhost:8080/rest/delete-chat-lieu/" + id).then(function(response) {
         if (response.status === 200) {
             // console.log(response);
-            $scope.toaTest(event);
             toastr.warning('Xóa thành công', 'OK');
             console.log("xóa thành công")
             $scope.getData();
@@ -72,7 +73,10 @@ $scope.fillData = function (event,cl){
     event.preventDefault();
     cl.trang_thai = String(cl.trang_thai);
     $scope.formData = angular.copy(cl);
-    console.log($scope.formData);
+    window.scrollTo({
+        top: 0,
+        behavior : "smooth"
+    });
 }
 
 //clear
@@ -81,6 +85,8 @@ $scope.clearDataForm = function (){
     $scope.formData.ma_chat_lieu = "";
     $scope.formData.ten = "";
     $scope.formData.trang_thai = "1"
+    document.getElementById("errTen").innerText = ""
+    document.getElementById("errMa").innerText = ""
 }
 
 //Update
@@ -91,10 +97,12 @@ $scope.clearDataForm = function (){
             alert("Hãy chọn 1 chất liệu")
             return;
         }
+        if ($scope.textNull() == 0){
+            return;
+        }
         $http.post("http://localhost:8080/rest/add-chat-lieu",$scope.formData).then(function (respone) {
             $scope.getData();
-            $scope.toaTest(event);
-            toastr.warning('Sửa thành công', 'OK');
+            toastr.success('Sửa thành công', 'OK');
             console.log("Thành công",respone)
             $scope.clearDataForm();
         })  .catch(function (error) {
@@ -104,24 +112,34 @@ $scope.clearDataForm = function (){
         });
     }
 
+///validate
+    $scope.checkMa = function (){
+        let isDuplicate = false;
 
-//Toa test
+        $scope.listCL.forEach(function(item) {
+            if(item.ma_chat_lieu === $scope.formData.ma_chat_lieu){
+                isDuplicate = true;
+                toastr.error("Đã trùng mã chất liệu","Lỗi")
+            }
+        });
 
-    $scope.toaTest = function (event) {
-        event.preventDefault();
+        return isDuplicate ? 0 : 1;
+    }
 
-        toastr.options = {
-            "positionClass": "toast-top-right",
-            "timeOut": "5000",
-            "closeButton": false,
-            "progressBar": true,
-            "preventDuplicates": true,
-            "toastClass": "custom-toast", // Áp dụng lớp tùy chỉnh
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut",
-            "onclick": null,
-        };
+    $scope.textNull = function (){
+        let err = false;
+        var ma = $scope.formData.ma_chat_lieu
+        var  ten = $scope.formData.ten
+        if(ma.trim().length == 0){
+            document.getElementById("errMa").innerText = "Không để trống mã chất liệu"
+            err = true
+        }
+        if(ten.trim().length == 0){
+            document.getElementById("errTen").innerText = "Không để trống tên chất liệu"
+            err = true
+        }
 
-    };
+        return err ? 0 : 1;
+    }
 
 })

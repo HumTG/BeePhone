@@ -9,6 +9,8 @@
 
   <!-- Fonts and icons -->
   <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
   <script>
     WebFont.load({
       google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -31,251 +33,126 @@
   <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
   <link rel="stylesheet" href="assets/css/plugins.min.css" />
   <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
-
+  <!-- ANGULAR  -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link rel="stylesheet" href="assets/css/demo.css" />
+  <!-- Toastr CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 </head>
 
-<body>
+<body ng-app="SanPhamApp">
   <div class="wrapper">
-    <!-- Sidebar -->
-    <div class="sidebar" data-background-color="dark">
-      <div class="sidebar-logo">
-        <!-- Logo Header -->
-        <div class="logo-header" data-background-color="dark">
-          <a href="/admin/index" class="logo">
-            <h4 class="text-secondary ">BeePhone Admin</h4>
-          </a>
-          <div class="nav-toggle">
-            <button class="btn btn-toggle toggle-sidebar">
-              <i class="gg-menu-right"></i>
-            </button>
-            <button class="btn btn-toggle sidenav-toggler">
-              <i class="gg-menu-left"></i>
-            </button>
-          </div>
-          <button class="topbar-toggler more">
-            <i class="gg-more-vertical-alt"></i>
-          </button>
-        </div>
-        <!-- End Logo Header -->
-      </div>
-
-      <!-- Menu chức năng -->
-      <div class="sidebar-wrapper scrollbar scrollbar-inner">
-        <div class="sidebar-content">
-          <ul class="nav nav-secondary">
-            <li class="nav-item">
-              <a href="/admin/index">
-                <i class="fas fa-chart-bar"></i>
-                <p>Thống Kê</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/admin/bang-hang-tai-quay">
-                <i class="fas fa-luggage-cart"></i>
-                <p>Bán Hàng Tại Quầy</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/admin/hoa-don">
-                <i class="fas fa-file"></i>
-                <p>Quản Lý Hóa Đơn</p>
-              </a>
-            </li>
-            <li class="nav-item active submenu">
-              <a data-bs-toggle="collapse" href="#forms">
-                <i class="fas fa-calendar"></i>
-                <p>Quản Lý Sản Phẩm</p>
-                <span class="caret"></span>
-              </a>
-              <div class="collapse" id="forms">
-                <ul class="nav nav-collapse">
-                  <li class="active">
-                    <a href="/admin/san-pham">
-                      <span class="sub-item">Sản Phẩm</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/admin/nha-san-xuat">
-                      <span class="sub-item">Nhà Sản Xuất</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/admin/mau-sac">
-                      <span class="sub-item">Màu Sắc</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/admin/chat-lieu">
-                      <span class="sub-item">Chất Liệu</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a data-bs-toggle="collapse" href="#tables">
-                <i class="fas fa-user"></i>
-                <p>Quản Lý Tài Khoản</p>
-                <span class="caret"></span>
-              </a>
-              <div class="collapse" id="tables">
-                <ul class="nav nav-collapse">
-                  <li>
-                    <a href="/admin/nhan-vien">
-                      <span class="sub-item">Nhân Viên</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/admin/khach-hang">
-                      <span class="sub-item">Khách Hàng</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a data-bs-toggle="collapse" href="#maps">
-                <i class="fas fa-file-invoice-dollar"></i>
-                <p>Giảm Giá</p>
-                <span class="caret"></span>
-              </a>
-              <div class="collapse" id="maps">
-                <ul class="nav nav-collapse">
-                  <li>
-                    <a href="/admin/dot-giam-gia">
-                      <span class="sub-item">Đợt Giảm Giá</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/admin/phieu-giam-gia">
-                      <span class="sub-item">Phiếu Giảm Giá</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <!-- Hết chức năng  -->
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- End Sidebar -->
+    <!-- sidebar -->
+    <div ng-include="'/admin/components/sidebar.html'"></div>
 
     <div class="main-panel">
-      <div class="main-header">
-        <!-- Navbar Header -->
-        <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-          <div class="container-fluid">
-
-            <ul class="navbar-nav topbar-nav ms-md-auto align-items-center"> 
-              <li class="nav-item topbar-icon dropdown hidden-caret">
-                <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-bell"></i>
-                  <span class="notification">4</span>
-                </a>
-                <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
-                  <li>
-                    <div class="dropdown-title">
-                      You have 4 new notification
-                    </div>
-                  </li>
-                  <li>
-                    <div class="notif-scroll scrollbar-outer">
-                      <div class="notif-center">
-                        <a href="#">
-                          <div class="notif-icon notif-primary">
-                            <i class="fa fa-user-plus"></i>
-                          </div>
-                          <div class="notif-content">
-                            <span class="block"> New user registered </span>
-                            <span class="time">5 minutes ago</span>
-                          </div>
-                        </a>
-                        <a href="#">
-                          <div class="notif-icon notif-success">
-                            <i class="fa fa-comment"></i>
-                          </div>
-                          <div class="notif-content">
-                            <span class="block">
-                              Rahmad commented on Admin
-                            </span>
-                            <span class="time">12 minutes ago</span>
-                          </div>
-                        </a>
-                        <a href="#">
-                          <div class="notif-img">
-                            <img src="assets/img/profile2.jpg" alt="Img Profile" />
-                          </div>
-                          <div class="notif-content">
-                            <span class="block">
-                              Reza send messages to you
-                            </span>
-                            <span class="time">12 minutes ago</span>
-                          </div>
-                        </a>
-                        <a href="#">
-                          <div class="notif-icon notif-danger">
-                            <i class="fa fa-heart"></i>
-                          </div>
-                          <div class="notif-content">
-                            <span class="block"> Farrah liked Admin </span>
-                            <span class="time">17 minutes ago</span>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <a class="see-all" href="javascript:void(0);">See all notifications<i class="fa fa-angle-right"></i>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <li class="nav-item topbar-user dropdown hidden-caret">
-                <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-                  <div class="avatar-sm">
-                    <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
-                  </div>
-                  <span class="profile-username">
-                    <span class="op-7">Hi,</span>
-                    <span class="fw-bold">Nguyễn Đình Hùng</span>
-                  </span>
-                </a>
-                <ul class="dropdown-menu dropdown-user animated fadeIn">
-                  <div class="dropdown-user-scroll scrollbar-outer">
-                    <li>
-                      <div class="user-box">
-                        <div class="avatar-lg">
-                          <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
-                        </div>
-                        <div class="u-text">
-                          <h4>Nguyễn Đình Hùng</h4>
-                          <p class="text-muted">abc@gmail.com</p>
-                          <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Thông Tin Cá Nhân</a>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Đổi Mật Khẩu</a>
-                      <a class="dropdown-item" href="#">Đăng Xuất</a>
-                    </li>
-                  </div>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <!-- End Navbar -->
-      </div>
-
-      <div class="container">
+      <!--   NarBar   -->
+      <div ng-include="'/admin/components/narbar.html'"></div>
+      <!--   Content          -->
+      <div class="container" ng-controller="SanPhamController">
         <div class="page-inner">
-          <h1>Quản lý Sản phẩm</h1>
+          <h5>Quản lý Sản Phẩm</h5>
+          <!--     Bộ lọc            -->
+          <div class="alert alert-light" role="alert">
+            <h5><i class="bi bi-funnel-fill"></i>Bộ lọc</h5>
+            <hr>
+            <div class="row mb-3">
+              <!-- Tìm kiếm -->
+              <div class="col-md-4">
+                <label for="search" class="form-label">Tìm kiếm:</label>
+                <input type="text" class="form-control" id="search" placeholder="Mã hoặc tên sản phẩm "/>
+              </div>
+              <!-- Trạng thái -->
+              <div class="col-md-3">
+                <label for="status" class="form-label">Trạng thái:</label>
+                <select class="form-select" id="status">
+                  <option value="">Tất cả</option>
+                  <option value="1">Kích hoạt</option>
+                  <option value="0">Không kích hoạt</option>
+                </select>
+              </div>
+              <!--    Số lượng tồn          -->
+              <div class="col-md-5">
+                <label for="ageRange" class="form-label">Số lượng tồn:</label>
+                <input type="range" class="form-range" id="ageRange"
+                       min="18" max="60"  />
+                <p>Số lượng : </p>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+              <!-- Nút Tìm kiếm và Làm mới -->
+              <button type="button" class="btn btn-primary me-2"
+                      ng-click="">Tìm kiếm</button>
+              <button type="button" class="btn btn-danger" ng-click="">Làm mới bộ lọc</button>
+            </div>
+          </div>
+          <!--    END  Bộ lọc            -->
+          <div class="alert alert-light" role="alert">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5><i class="bi bi-list"></i> Danh sách sản phẩm</h5>
+              <a href=""><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button></a>
+            </div>
+          <!--    Danh sách sản phẩm        -->
+            <table class="table table-striped">
+              <thead class="table-warning">
+              <tr class="text-bg-warning text-center text-white">
+                <th scope="col">STT</th>
+                <th scope="col">Mã sản phẩm</th>
+                <th scope="col">Tên sản phẩm</th>
+                <th scope="col">Số lượng tồn</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Hành Động</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="x in sp">
+                <td>{{$index + 1}}</td> <!-- STT -->
+                <td>{{x.maSanPham}}</td> <!-- Mã sản phẩm -->
+                <td>{{x.tenSanPham}}</td> <!-- Tên sản phẩm -->
+                <td>{{x.soLuongTon}}</td> <!-- Số lượng tồn -->
+                <td>{{x.trangThai == 1 ? 'Đang kinh doanh' : 'Ngưng kinh doanh'}}</td> <!-- Trạng thái -->
+                <td>
+                  <button class="btn btn-warning" ng-click="viewDetail(x)">
+                    <i class="bi bi-eye"></i> <!-- Nút xem chi tiết -->
+                  </button>
+                  <button class="btn btn-primary" ng-click="editSanPham(x)">
+                    <i class="bi bi-pencil"></i> <!-- Nút chỉnh sửa -->
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!--     chuyển trang        -->
+            <div class="mx-auto p-2" style="width: 200px;">
+              <nav aria-label="Page navigation example" >
+                <ul class="pagination">
+                  <!-- Nút Previous -->
+                  <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
+                    <a class="page-link" href="" ng-click="changePage(currentPage - 1)">Previous</a>
+                  </li>
+
+                  <!-- Nút số trang -->
+                  <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
+                      ng-class="{ 'active': $index === currentPage }">
+                    <a class="page-link" href="" ng-click="changePage($index)">{{$index + 1}}</a>
+                  </li>
+
+                  <!-- Nút Next -->
+                  <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
+                    <a class="page-link" href="" ng-click="changePage(currentPage + 1)">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          <!--   End chuyển trang         -->
+          </div>
+
+
+
+
+
         </div>
       </div>
 
@@ -408,6 +285,11 @@
       fillColor: "rgba(255, 165, 52, .14)",
     });
   </script>
+
+  <!-- Toastr JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <!-- AngularJS -->
+  <script th:src="@{/admin/js/SanPhamController.js}"></script>
 </body>
 
 </html>

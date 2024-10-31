@@ -130,4 +130,110 @@ app.controller('NhanVienController', function($scope, $http ) {
         modal.hide();
     };
 
+    // Update nhân viên
+    $scope.openUpdateModal = function(nhanVien) {
+        $scope.selectedNhanVien = angular.copy(nhanVien);
+
+        // Chuyển đổi 'ngay_sinh' từ chuỗi sang đối tượng Date (nếu tồn tại)
+        if ($scope.selectedNhanVien.ngay_sinh) {
+            $scope.selectedNhanVien.ngay_sinh = new Date($scope.selectedNhanVien.ngay_sinh);
+        }
+
+        // Đảm bảo các giá trị giới tính và trạng thái được chuyển đúng kiểu
+        $scope.selectedNhanVien.gioi_tinh = parseInt($scope.selectedNhanVien.gioi_tinh);
+        $scope.selectedNhanVien.trang_thai = parseInt($scope.selectedNhanVien.trang_thai, 10);
+
+        var updateModal = new bootstrap.Modal(document.getElementById('updateNhanVienModal'));
+        updateModal.show(); // Hiển thị modal
+    };
+
+
+
+    $scope.updateNhanVien = function() {
+        var nhanVienData = {
+            ho_ten: $scope.selectedNhanVien.ho_ten,
+            email: $scope.selectedNhanVien.email,
+            sdt: $scope.selectedNhanVien.sdt,
+            ngay_sinh: new Date($scope.selectedNhanVien.ngay_sinh).toISOString().split('T')[0],
+            dia_chi: $scope.selectedNhanVien.dia_chi,
+            gioi_tinh: $scope.selectedNhanVien.gioi_tinh,
+            trang_thai: $scope.selectedNhanVien.trang_thai,
+            hinh_anh: $scope.selectedNhanVien.hinh_anh
+        };
+
+        $http.put('http://localhost:8080/rest/nhan-vien/' + $scope.selectedNhanVien.id, nhanVienData)
+            .then(function(response) {
+                toastr.success('Cập nhật nhân viên thành công!', 'Thành công', {
+                    closeButton: true,
+                    progressBar: true,
+                    timeOut: 3000
+                });
+
+                $scope.getData($scope.currentPage); // Tải lại dữ liệu sau khi cập nhật
+
+                var modalElement = document.getElementById('updateNhanVienModal');
+                var modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide(); // Đóng modal sau khi cập nhật
+            })
+            .catch(function(error) {
+                console.error('Lỗi khi cập nhật nhân viên:', error);
+                toastr.error('Có lỗi xảy ra khi cập nhật nhân viên!', 'Lỗi', {
+                    closeButton: true,
+                    progressBar: true,
+                    timeOut: 3000
+                });
+            });
+    };
+
+    // Search nhân viên
+    $scope.searchNhanVien = function() {
+        const params = {
+            tenSdt: $scope.filter.ten_sdt || '',
+            ngaySinhTu: $scope.filter.ngay_sinh_tu ? new Date($scope.filter.ngay_sinh_tu).toISOString().split('T')[0] : null,
+            ngaySinhDen: $scope.filter.ngay_sinh_den ? new Date($scope.filter.ngay_sinh_den).toISOString().split('T')[0] : null,
+            trangThai: $scope.filter.trang_thai || null,
+            maxTuoi: $scope.filter.khoang_tuoi || null,
+            page: $scope.currentPage || 0,
+            size: 10
+        };
+
+        $http.get('http://localhost:8080/rest/nhan-vien/filter', { params: params })
+            .then(function(response) {
+                $scope.nv = response.data.content;
+                $scope.totalPages = response.data.totalPages;
+            })
+            .catch(function(error) {
+                console.error('Lỗi khi tìm kiếm nhân viên:', error);
+                toastr.error('Có lỗi xảy ra khi tìm kiếm!', 'Lỗi', {
+                    closeButton: true,
+                    progressBar: true,
+                    timeOut: 3000
+                });
+            });
+    };
+
+    // Hàm để reset bộ lọc
+    $scope.resetFilter = function() {
+        // Đặt lại các giá trị filter về mặc định
+        $scope.filter = {
+            ten_sdt: '',
+            ngay_sinh_tu: null,
+            ngay_sinh_den: null,
+            trang_thai: '',
+            khoang_tuoi: 60 // Giá trị mặc định là 60 tuổi
+        };
+
+        // Đặt lại trang hiện tại về trang đầu tiên
+        $scope.currentPage = 0;
+
+        // Lấy lại danh sách nhân viên với bộ lọc đã được reset
+        $scope.getData($scope.currentPage);
+    };
+
+
+
+
+
+
+
 });

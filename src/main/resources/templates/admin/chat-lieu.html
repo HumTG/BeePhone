@@ -6,9 +6,7 @@
   <title>BeePhone - Admin</title>
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
   <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
-<!--  TOA-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-  <link rel="stylesheet" href="assets/css/toa.css" />
+
   <!-- Fonts and icons -->
   <script src="assets/js/plugin/webfont/webfont.min.js"></script>
   <script>
@@ -29,14 +27,15 @@
     });
   </script>
 
-  <!-- TOA-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
   <!-- CSS Files -->
   <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
   <link rel="stylesheet" href="assets/css/plugins.min.css" />
   <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+
+  <!--  TOA-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <link rel="stylesheet" href="assets/css/toa.css" />
 
   <!-- ANGULAR  -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
@@ -288,13 +287,16 @@
           <h1>Quản lý chất liệu</h1>
        <div class="container">
          <div class="row" style="border: 0.2px solid black;border-radius: 20px;background-color: white" >
-           <div class="col-4 p-5 mb-4"  >
+           <div class="col-1"></div>
+           <div class="col-6 p-5 mb-4"  >
              <h2>Thêm chất liệu</h2> <br> <br>
              <form method="post" action=""
                    onsubmit="console.log('Form submitted'); return confirm('Xác nhận thêm cl')">
-               Mã chất liệu : <input type="text" class="form-control" ng-model="formData.ma_chat_lieu"/> <br>
+               Mã chất liệu : <input type="text" class="form-control" ng-model="formData.ma_chat_lieu"/>
+               <div id="errMa" style="color: #ff0000"></div><br>
 
-               Tên chất liệu : <input type="text" class="form-control" ng-model="formData.ten"/> <br>
+               Tên chất liệu : <input type="text" class="form-control" ng-model="formData.ten"/>
+               <div id="errTen" style="color: red"></div><br>
 
                Trạng thái
                <div class="d-flex">
@@ -319,43 +321,44 @@
              </form>
 
            </div>
+           <div class="col-5"></div>
 
-<!--     <div class="col-1 p-4 mb-4"> <button type="submit" class="btn btn-primary" ng-click="toaTest($event)">toa</button></div>-->
-           <div class="col-8 p-5 mb-4" >
-             <h2>Danh sách chất liệu</h2>
-             <br><br>
-<!--             <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">-->
-               <table class="table">
-<!--                 table-bordered-bd-primary-->
-                 <thead class="border-top border-dark">
-                 <tr>
-                   <th>STT</th>
-                   <th>Mã chất liệu</th>
-                   <th>Tên chất liệu</th>
-                   <th>Trạng thái</th>
-                   <th>Function</th>
-                 </tr>
-                 </thead>
-                 <tbody>
-                 <tr class="table-primary" ng-repeat="cl in listCL">
-                   <td>{{$index + 1}}</td>
-                   <td>{{cl.ma_chat_lieu}}</td>
-                   <td>{{cl.ten}}</td>
-                   <td>{{cl.trang_thai == 1 ? 'Còn' : 'Dừng'}}</td>
-                   <td>
-                     <div class="d-flex gap-2">
-                     <button type="button" class="btn btn-secondary" ng-click="deleteCL($event,cl.id)">X</button>
-                     <button type="button" class="btn btn-secondary" ng-click="fillData($event,cl)">UP</button>
-                     </div>
-                   </td>
-                 </tr>
+         </div>
+<!--table-->
+           <br> <br> <br>
+         <div class="row" style="border: 0.2px solid black;border-radius: 20px;background-color: white" >
+          <div class="d-flex justify-content-between align-items-center">
+            <h2>Danh sách chất liệu</h2>
+<!--            <button type="button" class="btn btn-primary">ABC</button>-->
+          </div>
+           <br><br><br><br>
+           <table class="table">
+             <!--                 table-bordered-bd-primary-->
+             <thead class="border-top border-dark">
+             <tr>
+               <th>STT</th>
+               <th>Mã chất liệu</th>
+               <th>Tên chất liệu</th>
+               <th>Trạng thái</th>
+               <th>Function</th>
+             </tr>
+             </thead>
+             <tbody>
+             <tr class="table-primary" ng-repeat="cl in listCL">
+               <td>{{$index + 1}}</td>
+               <td>{{cl.ma_chat_lieu}}</td>
+               <td>{{cl.ten}}</td>
+               <td>{{cl.trang_thai == 1 ? 'Còn' : 'Dừng'}}</td>
+               <td>
+                 <div class="d-flex gap-2">
+                   <button type="button" class="btn btn-secondary" ng-click="deleteCL($event,cl.id)">X</button>
+                   <button type="button" class="btn btn-secondary" ng-click="fillData($event,cl)">UP</button>
+                 </div>
+               </td>
+             </tr>
 
-                 </tbody>
-               </table>
-<!--             </div>-->
-
-           </div>
-
+             </tbody>
+           </table>
          </div>
 
        </div>
@@ -494,6 +497,10 @@
       fillColor: "rgba(255, 165, 52, .14)",
     });
   </script>
+
+  <!-- TOA-->
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
   <!-- AngularJS -->
   <script th:src="@{/admin/js/ChatLieuController.js}"></script>
