@@ -25,6 +25,10 @@ public class san_pham {
     @JoinColumn(name = "id_nha_san_xuat")
     private nha_san_xuat nhaSanXuat ;
 
+    @JoinColumn(name = "id_chat_lieu")
+    @ManyToOne
+    private chat_lieu chatLieu ;
+
     @Column(name = "ten")
     private String ten ;
 

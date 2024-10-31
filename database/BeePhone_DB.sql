@@ -71,20 +71,32 @@ CREATE TABLE [san_pham] (
   [id] INT IDENTITY,
   [ma_san_pham] varchar(50),
   [id_nha_san_xuat] INT,
+  [id_chat_lieu] INT,
   [ten] Nvarchar(100),
   [mo_ta] Nvarchar(500),
   [trang_thai] INT,
   PRIMARY KEY ([id]),
   CONSTRAINT [FK_san_pham.id_nha_san_xuat]
     FOREIGN KEY ([id_nha_san_xuat])
-      REFERENCES [nha_san_xuat]([id])
+      REFERENCES [nha_san_xuat]([id]),
+  CONSTRAINT [FK_san_pham.id_chat_lieu]
+    FOREIGN KEY ([id_chat_lieu])
+      REFERENCES [chat_lieu]([id])
+);
+
+CREATE TABLE [kich_co] (
+  [id] INT IDENTITY,
+  [ma_kich_co] Varchar(50),
+  [ten] Nvarchar(100),
+  [trang_thai] INT,
+  PRIMARY KEY ([id])
 );
 
 CREATE TABLE [chi_tiet_san_pham] (
   [id] INT IDENTITY,
   [id_san_pham] INT,
-  [id_chat_lieu] INT,
   [id_mau_sac] INT,
+  [id_kich_co] INT,
   [id_giam_gia] INT,
   [so_luong] INT,
   [gia_nhap] Decimal,
@@ -93,9 +105,6 @@ CREATE TABLE [chi_tiet_san_pham] (
   [mo_ta] Nvarchar(500),
   [trang_thai] INT,
   PRIMARY KEY ([id]),
-  CONSTRAINT [FK_chi_tiet_san_pham.id_chat_lieu]
-    FOREIGN KEY ([id_chat_lieu])
-      REFERENCES [chat_lieu]([id]),
   CONSTRAINT [FK_chi_tiet_san_pham.id_giam_gia]
     FOREIGN KEY ([id_giam_gia])
       REFERENCES [giam_gia]([id]),
@@ -104,7 +113,10 @@ CREATE TABLE [chi_tiet_san_pham] (
       REFERENCES [mau_sac]([id]),
   CONSTRAINT [FK_chi_tiet_san_pham.id_san_pham]
     FOREIGN KEY ([id_san_pham])
-      REFERENCES [san_pham]([id])
+      REFERENCES [san_pham]([id]),
+  CONSTRAINT [FK_chi_tiet_san_pham.id_kich_co]
+    FOREIGN KEY ([id_kich_co])
+      REFERENCES [kich_co]([id])
 );
 
 CREATE TABLE [gio_hang_chi_tiet] (
@@ -263,6 +275,25 @@ CREATE TABLE [danh_gia] (
 
 
 -- data 
+
+INSERT INTO [kich_co] ([ma_kich_co], [ten], [trang_thai]) VALUES
+('IP001', 'iPhone 12 Mini', 1),
+('IP002', 'iPhone 12', 1),
+('IP003', 'iPhone 12 Pro', 1),
+('IP004', 'iPhone 12 Pro Max', 1),
+('IP005', 'iPhone 13 Mini', 1),
+('IP006', 'iPhone 13', 1),
+('IP007', 'iPhone 13 Pro', 1),
+('IP008', 'iPhone 13 Pro Max', 1),
+('IP009', 'iPhone 14', 1),
+('IP010', 'iPhone 14 Plus', 1),
+('IP011', 'iPhone 14 Pro', 1),
+('IP012', 'iPhone 14 Pro Max', 1),
+('IP013', 'iPhone 15', 1),
+('IP014', 'iPhone 15 Plus', 1),
+('IP015', 'iPhone 15 Pro Max', 1);
+
+
 INSERT INTO [nha_san_xuat] ([ma_nha_san_xuat], [ten], [trang_thai])
 VALUES 
     ('NSX001', N'Spigen', 1),
@@ -270,24 +301,6 @@ VALUES
     ('NSX003', N'OtterBox', 1),
     ('NSX004', N'Caseology', 1),
     ('NSX005', N'Ringke', 1);
-
-INSERT INTO [san_pham] ([ma_san_pham], [id_nha_san_xuat], [ten], [mo_ta], [trang_thai])
-VALUES 
-    ('SP001', 1, N'Ốp lưng Spigen Tough Armor', N'Ốp lưng bảo vệ tối ưu với thiết kế hai lớp chống sốc.', 1),
-    ('SP002', 2, N'Ốp lưng UAG Monarch', N'Ốp lưng siêu bền đạt tiêu chuẩn quân đội với thiết kế mạnh mẽ.', 1),
-    ('SP003', 3, N'Ốp lưng OtterBox Defender', N'Ốp lưng nhiều lớp bảo vệ tối đa, chống va đập hiệu quả.', 1),
-    ('SP004', 4, N'Ốp lưng Caseology Parallax', N'Thiết kế đẹp mắt với lớp chống sốc và họa tiết 3D nổi bật.', 1),
-    ('SP005', 5, N'Ốp lưng Ringke Fusion X', N'Ốp lưng trong suốt với khung bảo vệ chắc chắn, chống trầy xước.', 1),
-	('SP006', 1, N'Ốp lưng Spigen Liquid Air', N'Ốp lưng mỏng nhẹ, chống trượt và bảo vệ tốt.', 1),
-    ('SP007', 2, N'Ốp lưng UAG Plasma', N'Ốp lưng nhẹ nhưng cực kỳ bền, bảo vệ chống sốc hiệu quả.', 1),
-    ('SP008', 3, N'Ốp lưng OtterBox Commuter', N'Thiết kế hai lớp bảo vệ và mỏng gọn cho túi xách.', 1),
-    ('SP009', 4, N'Ốp lưng Caseology Skyfall', N'Ốp lưng trong suốt, bảo vệ chắc chắn và giữ nguyên màu sắc điện thoại.', 1),
-    ('SP010', 5, N'Ốp lưng Ringke Onyx', N'Ốp lưng với họa tiết nổi chống trượt và chống sốc.', 1),
-    ('SP011', 1, N'Ốp lưng Spigen Rugged Armor', N'Ốp lưng kiểu dáng mạnh mẽ, bảo vệ chống va đập với họa tiết carbon.', 1),
-    ('SP012', 2, N'Ốp lưng UAG Pathfinder', N'Thiết kế độc đáo, siêu bền, chống va đập với nhiều màu sắc.', 1),
-    ('SP013', 3, N'Ốp lưng OtterBox Symmetry', N'Thiết kế đơn giản nhưng bảo vệ hiệu quả, dễ dàng lắp đặt.', 1),
-    ('SP014', 4, N'Ốp lưng Caseology Legion', N'Bảo vệ cực kỳ chắc chắn với thiết kế hiện đại, chống va đập cao.', 1),
-    ('SP015', 5, N'Ốp lưng Ringke Air S', N'Ốp lưng siêu mỏng, nhẹ, giữ nguyên cảm giác cầm nắm tự nhiên.', 1);
 
 -- Thêm dữ liệu vào bảng [chat_lieu]
 INSERT INTO [chat_lieu] ([ma_chat_lieu], [ten], [trang_thai])
@@ -297,6 +310,25 @@ VALUES
     ('CL003', N'Silicone', 1),
     ('CL004', N'Da', 1),
     ('CL005', N'Kim loại (Aluminum)', 1);
+
+INSERT INTO [san_pham] ([ma_san_pham], [id_nha_san_xuat],[id_chat_lieu], [ten], [mo_ta], [trang_thai])
+VALUES 
+    ('SP001', 1,2, N'Ốp lưng Spigen Tough Armor', N'Ốp lưng bảo vệ tối ưu với thiết kế hai lớp chống sốc.', 1),
+    ('SP002', 2,1, N'Ốp lưng UAG Monarch', N'Ốp lưng siêu bền đạt tiêu chuẩn quân đội với thiết kế mạnh mẽ.', 1),
+    ('SP003', 3,2, N'Ốp lưng OtterBox Defender', N'Ốp lưng nhiều lớp bảo vệ tối đa, chống va đập hiệu quả.', 1),
+    ('SP004', 4,2, N'Ốp lưng Caseology Parallax', N'Thiết kế đẹp mắt với lớp chống sốc và họa tiết 3D nổi bật.', 1),
+    ('SP005', 5,3, N'Ốp lưng Ringke Fusion X', N'Ốp lưng trong suốt với khung bảo vệ chắc chắn, chống trầy xước.', 1),
+	('SP006', 1,4, N'Ốp lưng Spigen Liquid Air', N'Ốp lưng mỏng nhẹ, chống trượt và bảo vệ tốt.', 1),
+    ('SP007', 2,4, N'Ốp lưng UAG Plasma', N'Ốp lưng nhẹ nhưng cực kỳ bền, bảo vệ chống sốc hiệu quả.', 1),
+    ('SP008', 3,5, N'Ốp lưng OtterBox Commuter', N'Thiết kế hai lớp bảo vệ và mỏng gọn cho túi xách.', 1),
+    ('SP009', 4,1,N'Ốp lưng Caseology Skyfall', N'Ốp lưng trong suốt, bảo vệ chắc chắn và giữ nguyên màu sắc điện thoại.', 1),
+    ('SP010', 5,1,N'Ốp lưng Ringke Onyx', N'Ốp lưng với họa tiết nổi chống trượt và chống sốc.', 1),
+    ('SP011', 1,2,N'Ốp lưng Spigen Rugged Armor', N'Ốp lưng kiểu dáng mạnh mẽ, bảo vệ chống va đập với họa tiết carbon.', 1),
+    ('SP012', 2,5,N'Ốp lưng UAG Pathfinder', N'Thiết kế độc đáo, siêu bền, chống va đập với nhiều màu sắc.', 1),
+    ('SP013', 3,4,N'Ốp lưng OtterBox Symmetry', N'Thiết kế đơn giản nhưng bảo vệ hiệu quả, dễ dàng lắp đặt.', 1),
+    ('SP014', 4,2,N'Ốp lưng Caseology Legion', N'Bảo vệ cực kỳ chắc chắn với thiết kế hiện đại, chống va đập cao.', 1),
+    ('SP015', 5,1,N'Ốp lưng Ringke Air S', N'Ốp lưng siêu mỏng, nhẹ, giữ nguyên cảm giác cầm nắm tự nhiên.', 1);
+
 
 -- Thêm dữ liệu vào bảng [mau_sac]
 INSERT INTO [mau_sac] ([ma_mau_sac], [ten], [trang_thai])
@@ -317,18 +349,22 @@ VALUES
     ('GG005', N'Khuyến mãi Giáng Sinh', 25.0, '2024-12-20', '2024-12-26', 1);
 
 	-- Thêm dữ liệu vào bảng [chi_tiet_san_pham]
-INSERT INTO [chi_tiet_san_pham] ([id_san_pham], [id_chat_lieu], [id_mau_sac], [id_giam_gia], [so_luong], [gia_nhap], [gia_ban], [ngay_nhap], [mo_ta], [trang_thai])
-VALUES 
-    (1, 1, 1, 1, 100, 150000, 165000, '2024-05-01', N'Ốp lưng Spigen Tough Armor - chất liệu nhựa cứng, màu đen.', 1),
-    (2, 2, 3, NULL, 200, 200000, 220000, '2024-06-05', N'Ốp lưng UAG Monarch - chất liệu nhựa dẻo, màu xanh dương.', 1),
-    (3, 3, 4, 2, 150, 250000, 275000, '2024-06-10', N'Ốp lưng OtterBox Defender - chất liệu silicone, màu đỏ.', 1),
-    (4, 4, 2, NULL, 50, 300000, 320000, '2024-07-15', N'Ốp lưng Caseology Parallax - chất liệu da, màu trắng.', 1),
-    (5, 5, 5, 3, 80, 180000, 200000, '2024-08-20', N'Ốp lưng Ringke Fusion X - chất liệu kim loại, màu hồng.', 1),
-    (6, 1, 1, NULL, 120, 160000, 180000, '2024-05-02', N'Ốp lưng Spigen Liquid Air - chất liệu nhựa cứng, màu đen.', 1),
-    (7, 2, 2, 4, 90, 210000, 230000, '2024-06-15', N'Ốp lưng UAG Plasma - chất liệu nhựa dẻo, màu trắng.', 1),
-    (8, 3, 3, NULL, 60, 260000, 280000, '2024-07-25', N'Ốp lưng OtterBox Commuter - chất liệu silicone, màu xanh dương.', 1),
-    (9, 4, 4, 5, 30, 310000, 330000, '2024-08-10', N'Ốp lưng Caseology Skyfall - chất liệu da, màu đỏ.', 1),
-    (10, 5, 5, NULL, 40, 190000, 210000, '2024-09-05', N'Ốp lưng Ringke Onyx - chất liệu kim loại, màu hồng.', 1);
+INSERT INTO [chi_tiet_san_pham] 
+([id_san_pham], [id_mau_sac], [id_kich_co], [id_giam_gia], [so_luong], [gia_nhap], [gia_ban], [ngay_nhap], [mo_ta], [trang_thai]) 
+VALUES
+(4, 5, 5, NULL, 64, 765742.86, 2226966.65, '2024-05-07', 'Sản phẩm chất lượng cao', 1),
+(2, 2, 4, NULL, 60, 956303.13, 2661107.10, '2024-08-31', 'Sản phẩm chất lượng cao', 1),
+(2, 5, 4, NULL, 21, 644177.33, 2410053.16, '2023-12-02', 'Sản phẩm chất lượng cao', 1),
+(10, 5, 4, NULL, 91, 1022651.54, 1901921.26, '2024-05-15', 'Sản phẩm chất lượng cao', 1),
+(3, 1, 4, NULL, 43, 1280756.41, 1864571.13, '2024-08-14', 'Sản phẩm chất lượng cao', 1),
+(9, 2, 2, NULL, 98, 768131.29, 2222554.46, '2024-03-12', 'Sản phẩm chất lượng cao', 1),
+(1, 3, 2, NULL, 28, 1376167.97, 1993608.21, '2024-01-08', 'Sản phẩm chất lượng cao', 1),
+(7, 1, 1, NULL, 66, 563925.69, 2272021.49, '2023-11-16', 'Sản phẩm chất lượng cao', 1),
+(8, 4, 1, NULL, 50, 957542.31, 2984578.36, '2024-09-02', 'Sản phẩm chất lượng cao', 1),
+(5, 3, 3, NULL, 12, 1492034.48, 2723629.74, '2024-10-26', 'Sản phẩm chất lượng cao', 1);
+
+
+
 
 	-- Thêm dữ liệu vào bảng [anh_san_pham]
 INSERT INTO [anh_san_pham] ([id_san_pham_chi_tiet], [anh_1], [anh_2], [anh_3], [anh_4], [anh_5])

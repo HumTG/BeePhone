@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>BeePhone - Admin</title>
+  <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+  <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+
+  <!-- Fonts and icons -->
+  <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <script>
+    WebFont.load({
+      google: { families: ["Public Sans:300,400,500,600,700"] },
+      custom: {
+        families: [
+          "Font Awesome 5 Solid",
+          "Font Awesome 5 Regular",
+          "Font Awesome 5 Brands",
+          "simple-line-icons",
+        ],
+        urls: ["assets/css/fonts.min.css"],
+      },
+      active: function () {
+        sessionStorage.fonts = true;
+      },
+    });
+  </script>
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="assets/css/plugins.min.css" />
+  <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+  <!-- ANGULAR  -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link rel="stylesheet" href="assets/css/demo.css" />
+  <!-- Toastr CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+  <style>
+    /* Tạo hiệu ứng màu nền khi được chọn */
+    .table-active {
+      background-color: #e8f5ff !important;
+    }
+    td{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis ;
+      max-width: 300px;
+    }
+  </style>
+</head>
+
+<body ng-app="SanPhamApp">
+  <div class="wrapper">
+    <!-- sidebar -->
+    <div ng-include="'/admin/components/sidebar.html'"></div>
+
+    <div class="main-panel">
+      <!--   NarBar   -->
+      <div ng-include="'/admin/components/narbar.html'"></div>
+      <!--   Content          -->
+      <div class="container" ng-controller="SanPhamController">
+        <div class="page-inner">
+          <!--     Form thêm sản phẩm            -->
+          <form>
+          <div class="alert alert-light" role="alert">
+              <div class="row mb-3">
+                <div class="d-flex justify-content-center">
+                  <div class="container mt-5">
+                      <h3 class="text-center">Thêm Sản Phẩm</h3>
+                    <div class="mb-3">
+                      <label for="tenSanPham" class="form-label">Tên sản phẩm:</label>
+                      <input type="text" class="form-control" id="tenSanPham" placeholder="Nhập tên sản phẩm" ng-model="tenSanPham" ng-change="updateProductVariants()">
+                    </div>
+
+
+                      <div class="mb-3">
+                        <label for="moTa" class="form-label">Mô tả:</label>
+                        <textarea class="form-control" id="moTa" rows="4" placeholder="Nhập mô tả sản phẩm" required></textarea>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="mb-3">
+                            <label class="form-label">Nhà sản xuất:</label>
+                            <div class="input-group">
+                              <select class="form-select" ng-model="selectedNhaSanXuatId" ng-options="nsx.id as nsx.ten for nsx in nhaSanXuatList" required>
+                                <option value="" disabled selected>Chọn nhà sản xuất</option>
+                              </select>
+                              <button type="button" class="btn btn-primary" ng-click="printSelectedNhaSanXuatId()">+</button>
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                          <div class="mb-3">
+                            <label for="trangThai" class="form-label">Trạng thái:</label>
+                            <div class="input-group">
+                              <select class="form-select" id="trangThai" required>
+                                <option selected>Kinh Doanh</option>
+                              </select>
+                              <button class="btn btn-primary">+</button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6">
+                          <div class="mb-3">
+                            <label class="form-label">Chất liệu:</label>
+                            <div class="input-group">
+                              <select class="form-select" ng-model="selectedChatLieuId" ng-options="cl.id as cl.ten for cl in chatLieuList" required>
+                                <option value="" disabled selected>Chọn chất liệu</option>
+                              </select>
+                              <button type="button" class="btn btn-primary" ng-click="openAddChatLieuModal()">+</button>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+                  </div>
+
+                </div>
+              </div>
+          </div>
+
+          <!--    Biến thể        -->
+          <div class="alert alert-light" role="alert">
+            <div class="container mt-5">
+              <h3 class="text-center p-1">Kích Cỡ Màu Sắc</h3>
+              <br><br>
+              <form>
+                <!-- Button để mở modal chọn kích cỡ -->
+                <div class="mb-3 row align-items-center">
+                  <label class="col-sm-2 col-form-label">Kích Cỡ:</label>
+                  <div class="col-sm-10 d-flex flex-wrap">
+                    <div ng-repeat="size in selectedSizes" class="position-relative me-2 mb-2">
+                      <button class="btn btn-light border px-3">{{ size.ten }}</button>
+                      <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle" aria-label="Close" ng-click="removeSize(size)"  style="width: 5px ; height: 5px"></button>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="openSizeModal()">+</button>
+                  </div>
+                </div>
+
+                <!-- Modal chọn kích cỡ -->
+                <div class="modal fade" id="sizeModal" tabindex="-1" aria-labelledby="sizeModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="sizeModalLabel">Chọn kích cỡ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                          <!-- Hiển thị danh sách kích cỡ dưới dạng các nút bấm -->
+                          <button type="button" class="btn btn-outline-primary m-1"
+                                  ng-repeat="size in sizeOptions"
+                                  ng-class="{'active': selectedSizes.includes(size)}"
+                                  ng-click="toggleSizeSelection(size)">
+                            {{ size.ten }}
+                          </button>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" ng-click="addSelectedSizes()">Thêm</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--    End model chọn kích cỡ            -->
+
+
+                <div class="mb-3 row align-items-center">
+                  <label class="col-sm-2 col-form-label">Màu Sắc:</label>
+                  <div class="col-sm-10 d-flex flex-wrap">
+                      <div ng-repeat="mau in selectedMauDetails" class="position-relative me-2 mb-2">
+                        <button class="btn btn-light border px-3" style="background-color: #0a0b11">{{ mau.ten }}</button>
+                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle" aria-label="Close" ng-click="removeSelectedMau(mau.id)" style="width: 5px ; height: 5px"></button>
+
+                      </div>
+                      <button type="button" class="btn btn-primary m-1" ng-click="openMauSacModal()">+</button>
+                  </div>
+                </div>
+
+
+
+
+                <!-- Modal chọn màu -->
+                <div class="modal fade" id="mauSacModal" tabindex="-1" aria-labelledby="mauSacModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="mauSacModalLabel">Chọn màu sắc</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="d-flex flex-wrap">
+                          <button type="button" class="btn btn-outline-primary m-1"
+                                  ng-repeat="mau in dsMauSac"
+                                  ng-click="toggleMau(mau)"
+                                  ng-class="{'active': selectedMauDetails.some(item => item.id === mau.id)}">
+                            {{ mau.ten }}
+                          </button>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" ng-click="confirmMau()">Xác nhận</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!--     END Model hiện thị danh sách màu            -->
+
+
+              </form>
+            </div>
+          </div>
+          <!--     END biến thể       -->
+
+          <!--     Chi tiết sản phẩm       -->
+            <div class="alert alert-light" role="alert">
+              <div class="row mb-3">
+                <div class="d-flex justify-content-center">
+                  <div class="container mt-5">
+                    <h3 class="text-center">Chi Tiết Sản Phẩm</h3>
+                    <div class="text-end p-2">
+                      <button class="btn btn-primary p-2" ng-click="editAll()">Chỉnh sửa số lượng và giá chung</button>
+                      <button class="btn btn-primary p-2" ng-click="submitAll()">Hoàn tất</button>
+                    </div>
+                    <!-- Bảng Danh Sách Sản Phẩm Chi Tiết -->
+                    <table class="table table-bordered">
+                      <thead class="table-warning text-center">
+                      <tr>
+                        <th><input type="checkbox" ng-click="selectAll($event)"></th>
+                        <th>STT</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Số Lượng</th>
+                        <th>Giá Bán</th>
+                        <th>Hành Động</th>
+                        <th>Upload Ảnh</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr ng-repeat="variant in productVariants track by $index" ng-class="{'table-active': variant.selected}">
+                        <td class="text-center">
+                          <input type="checkbox" ng-model="variant.selected" ng-click="toggleRowHighlight(variant)">
+                        </td>
+                        <td class="text-center">{{$index + 1}}</td>
+                        <td>{{tenSanPham}} [{{variant.size}} - {{variant.color}}]</td>
+                        <td><input type="number" class="form-control" ng-model="variant.quantity"></td>
+                        <td><input type="text" class="form-control" ng-model="variant.price" value="100,000 VND"></td>
+                        <td class="text-center"><button class="btn btn-danger btn-sm" ng-click="removeVariant($index)">🗑️</button></td>
+                        <td class="text-center"><button class="btn btn-light">+ Upload</button></td>
+                      </tr>
+                      </tbody>
+                    </table>
+
+                    <!-- Kết thúc Bảng Danh Sách Sản Phẩm Chi Tiết -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+          </form>
+          <!-- END thêm sản phẩm -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Custom template | don't include it in your project! -->
+    <div class="custom-template">
+      <div class="title">Settings</div>
+      <div class="custom-content">
+        <div class="switcher">
+          <div class="switch-block">
+            <h4>Logo Header</h4>
+            <div class="btnSwitch">
+              <button type="button" class="selected changeLogoHeaderColor" data-color="dark"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="blue"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="green"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
+              <br />
+              <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
+              <button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
+            </div>
+          </div>
+          <div class="switch-block">
+            <h4>Navbar Header</h4>
+            <div class="btnSwitch">
+              <button type="button" class="changeTopBarColor" data-color="dark"></button>
+              <button type="button" class="changeTopBarColor" data-color="blue"></button>
+              <button type="button" class="changeTopBarColor" data-color="purple"></button>
+              <button type="button" class="changeTopBarColor" data-color="light-blue"></button>
+              <button type="button" class="changeTopBarColor" data-color="green"></button>
+              <button type="button" class="changeTopBarColor" data-color="orange"></button>
+              <button type="button" class="changeTopBarColor" data-color="red"></button>
+              <button type="button" class="selected changeTopBarColor" data-color="white"></button>
+              <br />
+              <button type="button" class="changeTopBarColor" data-color="dark2"></button>
+              <button type="button" class="changeTopBarColor" data-color="blue2"></button>
+              <button type="button" class="changeTopBarColor" data-color="purple2"></button>
+              <button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
+              <button type="button" class="changeTopBarColor" data-color="green2"></button>
+              <button type="button" class="changeTopBarColor" data-color="orange2"></button>
+              <button type="button" class="changeTopBarColor" data-color="red2"></button>
+            </div>
+          </div>
+          <div class="switch-block">
+            <h4>Sidebar</h4>
+            <div class="btnSwitch">
+              <button type="button" class="changeSideBarColor" data-color="white"></button>
+              <button type="button" class="selected changeSideBarColor" data-color="dark"></button>
+              <button type="button" class="changeSideBarColor" data-color="dark2"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="custom-toggle">
+        <i class="icon-settings"></i>
+      </div>
+    </div>
+    <!-- End Custom template -->
+  </div>
+  <!--   Core JS Files   -->
+  <script src="assets/js/core/jquery-3.7.1.min.js"></script>
+  <script src="assets/js/core/popper.min.js"></script>
+  <script src="assets/js/core/bootstrap.min.js"></script>
+
+  <!-- jQuery Scrollbar -->
+  <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+  <!-- Chart JS -->
+  <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+
+  <!-- jQuery Sparkline -->
+  <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+  <!-- Chart Circle -->
+  <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+
+  <!-- Datatables -->
+  <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+
+  <!-- Bootstrap Notify -->
+  <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+  <!-- jQuery Vector Maps -->
+  <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+  <script src="assets/js/plugin/jsvectormap/world.js"></script>
+
+  <!-- Sweet Alert -->
+  <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+  <!-- Kaiadmin JS -->
+  <script src="assets/js/kaiadmin.min.js"></script>  
+
+  <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+  <script src="assets/js/setting-demo.js"></script>
+<!--  <script src="assets/js/demo.js"></script>-->
+  <script>
+    $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+      type: "line",
+      height: "70",
+      width: "100%",
+      lineWidth: "2",
+      lineColor: "#177dff",
+      fillColor: "rgba(23, 125, 255, 0.14)",
+    });
+
+    $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+      type: "line",
+      height: "70",
+      width: "100%",
+      lineWidth: "2",
+      lineColor: "#f3545d",
+      fillColor: "rgba(243, 84, 93, .14)",
+    });
+
+    $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+      type: "line",
+      height: "70",
+      width: "100%",
+      lineWidth: "2",
+      lineColor: "#ffa534",
+      fillColor: "rgba(255, 165, 52, .14)",
+    });
+  </script>
+  <script>
+    // Hàm để bật/tắt màu nền của hàng khi chọn checkbox
+    function toggleRowHighlight(checkbox) {
+      const row = checkbox.closest('tr');
+      row.classList.toggle('table-active', checkbox.checked);
+    }
+
+    // Hàm chọn tất cả các checkbox và bật màu nền
+    function selectAll(selectAllCheckbox) {
+      const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+        const row = checkbox.closest('tr');
+        row.classList.toggle('table-active', selectAllCheckbox.checked);
+      });
+    }
+  </script>
+
+  <!-- Toastr JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <!-- AngularJS -->
+  <script th:src="@{/admin/js/SanPhamController.js}"></script>
+</body>
+
+</html>

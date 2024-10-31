@@ -1,15 +1,18 @@
 package org.example.beephone.repository;
 
 import org.example.beephone.dto.SanPhamCustom;
+import org.example.beephone.dto.SanPhamDTO;
 import org.example.beephone.dto.Top5Seller;
 import org.example.beephone.entity.san_pham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
@@ -42,5 +45,24 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
             "GROUP BY sp.id, sp.ma_san_pham, sp.ten, sp.trang_thai " +
             "order by sp.id desc ")
     Page<Object[]> getSanPhamWithSoLuongTon(Pageable pageable);
+
+    @Query("SELECT sp.ma_san_pham AS maSanPham, sp.ten AS tenSanPham, " +
+            "SUM(ctsp.so_luong) AS soLuongTon, sp.trang_thai AS trangThai " +
+            "FROM chi_tiet_san_pham ctsp " +
+            "JOIN ctsp.sanPham sp " +
+            "WHERE (:maHoacTenSanPham IS NULL OR sp.ma_san_pham LIKE %:maHoacTenSanPham% OR sp.ten LIKE %:maHoacTenSanPham%) " +
+            "AND (:trangThai IS NULL OR sp.trang_thai = :trangThai) " +
+            "GROUP BY sp.id, sp.ma_san_pham, sp.ten, sp.trang_thai " +
+            "HAVING (:soLuongTon IS NULL OR SUM(ctsp.so_luong) >= :soLuongTon) order by sp.id desc ")
+    Page<Object[]> searchSanPhamWithSoLuongTon(
+            @Param("maHoacTenSanPham") String maHoacTenSanPham,
+            @Param("trangThai") Integer trangThai,
+            @Param("soLuongTon") Integer soLuongTon,
+            Pageable pageable);
+
+
+
+
+
 
 }

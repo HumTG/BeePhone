@@ -26,13 +26,14 @@ public class chi_tiet_san_pham {
     @ManyToOne
     private san_pham sanPham ;
 
-    @JoinColumn(name = "id_chat_lieu")
-    @ManyToOne
-    private chat_lieu chatLieu ;
 
     @JoinColumn(name = "id_mau_sac")
     @ManyToOne
     private mau_sac mauSac ;
+
+    @JoinColumn(name = "id_kich_co")
+    @ManyToOne
+    private kich_co kichCo ;
 
     @JoinColumn(name = "id_giam_gia")
     @ManyToOne

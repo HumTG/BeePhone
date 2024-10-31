@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,4 +43,21 @@ public class SanPhamService {
                 (int) obj[3] // trangThai
         ));
     }
+
+    // Lọc sản phẩm
+    public Page<SanPhamDTO> findSanPhamWithFilters(String maHoacTenSanPham, Integer trangThai, Integer soLuongTon, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Object[]> results = sanPhamRepository.searchSanPhamWithSoLuongTon(maHoacTenSanPham, trangThai, soLuongTon, pageable);
+
+        return results.map(obj -> new SanPhamDTO(
+                (String) obj[0], // maSanPham
+                (String) obj[1], // tenSanPham
+                ((Number) obj[2]).intValue(), // soLuongTon
+                (Integer) obj[3] // trangThai
+        ));
+    }
+
+
+
+
 }

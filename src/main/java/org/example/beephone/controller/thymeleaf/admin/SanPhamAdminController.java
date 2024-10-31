@@ -9,4 +9,9 @@ public class SanPhamAdminController {
     public String index(){
         return "admin/san-pham";
     }
+
+    @GetMapping("admin/create-san-pham")
+    public String add(){
+        return "admin/create-san-pham";
+    }
 }

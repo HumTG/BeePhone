@@ -33,4 +33,17 @@ public class SanPhamController {
             @RequestParam(defaultValue = "5") int size) {
         return service.getSanPhamWithSoLuongTon(page, size);
     }
+
+    @GetMapping("/rest/san-pham/search")
+    public Page<SanPhamDTO> findSanPhamWithFilters(
+            @RequestParam(required = false) String maHoacTenSanPham,
+            @RequestParam(required = false) Integer trangThai,
+            @RequestParam(required = false) Integer soLuongTon,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        return service.findSanPhamWithFilters(maHoacTenSanPham, trangThai, soLuongTon, page, size);
+    }
+
+
 }
