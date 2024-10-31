@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KhachHangRepository extends JpaRepository<khach_hang, Integer> {
 
-    @Query("select kh from khach_hang kh order by kh.id desc ")
+    @Query("select kh from khach_hang kh order by kh.id asc ")
     Page<khach_hang> getKhachHangDESCID(Pageable pageable);
 
 }

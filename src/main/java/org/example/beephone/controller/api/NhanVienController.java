@@ -24,7 +24,7 @@ public class NhanVienController {
         return ResponseEntity.ok(service.detail(id));
     }
 
-    @PostMapping("/rest/nhan-vien")
+   @PostMapping("/rest/nhan-vien")
     public ResponseEntity<?> createNhanVien(@Valid @RequestBody nhan_vien nhanVien, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
