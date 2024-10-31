@@ -21,8 +21,4 @@ public class GiamGiaService {
     public void capNhatTrangThai(){
         giamGiaRepository.updateTrangThai();
     }
-
-    public void addGiamGia(giam_gia giam_gia){
-        giamGiaRepository.save(giam_gia);
-    }
 }
