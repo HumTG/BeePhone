@@ -8,6 +8,7 @@
     <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
     <!-- Fonts and icons -->
@@ -114,6 +115,11 @@
                                         <span class="sub-item">Chất Liệu</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="/admin/kich-thuoc">
+                                        <span class="sub-item">Kích thước</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -125,7 +131,7 @@
                         </a>
                         <div class="collapse" id="tables">
                             <ul class="nav nav-collapse">
-                                <li >
+                                <li>
                                     <a href="/admin/nhan-vien">
                                         <span class="sub-item">Nhân Viên</span>
                                     </a>
@@ -331,12 +337,14 @@
                 <div class="alert alert-light" role="alert">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5><i class="bi bi-list"></i> Danh sách khách hàng</h5>
-                        <button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button>
+                        <a href="/admin/create-khach-hang">
+                            <button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button>
+                        </a>
                     </div>
                     <!--   Danh sách Khách hàng         -->
                     <table class="table table-striped">
-                        <thead>
-                        <tr class="text-bg-warning">
+                        <thead class="table-warning">
+                        <tr class="text-bg-warning text-center text-white">
                             <th scope="col">STT</th>
                             <th scope="col">Mã khách hàng</th>
                             <th scope="col">Họ Và Tên</th>
@@ -362,12 +370,15 @@
                             <td>{{x.gioi_tinh === 0 ? 'Nam' : 'Nữ'}}</td>
                             <td>{{x.trang_thai === 1 ? 'Kích hoạt' : 'Ngừng Kích Hoạt'}}</td>
                             <td>
-                                <button class="btn btn-warning"><i class="bi bi-eye"></i></button>
-                                <button class="btn btn-success"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-warning" ng-click="openDetail(x.id)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-success" ng-click="openUpdateModal(x)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
                             </td>
                         </tr>
                         </tbody>
-
                     </table>
                     <div class="mx-auto p-2" style="width: 200px;">
                         <nav aria-label="Page navigation example">
@@ -390,10 +401,131 @@
                             </ul>
                         </nav>
                     </div>
+
+                    <!-- Modal Chi tiết khách hàng -->
+                    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detailModalLabel">Chi tiết khách hàng</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Mã khách hàng:</strong> {{khct.ma_khach_hang}}</p>
+                                            <p><strong>Họ và tên:</strong> {{khct.ho_ten}}</p>
+                                            <p><strong>Email:</strong> {{khct.email}}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Số điện thoại:</strong> {{khct.sdt}}</p>
+                                            <p><strong>Ngày sinh:</strong> {{khct.ngay_sinh | date:'dd/MM/yyyy'}}</p>
+                                            <p><strong>Giới tính:</strong> {{khct.gioi_tinh_display}}</p>
+                                            <p><strong>Trạng thái:</strong> {{khct.trang_thai === 1 ? 'Kích hoạt' : 'Không kích hoạt'}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Sửa khách hàng -->
+                    <div class="modal fade" id="updateKhachHangModal" tabindex="-1" aria-labelledby="updateKhachHangModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateKhachHangModalLabel">Cập nhật thông tin khách hàng</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form name="updateKhachHangForm" ng-submit="updateKhachHang()" novalidate>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="hoTen" class="form-label">Họ tên</label>
+                                                <input type="text" class="form-control" id="hoTen" ng-model="selectedKhachHang.ho_ten" required />
+                                                <div ng-show="updateKhachHangForm.hoTen.$touched && updateKhachHangForm.hoTen.$invalid" class="text-danger">
+                                                    Họ tên là bắt buộc.
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                                                <input type="date" class="form-control" id="ngaySinh" ng-model="selectedKhachHang.ngay_sinh" required />
+                                                <div ng-show="updateKhachHangForm.ngaySinh.$touched && updateKhachHangForm.ngaySinh.$invalid" class="text-danger">
+                                                    Ngày sinh là bắt buộc.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="sdt" class="form-label">Số điện thoại</label>
+                                                <input type="tel" class="form-control" id="sdt" ng-model="selectedKhachHang.sdt" required pattern="[0-9]{10}" />
+                                                <div ng-show="updateKhachHangForm.sdt.$touched && updateKhachHangForm.sdt.$invalid" class="text-danger">
+                                                    Vui lòng nhập số điện thoại hợp lệ (10 chữ số).
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" ng-model="selectedKhachHang.email" required />
+                                                <div ng-show="updateKhachHangForm.email.$touched && updateKhachHangForm.email.$invalid" class="text-danger">
+                                                    Vui lòng nhập email hợp lệ.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Giới tính</label><br />
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="gioiTinhNam" ng-model="selectedKhachHang.gioi_tinh" ng-value="0" required />
+                                                    <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="gioiTinhNu" ng-model="selectedKhachHang.gioi_tinh" ng-value="1" required />
+                                                    <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                                                </div>
+                                                <div ng-show="updateKhachHangForm.gioi_tinh.$touched && updateKhachHangForm.gioi_tinh.$invalid" class="text-danger">
+                                                    Vui lòng chọn giới tính.
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="trangThai" class="form-label">Trạng thái</label>
+                                                <select class="form-select" id="trangThai" ng-model="selectedKhachHang.trang_thai" required>
+                                                    <option ng-value="1">Kích hoạt</option>
+                                                    <option ng-value="0">Ngừng kích hoạt</option>
+                                                </select>
+                                                <div ng-show="updateKhachHangForm.trangThai.$touched && updateKhachHangForm.trangThai.$invalid" class="text-danger">
+                                                    Vui lòng chọn trạng thái.
+                                                </div>
+                                            </div>
+                                        </div>
+
+<!--                                        <div class="mb-3">-->
+<!--                                            <label for="diaChi" class="form-label">Địa chỉ</label>-->
+<!--                                            <input type="text" class="form-control" id="diaChi" ng-model="selectedKhachHang.dia_chi" required />-->
+<!--                                            <div ng-show="updateKhachHangForm.diaChi.$touched && updateKhachHangForm.diaChi.$invalid" class="text-danger">-->
+<!--                                                Địa chỉ là bắt buộc.-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary" ng-disabled="updateKhachHangForm.$invalid">Cập nhật</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Custom template | don't include it in your project! -->
@@ -526,13 +658,6 @@
 
 <!-- AngularJS -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-<!-- Scrip Bootrap -->
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"-->
-<!--        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">-->
-<!--</script>-->
-<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-route/1.8.3/angular-route.min.js"></script>-->
-
 <!-- Tải tệp controller -->
 <script th:src="@{/admin/js/KhachHangController.js}"></script>
 </body>

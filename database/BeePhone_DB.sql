@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 Create database BeePhone
 go
 
@@ -491,6 +491,3 @@ VALUES
     (N'HDBCT018', 2, 8, 1, 90000, 1),
     (N'HDBCT019', 3, 9, 4, 250000, 1),
     (N'HDBCT020', 4, 10, 1, 50000, 1);
-
-
-

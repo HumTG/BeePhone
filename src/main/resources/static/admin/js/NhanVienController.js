@@ -177,7 +177,7 @@ app.controller('NhanVienController', function($scope, $http ) {
             })
             .catch(function(error) {
                 console.error('Lỗi khi cập nhật nhân viên:', error);
-                toastr.error('Có lỗi xảy ra khi cập nhật nhân viên!', 'Lỗi', {
+                toastr.error('Có lỗi xảy ra khi cập nhật khách hàng!', 'Lỗi', {
                     closeButton: true,
                     progressBar: true,
                     timeOut: 3000

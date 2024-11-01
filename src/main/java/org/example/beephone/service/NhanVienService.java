@@ -11,12 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.stream.Collectors;
 
 @Service
 public class NhanVienService {
@@ -48,7 +44,7 @@ public class NhanVienService {
     public nhan_vien add(nhan_vien nhanVien){
         chuc_vu chucVu = new chuc_vu(2,"CV002","Nhân viên bán hàng",1);
         // Tạo mã nhân viên ngẫu nhiên và mật khẩu ngẫu nhiên
-        nhanVien.setMa_nhan_vien(generateMaNhanVien());
+        nhanVien.setMa_nhan_vien(generateMaKhachHang());
 
         String generatedPassword = generateRandomPassword();
         nhanVien.setMat_khau(generatedPassword);
@@ -94,7 +90,7 @@ public class NhanVienService {
     }
 
     // Hàm tạo mã nhân viên ngẫu nhiên
-    private String generateMaNhanVien() {
+    private String generateMaKhachHang() {
         SecureRandom random = new SecureRandom();
         StringBuilder maNV = new StringBuilder(MA_NV_LENGTH);
         for (int i = 0; i < MA_NV_LENGTH; i++) {

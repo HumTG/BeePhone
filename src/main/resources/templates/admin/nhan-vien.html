@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>BeePhone - Admin</title>
-    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon"/>
 
 
     <!-- Fonts and icons -->
@@ -15,7 +15,7 @@
 
     <script>
         WebFont.load({
-            google: { families: ["Public Sans:300,400,500,600,700"] },
+            google: {families: ["Public Sans:300,400,500,600,700"]},
             custom: {
                 families: [
                     "Font Awesome 5 Solid",
@@ -33,13 +33,13 @@
 
 
     <!-- CSS Files -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="assets/css/plugins.min.css"/>
+    <link rel="stylesheet" href="assets/css/kaiadmin.min.css"/>
     <!-- ANGULAR  -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="/admin/assets/css/demo.css" />
+    <link rel="stylesheet" href="/admin/assets/css/demo.css"/>
     <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 </head>
@@ -119,6 +119,11 @@
                                         <span class="sub-item">Chất Liệu</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="/admin/kich-thuoc">
+                                        <span class="sub-item">Kích thước</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -130,12 +135,12 @@
                         </a>
                         <div class="collapse" id="tables">
                             <ul class="nav nav-collapse">
-                                <li class="active">
+                                <li>
                                     <a href="/admin/nhan-vien">
                                         <span class="sub-item">Nhân Viên</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="active">
                                     <a href="/admin/khach-hang">
                                         <span class="sub-item">Khách Hàng</span>
                                     </a>
@@ -179,7 +184,8 @@
 
                     <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                         <li class="nav-item topbar-icon dropdown hidden-caret">
-                            <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown"
+                            <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
+                               data-bs-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-bell"></i>
                                 <span class="notification">4</span>
@@ -215,7 +221,7 @@
                                             </a>
                                             <a href="#">
                                                 <div class="notif-img">
-                                                    <img src="assets/img/profile2.jpg" alt="Img Profile" />
+                                                    <img src="assets/img/profile2.jpg" alt="Img Profile"/>
                                                 </div>
                                                 <div class="notif-content">
                             <span class="block">
@@ -237,16 +243,18 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <a class="see-all" href="javascript:void(0);">See all notifications<i class="fa fa-angle-right"></i>
+                                    <a class="see-all" href="javascript:void(0);">See all notifications<i
+                                            class="fa fa-angle-right"></i>
                                     </a>
                                 </li>
                             </ul>
                         </li>
 
                         <li class="nav-item topbar-user dropdown hidden-caret">
-                            <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                            <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
+                               aria-expanded="false">
                                 <div class="avatar-sm">
-                                    <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
+                                    <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle"/>
                                 </div>
                                 <span class="profile-username">
                     <span class="op-7">Hi,</span>
@@ -258,12 +266,14 @@
                                     <li>
                                         <div class="user-box">
                                             <div class="avatar-lg">
-                                                <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
+                                                <img src="assets/img/profile.jpg" alt="image profile"
+                                                     class="avatar-img rounded"/>
                                             </div>
                                             <div class="u-text">
                                                 <h4>Nguyễn Đình Hùng</h4>
                                                 <p class="text-muted">abc@gmail.com</p>
-                                                <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Thông Tin Cá Nhân</a>
+                                                <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Thông Tin
+                                                    Cá Nhân</a>
                                             </div>
                                         </div>
                                     </li>
@@ -294,21 +304,21 @@
                             <label for="search" class="form-label">Tìm kiếm:</label>
                             <input type="text" class="form-control" id="search"
                                    placeholder="Tìm kiếm tên và sđt..."
-                                   ng-model="filter.ten_sdt" />
+                                   ng-model="filter.ten_sdt"/>
                         </div>
 
                         <!-- Ngày sinh từ -->
                         <div class="col-md-3">
                             <label for="dob_from" class="form-label">Ngày sinh từ:</label>
                             <input type="date" class="form-control" id="dob_from"
-                                   ng-model="filter.ngay_sinh_tu" />
+                                   ng-model="filter.ngay_sinh_tu"/>
                         </div>
 
                         <!-- Ngày sinh đến -->
                         <div class="col-md-3">
                             <label for="dob_to" class="form-label">Ngày sinh đến:</label>
                             <input type="date" class="form-control" id="dob_to"
-                                   ng-model="filter.ngay_sinh_den" />
+                                   ng-model="filter.ngay_sinh_den"/>
                         </div>
                     </div>
 
@@ -328,7 +338,7 @@
                         <div class="col-md-8">
                             <label for="ageRange" class="form-label">Khoảng tuổi:</label>
                             <input type="range" class="form-range" id="ageRange"
-                                   min="18" max="60" ng-model="filter.khoang_tuoi" />
+                                   min="18" max="60" ng-model="filter.khoang_tuoi"/>
                             <p>Tuổi: {{filter.khoang_tuoi}}</p>
                         </div>
                     </div>
@@ -336,7 +346,8 @@
                     <div class="d-flex justify-content-center">
                         <!-- Nút Tìm kiếm và Làm mới -->
                         <button type="button" class="btn btn-primary me-2"
-                                ng-click="searchNhanVien()">Tìm kiếm</button>
+                                ng-click="searchNhanVien()">Tìm kiếm
+                        </button>
                         <button type="button" class="btn btn-danger" ng-click="resetFilter()">Làm mới bộ lọc</button>
                     </div>
                 </div>
@@ -345,7 +356,9 @@
                 <div class="alert alert-light" role="alert">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5><i class="bi bi-list"></i> Danh sách nhân viên</h5>
-                        <a href="/admin/create-nhan-vien"><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button></a>
+                        <a href="/admin/create-nhan-vien">
+                            <button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button>
+                        </a>
                     </div>
                     <!--   Danh sách nhân viên         -->
                     <table class="table table-striped">
@@ -371,7 +384,7 @@
                             <td>{{x.sdt}}</td>
                             <td>{{ x.ngay_sinh | date:'dd/MM/yyyy' }}</td>
                             <td>{{x.gioi_tinh == 0 ? 'Nam' : 'Nữ'}}</td>
-                            <td>{{x.trang_thai == 1 ? 'Đang làm việc' :  'Ngưng hoạt động'}}</td>
+                            <td>{{x.trang_thai == 1 ? 'Đang làm việc' : 'Ngưng hoạt động'}}</td>
                             <td>
                                 <button class="btn btn-warning" ng-click="openDetail(x.id)">
                                     <i class="bi bi-eye"></i>
@@ -385,7 +398,7 @@
                         </tbody>
                     </table>
                     <div class="mx-auto p-2" style="width: 200px;">
-                        <nav aria-label="Page navigation example" >
+                        <nav aria-label="Page navigation example">
                             <ul class="pagination">
                                 <!-- Nút Previous -->
                                 <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
@@ -407,18 +420,22 @@
                     </div>
 
                     <!--     Show lên thông tin chi tiết của nhân viên         -->
-                    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel"
+                         aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="detailModalLabel">Thông tin nhân viên</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
                                         <!-- Hình ảnh đại diện -->
                                         <div class="col-md-4 text-center">
-                                            <img src="/admin/images/{{nvct.hinh_anh}}" alt="Ảnh đại diện" class="img-thumbnail rounded-circle" style="border-radius: 50%;width: 150px;height: 150px;">
+                                            <img src="/admin/images/{{nvct.hinh_anh}}" alt="Ảnh đại diện"
+                                                 class="img-thumbnail rounded-circle"
+                                                 style="border-radius: 50%;width: 150px;height: 150px;">
                                             <p><strong>Ảnh đại diện</strong></p>
                                         </div>
 
@@ -427,44 +444,53 @@
                                             <form>
                                                 <div class="row mb-3">
                                                     <div class="col">
-                                                        <label for="tenKhachHang" class="form-label">Mã nhân viên</label>
-                                                        <input type="text" class="form-control" id="tenKhachHang" ng-model="nvct.ma_nhan_vien" disabled>
+                                                        <label for="tenKhachHang" class="form-label">Mã nhân
+                                                            viên</label>
+                                                        <input type="text" class="form-control" id="tenKhachHang"
+                                                               ng-model="nvct.ma_nhan_vien" disabled>
                                                     </div>
                                                     <div class="col">
                                                         <label for="sdt" class="form-label">Họ tên </label>
-                                                        <input type="text" class="form-control" id="hoTen" ng-model="nvct.ho_ten" disabled>
+                                                        <input type="text" class="form-control" id="hoTen"
+                                                               ng-model="nvct.ho_ten" disabled>
                                                     </div>
                                                     <div class="col">
                                                         <label for="gioiTinh" class="form-label">Giới tính</label>
-                                                        <input type="text" class="form-control" id="gioiTinh" ng-model="nvct.gioi_tinh_display" disabled>
+                                                        <input type="text" class="form-control" id="gioiTinh"
+                                                               ng-model="nvct.gioi_tinh_display" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col">
                                                         <label for="email" class="form-label">Chức vụ</label>
-                                                        <input type="email" class="form-control" id="chucVu" ng-model="nvct.chucVu.ten_chuc_vu" disabled>
+                                                        <input type="email" class="form-control" id="chucVu"
+                                                               ng-model="nvct.chucVu.ten_chuc_vu" disabled>
                                                     </div>
                                                     <div class="col">
                                                         <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                                                        <input type="date" class="form-control" id="ngaySinh" ng-model="nvct.ngay_sinh" disabled>
+                                                        <input type="date" class="form-control" id="ngaySinh"
+                                                               ng-model="nvct.ngay_sinh" disabled>
                                                     </div>
                                                 </div>
 
                                                 <div class="row mb-3">
                                                     <div class="col">
-                                                        <label  class="form-label">SDT</label>
-                                                        <input type="text" class="form-control" id="sdt" ng-model="nvct.sdt" disabled>
+                                                        <label class="form-label">SDT</label>
+                                                        <input type="text" class="form-control" id="sdt"
+                                                               ng-model="nvct.sdt" disabled>
                                                     </div>
                                                     <div class="col">
-                                                        <label  class="form-label">Email</label>
-                                                        <input type="text" class="form-control" id="email" ng-model="nvct.email" disabled>
+                                                        <label class="form-label">Email</label>
+                                                        <input type="text" class="form-control" id="email"
+                                                               ng-model="nvct.email" disabled>
                                                     </div>
                                                 </div>
 
                                                 <div class="row mb-3">
                                                     <div class="col">
-                                                        <label  class="form-label">Địa chỉ</label>
-                                                        <input type="text" class="form-control" id="diaChi" ng-model="nvct.dia_chi" disabled>
+                                                        <label class="form-label">Địa chỉ</label>
+                                                        <input type="text" class="form-control" id="diaChi"
+                                                               ng-model="nvct.dia_chi" disabled>
                                                     </div>
                                                 </div>
                                             </form>
@@ -472,30 +498,37 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <!--   END MODEL         -->
+
                     <!-- Modal Cập Nhật Nhân Viên -->
-                    <div class="modal fade" id="updateNhanVienModal" tabindex="-1" aria-labelledby="updateNhanVienModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="updateNhanVienModal" tabindex="-1"
+                         aria-labelledby="updateNhanVienModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="updateNhanVienModalLabel">Cập nhật thông tin nhân viên</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h5 class="modal-title" id="updateNhanVienModalLabel">Cập nhật thông tin nhân
+                                        viên</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <form name="updateNhanVienForm" ng-submit="updateNhanVien()" novalidate>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label for="hoTen" class="form-label">Họ tên</label>
-                                                <input type="text" class="form-control" id="hoTen" ng-model="selectedNhanVien.ho_ten" required />
+                                                <input type="text" class="form-control" id="hoTen"
+                                                       ng-model="selectedNhanVien.ho_ten" required/>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                                                <input type="date" class="form-control" id="ngaySinh" ng-model="selectedNhanVien.ngay_sinh" required />
+                                                <input type="date" class="form-control" id="ngaySinh"
+                                                       ng-model="selectedNhanVien.ngay_sinh" required/>
                                             </div>
 
                                         </div>
@@ -503,34 +536,36 @@
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label for="sdt" class="form-label">Số điện thoại</label>
-                                                <input type="tel" class="form-control" id="sdt" ng-model="selectedNhanVien.sdt" required />
+                                                <input type="tel" class="form-control" id="sdt"
+                                                       ng-model="selectedNhanVien.sdt" required/>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" ng-model="selectedNhanVien.email" required />
+                                                <input type="email" class="form-control" id="email"
+                                                       ng-model="selectedNhanVien.email" required/>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label class="form-label">Giới tính</label><br />
+                                                <label class="form-label">Giới tính</label><br/>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" id="gioiTinhNam"
-                                                           ng-model="selectedNhanVien.gioi_tinh" ng-value="0" />
+                                                           ng-model="selectedNhanVien.gioi_tinh" ng-value="0"/>
                                                     <label class="form-check-label" for="gioiTinhNam">Nam</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" id="gioiTinhNu"
-                                                           ng-model="selectedNhanVien.gioi_tinh" ng-value="1" />
+                                                           ng-model="selectedNhanVien.gioi_tinh" ng-value="1"/>
                                                     <label class="form-check-label" for="gioiTinhNu">Nữ</label>
                                                 </div>
                                             </div>
 
 
-
                                             <div class="col-md-6">
                                                 <label for="trangThai" class="form-label">Trạng thái</label>
-                                                <select class="form-select" id="trangThai" ng-model="selectedNhanVien.trang_thai">
+                                                <select class="form-select" id="trangThai"
+                                                        ng-model="selectedNhanVien.trang_thai">
                                                     <option ng-value="1">Kích hoạt</option>
                                                     <option ng-value="0">Ngừng kích hoạt</option>
                                                 </select>
@@ -541,21 +576,23 @@
 
                                         <div class="mb-3">
                                             <label for="diaChi" class="form-label">Địa chỉ</label>
-                                            <input type="text" class="form-control" id="diaChi" ng-model="selectedNhanVien.dia_chi" required />
+                                            <input type="text" class="form-control" id="diaChi"
+                                                   ng-model="selectedNhanVien.dia_chi" required/>
                                         </div>
 
                                         <div class="text-end">
                                             <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Hủy
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                     <!--    end model cập nhật nhân viên                -->
+
                 </div>
             </div>
         </div>
@@ -577,7 +614,7 @@
                         <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
                         <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
                         <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
-                        <br />
+                        <br/>
                         <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
                         <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
                         <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
@@ -598,7 +635,7 @@
                         <button type="button" class="changeTopBarColor" data-color="orange"></button>
                         <button type="button" class="changeTopBarColor" data-color="red"></button>
                         <button type="button" class="selected changeTopBarColor" data-color="white"></button>
-                        <br />
+                        <br/>
                         <button type="button" class="changeTopBarColor" data-color="dark2"></button>
                         <button type="button" class="changeTopBarColor" data-color="blue2"></button>
                         <button type="button" class="changeTopBarColor" data-color="purple2"></button>
