@@ -158,6 +158,13 @@ app.controller('SanPhamController', function($scope, $http) {
         mauSacModal.hide(); // Đóng modal
     };
 
+    $scope.isSelectedMau = function(mau) {
+        return $scope.selectedMauDetails.some(function(item) {
+            return item.id === mau.id;
+        });
+    };
+
+
     // Hàm xóa màu khỏi danh sách đã chọn
     $scope.removeSelectedMau = function(mauId) {
         $scope.selectedMauDetails = $scope.selectedMauDetails.filter(mau => mau.id !== mauId);
@@ -233,20 +240,41 @@ app.controller('SanPhamController', function($scope, $http) {
 
     // Hàm để cập nhật danh sách các biến thể sản phẩm dựa trên kích cỡ và màu sắc đã chọn
     $scope.updateProductVariants = function() {
-        $scope.productVariants = [];
+        // Xóa các biến thể trùng lặp trước khi thêm mới
+        const existingVariants = new Map(); // Sử dụng Map để lưu các biến thể duy nhất
 
         $scope.selectedSizes.forEach(size => {
             $scope.selectedMauDetails.forEach(color => {
-                $scope.productVariants.push({
-                    size: size.ten,              // Tên kích cỡ
-                    color: color.ten,            // Tên màu
-                    quantity: 1,               // Số lượng mặc định
-                    price: '100,000 VND',        // Giá mặc định
-                    tenSanPham: `${$scope.tenSanPham} [${size.ten} - ${color.ten}]` // Tên sản phẩm bao gồm kích cỡ và màu
-                });
+                const key = `${size.id}-${color.id}`; // Tạo key duy nhất cho mỗi biến thể
+
+                if (!existingVariants.has(key)) { // Chỉ thêm nếu biến thể chưa tồn tại
+                    existingVariants.set(key, {
+                        sizeId: size.id,                 // Lưu ID kích cỡ
+                        colorId: color.id,               // Lưu ID màu sắc
+                        size: size.ten,                  // Tên kích cỡ
+                        color: color.ten,                // Tên màu
+                        quantity: 1,                     // Số lượng mặc định
+                        price: 100000,                   // Giá mặc định
+                        tenSanPham: `${$scope.tenSanPham} [${size.ten} - ${color.ten}]`, // Tên sản phẩm bao gồm kích cỡ và màu
+                        image: "" // Thêm trường image để lưu tên tệp hoặc URL ảnh
+
+                    });
+                }
             });
         });
+
+        // Chuyển Map thành Array và gán lại cho productVariants
+        $scope.productVariants = Array.from(existingVariants.values());
     };
+
+    // Xóa bỏ biến thể
+    $scope.removeVariant = function(index) {
+        // Hiển thị xác nhận trước khi xóa
+        if (confirm("Bạn có chắc chắn muốn xóa biến thể này?")) {
+            $scope.productVariants.splice(index, 1); // Xóa biến thể tại vị trí được chọn
+        }
+    };
+
 
     // Gọi hàm này khi thêm/xóa kích cỡ hoặc màu sắc
     $scope.$watch('selectedSizes', function(newVal, oldVal) {
@@ -256,5 +284,126 @@ app.controller('SanPhamController', function($scope, $http) {
     $scope.$watch('selectedMauDetails', function(newVal, oldVal) {
         $scope.updateProductVariants();
     }, true);
+
+    // Các biến cho modal
+    $scope.modalQuantity = 0;
+    $scope.modalPrice = 0;
+
+    // Hàm để hiển thị modal khi bấm nút "Chỉnh sửa số lượng và giá chung"
+    $scope.openEditModal = function() {
+        // Mở modal
+        var modal = new bootstrap.Modal(document.getElementById('editQuantityPriceModal'));
+        modal.show();
+    };
+
+    // Hàm áp dụng thay đổi cho các hàng được chọn trong bảng
+    $scope.applyChanges = function() {
+        $scope.productVariants.forEach(variant => {
+            if (variant.selected) { // Chỉ áp dụng cho các hàng đã chọn
+                variant.quantity = $scope.modalQuantity;
+                variant.price = $scope.modalPrice;
+            }
+        });
+
+        // Đóng modal sau khi cập nhật
+        var modal = bootstrap.Modal.getInstance(document.getElementById('editQuantityPriceModal'));
+        modal.hide();
+    };
+
+    // Thêm ảnh chi tiết sản phẩm
+    $scope.uploadImage = function(event, variant) {
+        const input = event.target;
+        const file = input.files ? input.files[0] : null;
+
+        if (file) {
+            console.log("Tên ảnh:", file.name);
+
+            // Lưu tên ảnh để tạo đường dẫn `/images/filename`
+            variant.anh = file.name;
+
+            // Cập nhật danh sách ảnh nếu cần
+            if (!variant.anhList) {
+                variant.anhList = [];
+            }
+            variant.anhList.push(file.name);
+        }
+
+        // Đặt lại input để có thể chọn lại cùng một file
+        input.value = null;
+    };
+
+
+
+    // Hàm submitAll để thêm sản phẩm và chi tiết sản phẩm
+    // Đảm bảo rằng biến moTa được khai báo và sử dụng đúng
+    $scope.moTa = ''; // Thêm vào phần khởi tạo biến, nếu chưa có
+    $scope.submitAll = function() {
+        const sanPhamData = {
+            ten: $scope.tenSanPham,
+            moTa: $scope.moTa,
+            nhaSanXuatId: $scope.selectedNhaSanXuatId,
+            chatLieuId: $scope.selectedChatLieuId,
+            trangThai: $scope.trangThai || 1
+        };
+
+        $http.post('http://localhost:8080/rest/san-pham', null, { params: sanPhamData })
+            .then(response => {
+                const sanPhamId = response.data.id;
+
+                const kichCoIds = $scope.productVariants.map(variant => variant.sizeId).filter(id => id !== undefined);
+                const mauSacIds = $scope.productVariants.map(variant => variant.colorId).filter(id => id !== undefined);
+                const soLuongs = $scope.productVariants.map(variant => variant.quantity || 1);
+                const giaBans = $scope.productVariants.map(variant => parseFloat(variant.price) || 0);
+                const images = $scope.productVariants.map(variant => variant.anh || []); // Chỉ chứa tên file
+
+                return $http.post(`http://localhost:8080/rest/san-pham/${sanPhamId}/chi-tiet`, null, {
+                    params: {
+                        kichCoIds: kichCoIds,
+                        mauSacIds: mauSacIds,
+                        soLuongs: soLuongs,
+                        giaBans: giaBans,
+                        images: images
+                    }
+                });
+            })
+            .then(() => {
+                sessionStorage.setItem('successMessage', 'Sản phẩm và các biến thể đã được thêm thành công!');
+                window.location.href = "http://localhost:8080/admin/san-pham";
+            })
+            .catch(error => {
+                console.error("Lỗi khi thêm sản phẩm hoặc chi tiết sản phẩm:", error);
+                toastr.error("Đã xảy ra lỗi khi thêm sản phẩm!");
+            });
+    };
+
+
+    $scope.viewDetail = function(sanPham) {
+        // Gửi yêu cầu GET tới API để lấy thông tin chi tiết sản phẩm
+        $http.get(`http://localhost:8080/rest/san-pham/${sanPham.id}`)
+            .then(function(response) {
+                // Gán dữ liệu trả về từ API cho biến `productDetail`
+                $scope.productDetail = response.data;
+
+                // Hiển thị modal chi tiết sản phẩm
+                var productDetailModal = new bootstrap.Modal(document.getElementById('productDetailModal'));
+                productDetailModal.show();
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
+                toastr.error("Không thể tải thông tin chi tiết sản phẩm!");
+            });
+    };
+
+
+
+
+
+
+
+
+
+
+
+
 
 });

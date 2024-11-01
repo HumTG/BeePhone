@@ -1,5 +1,6 @@
 package org.example.beephone.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class chi_tiet_san_pham {
 
     @JoinColumn(name = "id_san_pham")
     @ManyToOne
+    @JsonIgnore
     private san_pham sanPham ;
 
 
@@ -48,6 +50,8 @@ public class chi_tiet_san_pham {
     private Date ngay_nhap ;
 
     private String mo_ta ;
+
+    private String anh ;
 
     private int trang_thai ;
 }

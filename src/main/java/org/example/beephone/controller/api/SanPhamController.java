@@ -1,14 +1,15 @@
 package org.example.beephone.controller.api;
 
 import org.example.beephone.dto.SanPhamDTO;
+import org.example.beephone.entity.chi_tiet_san_pham;
+import org.example.beephone.entity.san_pham;
 import org.example.beephone.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -44,6 +45,41 @@ public class SanPhamController {
 
         return service.findSanPhamWithFilters(maHoacTenSanPham, trangThai, soLuongTon, page, size);
     }
+
+    @PostMapping("/rest/san-pham")
+    public ResponseEntity<san_pham> addSanPham(
+            @RequestParam String ten,
+            @RequestParam String moTa,
+            @RequestParam int nhaSanXuatId,
+            @RequestParam int chatLieuId,
+            @RequestParam int trangThai) {
+
+        san_pham savedSanPham = service.addSanPham(ten, moTa, nhaSanXuatId, chatLieuId, trangThai);
+        return ResponseEntity.ok(savedSanPham);
+    }
+
+    @PostMapping("/rest/san-pham/{sanPhamId}/chi-tiet")
+    public ResponseEntity<List<chi_tiet_san_pham>> addChiTietSanPham(
+            @PathVariable int sanPhamId,
+            @RequestParam List<Integer> kichCoIds,
+            @RequestParam List<Integer> mauSacIds,
+            @RequestParam List<Integer> soLuongs,
+            @RequestParam List<BigDecimal> giaBans,
+            @RequestParam List<String> images) { // Nhận thêm danh sách ảnh
+
+        List<chi_tiet_san_pham> savedChiTietSanPhams = service.addChiTietSanPham(sanPhamId, kichCoIds, mauSacIds, soLuongs, giaBans, images);
+        return ResponseEntity.ok(savedChiTietSanPhams);
+    }
+
+    @GetMapping("/rest/san-pham/{id}")
+    public ResponseEntity<san_pham> getSanPhamDetail(@PathVariable int id) {
+        san_pham sanPham = service.getSanPhamDetail(id);
+        return ResponseEntity.ok(sanPham);
+    }
+
+
+
+
 
 
 }
