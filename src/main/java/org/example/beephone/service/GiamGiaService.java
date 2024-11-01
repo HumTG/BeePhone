@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class GiamGiaService {
     @Autowired
@@ -24,5 +26,13 @@ public class GiamGiaService {
 
     public void addGiamGia(giam_gia giam_gia){
         giamGiaRepository.save(giam_gia);
+    }
+
+    public Optional<giam_gia> findById(Integer id){
+        return giamGiaRepository.findById(id);
+    }
+
+    public void updateGiamGia(giam_gia gg){
+        giamGiaRepository.save(gg);
     }
 }
