@@ -95,4 +95,48 @@ app.controller('GiamGiaController',function ($scope,$http){
         });
     }
 
+    //Open modal update
+    $scope.openModalUpdate = function (gg){
+        $scope.updateGG = angular.copy(gg);
+
+        if ($scope.updateGG.ngay_bat_dau) {
+            $scope.updateGG.ngay_bat_dau = new Date($scope.updateGG.ngay_bat_dau);
+        }
+        if ($scope.updateGG.ngay_ket_thuc) {
+            $scope.updateGG.ngay_ket_thuc = new Date($scope.updateGG.ngay_ket_thuc);
+        }
+
+        var addModal = new bootstrap.Modal(document.getElementById('updateGiamGiaModal')); // Sử dụng Bootstrap Modal
+        addModal.show();
+    }
+
+    $scope.updateGiamGia = function (){
+        var update_giam_gia = {
+            id : $scope.updateGG.id,
+            ma_giam_gia : $scope.updateGG.ma_giam_gia,
+            ten : $scope.updateGG.ten,
+            gia_tri : Number($scope.updateGG.gia_tri),
+            ngay_bat_dau : new Date($scope.updateGG.ngay_bat_dau),
+            ngay_ket_thuc : new Date($scope.updateGG.ngay_ket_thuc),
+            trang_thai : $scope.updateGG.trang_thai
+        }
+
+        $http.put('http://localhost:8080/rest/giam-gia', update_giam_gia)
+            .then(function (respone){
+                console.log(respone)
+                var modalElement = document.getElementById('updateGiamGiaModal');
+                var Modal = bootstrap.Modal.getInstance(modalElement);
+                Modal.hide(); // đóng modal
+                $scope.getData();
+                toastr.success('Sửa giảm giá thành công', 'OK')
+            }) .catch(function(error) {
+            console.error('Lỗi :', error);
+            toastr.error('Có lỗi xảy ra!', 'Error', {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 3000
+            });
+        });
+    }
+
 })
