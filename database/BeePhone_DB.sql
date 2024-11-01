@@ -103,6 +103,7 @@ CREATE TABLE [chi_tiet_san_pham] (
   [gia_ban] Decimal,
   [ngay_nhap] Date,
   [mo_ta] Nvarchar(500),
+  [anh] Nvarchar(200),
   [trang_thai] INT,
   PRIMARY KEY ([id]),
   CONSTRAINT [FK_chi_tiet_san_pham.id_giam_gia]
@@ -132,20 +133,6 @@ CREATE TABLE [gio_hang_chi_tiet] (
       REFERENCES [gio_hang]([id]),
   CONSTRAINT [FK_gio_hang_chi_tiet.id_chi_tiet_san_pham]
     FOREIGN KEY ([id_chi_tiet_san_pham])
-      REFERENCES [chi_tiet_san_pham]([id])
-);
-
-CREATE TABLE [anh_san_pham] (
-  [id] INT IDENTITY,
-  [id_san_pham_chi_tiet] INT,
-  [anh_1] Varchar(200),
-  [anh_2] Varchar(200),
-  [anh_3] Varchar(200),
-  [anh_4] Varchar(200),
-  [anh_5] Varchar(200),
-  PRIMARY KEY ([id]),
-  CONSTRAINT [FK_anh_san_pham.id_san_pham_chi_tiet]
-    FOREIGN KEY ([id_san_pham_chi_tiet])
       REFERENCES [chi_tiet_san_pham]([id])
 );
 
@@ -350,35 +337,21 @@ VALUES
 
 	-- Thêm dữ liệu vào bảng [chi_tiet_san_pham]
 INSERT INTO [chi_tiet_san_pham] 
-([id_san_pham], [id_mau_sac], [id_kich_co], [id_giam_gia], [so_luong], [gia_nhap], [gia_ban], [ngay_nhap], [mo_ta], [trang_thai]) 
+([id_san_pham], [id_mau_sac], [id_kich_co], [id_giam_gia], [so_luong], [gia_nhap], [gia_ban], [ngay_nhap], [mo_ta],[anh], [trang_thai]) 
 VALUES
-(4, 5, 5, NULL, 64, 765742.86, 2226966.65, '2024-05-07', 'Sản phẩm chất lượng cao', 1),
-(2, 2, 4, NULL, 60, 956303.13, 2661107.10, '2024-08-31', 'Sản phẩm chất lượng cao', 1),
-(2, 5, 4, NULL, 21, 644177.33, 2410053.16, '2023-12-02', 'Sản phẩm chất lượng cao', 1),
-(10, 5, 4, NULL, 91, 1022651.54, 1901921.26, '2024-05-15', 'Sản phẩm chất lượng cao', 1),
-(3, 1, 4, NULL, 43, 1280756.41, 1864571.13, '2024-08-14', 'Sản phẩm chất lượng cao', 1),
-(9, 2, 2, NULL, 98, 768131.29, 2222554.46, '2024-03-12', 'Sản phẩm chất lượng cao', 1),
-(1, 3, 2, NULL, 28, 1376167.97, 1993608.21, '2024-01-08', 'Sản phẩm chất lượng cao', 1),
-(7, 1, 1, NULL, 66, 563925.69, 2272021.49, '2023-11-16', 'Sản phẩm chất lượng cao', 1),
-(8, 4, 1, NULL, 50, 957542.31, 2984578.36, '2024-09-02', 'Sản phẩm chất lượng cao', 1),
-(5, 3, 3, NULL, 12, 1492034.48, 2723629.74, '2024-10-26', 'Sản phẩm chất lượng cao', 1);
+(4, 5, 5, NULL, 64, 765742.86, 2226966.65, '2024-05-07', 'Sản phẩm chất lượng cao','anh_7.jpg' ,1),
+(2, 2, 4, NULL, 60, 956303.13, 2661107.10, '2024-08-31', 'Sản phẩm chất lượng cao','anh_3.webp' ,1),
+(2, 5, 4, NULL, 21, 644177.33, 2410053.16, '2023-12-02', 'Sản phẩm chất lượng cao','anh_4.webp' ,1),
+(10, 5, 4, NULL, 91, 1022651.54, 1901921.26, '2024-05-15', 'Sản phẩm chất lượng cao','anh_6.jpg' ,1),
+(3, 1, 4, NULL, 43, 1280756.41, 1864571.13, '2024-08-14', 'Sản phẩm chất lượng cao', 'anh_2.jpg' ,1),
+(9, 2, 2, NULL, 98, 768131.29, 2222554.46, '2024-03-12', 'Sản phẩm chất lượng cao','anh_8.jpg' ,1),
+(1, 3, 2, NULL, 28, 1376167.97, 1993608.21, '2024-01-08', 'Sản phẩm chất lượng cao','anh_5.jpg' ,1),
+(7, 1, 1, NULL, 66, 563925.69, 2272021.49, '2023-11-16', 'Sản phẩm chất lượng cao','anh_9.jpg' ,1),
+(8, 4, 1, NULL, 50, 957542.31, 2984578.36, '2024-09-02', 'Sản phẩm chất lượng cao','anh_1.jpg' ,1),
+(5, 3, 3, NULL, 12, 1492034.48, 2723629.74, '2024-10-26', 'Sản phẩm chất lượng cao','anh_10.jpg' ,1);
 
 
 
-
-	-- Thêm dữ liệu vào bảng [anh_san_pham]
-INSERT INTO [anh_san_pham] ([id_san_pham_chi_tiet], [anh_1], [anh_2], [anh_3], [anh_4], [anh_5])
-VALUES 
-    (1, 'anh_7.jpg', 'anh2_spigen_tough_armor.png', 'anh3_spigen_tough_armor.png', 'anh4_spigen_tough_armor.png', 'anh5_spigen_tough_armor.png'),
-    (2, 'anh_3.webp', 'anh2_uag_monarch.png', 'anh3_uag_monarch.png', 'anh4_uag_monarch.png', 'anh5_uag_monarch.png'),
-    (3, 'anh_4.webp', 'anh2_otterbox_defender.png', 'anh3_otterbox_defender.png', 'anh4_otterbox_defender.png', 'anh5_otterbox_defender.png'),
-    (4, 'anh_6.jpg', 'anh2_caseology_parallax.png', 'anh3_caseology_parallax.png', 'anh4_caseology_parallax.png', 'anh5_caseology_parallax.png'),
-    (5, 'anh_2.jpg', 'anh2_ringke_fusion_x.png', 'anh3_ringke_fusion_x.png', 'anh4_ringke_fusion_x.png', 'anh5_ringke_fusion_x.png'),
-    (6, 'anh_8.jpg', 'anh2_spigen_liquid_air.png', 'anh3_spigen_liquid_air.png', 'anh4_spigen_liquid_air.png', 'anh5_spigen_liquid_air.png'),
-    (7, 'anh_5.jpg', 'anh2_uag_plasma.png', 'anh3_uag_plasma.png', 'anh4_uag_plasma.png', 'anh5_uag_plasma.png'),
-    (8, 'anh_9.jpg', 'anh2_otterbox_commuter.png', 'anh3_otterbox_commuter.png', 'anh4_otterbox_commuter.png', 'anh5_otterbox_commuter.png'),
-    (9, 'anh_1.jpg', 'anh2_caseology_skyfall.png', 'anh3_caseology_skyfall.png', 'anh4_caseology_skyfall.png', 'anh5_caseology_skyfall.png'),
-    (10, 'anh_10.jpg', 'anh2_ringke_onyx.png', 'anh3_ringke_onyx.png', 'anh4_ringke_onyx.png', 'anh5_ringke_onyx.png');
 
 	-- Thêm dữ liệu vào bảng [khach_hang]
 INSERT INTO [khach_hang] ([ma_khach_hang], [tai_khoan], [ho_ten], [email], [sdt], [mat_khau], [ngay_sinh], [gioi_tinh], [trang_thai])

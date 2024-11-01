@@ -65,7 +65,6 @@
       <div class="container" ng-controller="SanPhamController">
         <div class="page-inner">
           <!--     Form thêm sản phẩm            -->
-          <form>
           <div class="alert alert-light" role="alert">
               <div class="row mb-3">
                 <div class="d-flex justify-content-center">
@@ -77,10 +76,11 @@
                     </div>
 
 
-                      <div class="mb-3">
-                        <label for="moTa" class="form-label">Mô tả:</label>
-                        <textarea class="form-control" id="moTa" rows="4" placeholder="Nhập mô tả sản phẩm" required></textarea>
-                      </div>
+                    <div class="mb-3">
+                      <label for="moTa" class="form-label">Mô tả:</label>
+                      <textarea class="form-control" id="moTa" rows="4" placeholder="Nhập mô tả sản phẩm" ng-model="moTa" required></textarea>
+                    </div>
+
 
                       <div class="row">
                         <div class="col-md-6">
@@ -101,7 +101,7 @@
                             <label for="trangThai" class="form-label">Trạng thái:</label>
                             <div class="input-group">
                               <select class="form-select" id="trangThai" required>
-                                <option selected>Kinh Doanh</option>
+                                <option selected >Kinh Doanh</option>
                               </select>
                               <button class="btn btn-primary">+</button>
                             </div>
@@ -203,9 +203,10 @@
                           <button type="button" class="btn btn-outline-primary m-1"
                                   ng-repeat="mau in dsMauSac"
                                   ng-click="toggleMau(mau)"
-                                  ng-class="{'active': selectedMauDetails.some(item => item.id === mau.id)}">
+                                  ng-class="{'active': isSelectedMau(mau)}">
                             {{ mau.ten }}
                           </button>
+
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -232,7 +233,7 @@
                   <div class="container mt-5">
                     <h3 class="text-center">Chi Tiết Sản Phẩm</h3>
                     <div class="text-end p-2">
-                      <button class="btn btn-primary p-2" ng-click="editAll()">Chỉnh sửa số lượng và giá chung</button>
+                      <button class="btn btn-primary p-2" ng-click="openEditModal()">Chỉnh sửa số lượng và giá chung</button>
                       <button class="btn btn-primary p-2" ng-click="submitAll()">Hoàn tất</button>
                     </div>
                     <!-- Bảng Danh Sách Sản Phẩm Chi Tiết -->
@@ -255,12 +256,24 @@
                         </td>
                         <td class="text-center">{{$index + 1}}</td>
                         <td>{{tenSanPham}} [{{variant.size}} - {{variant.color}}]</td>
-                        <td><input type="number" class="form-control" ng-model="variant.quantity"></td>
-                        <td><input type="text" class="form-control" ng-model="variant.price" value="100,000 VND"></td>
-                        <td class="text-center"><button class="btn btn-danger btn-sm" ng-click="removeVariant($index)">🗑️</button></td>
-                        <td class="text-center"><button class="btn btn-light">+ Upload</button></td>
+                        <td><input type="number" class="form-control" ng-model="variant.quantity" placeholder="Nhập số lượng"></td>
+                        <td><input type="text" class="form-control" ng-model="variant.price" placeholder="Nhập giá bán"></td>
+                        <td class="text-center">
+                          <button class="btn btn-danger btn-sm" ng-click="removeVariant($index)">🗑️</button>
+                        </td>
+                        <td class="text-center">
+                          <label class="btn btn-light">
+                            <img ng-src="/images/{{variant.anh}}" style="width: 100px; height: 90px" ng-if="variant.anh">
+                            <span ng-if="!variant.anh">+ Upload</span>
+                            <input type="file" style="display: none;" accept="image/*"
+                                   onchange="angular.element(this).scope().$apply(() => angular.element(this).scope().uploadImage(event, angular.element(this).scope().variant))" />
+                          </label>
+                        </td>
+
+
                       </tr>
                       </tbody>
+
                     </table>
 
                     <!-- Kết thúc Bảng Danh Sách Sản Phẩm Chi Tiết -->
@@ -269,11 +282,36 @@
               </div>
             </div>
 
+            <!--   Model chỉnh sữa số lượng và giá chung       -->
+          <div class="modal fade" id="editQuantityPriceModal" tabindex="-1" aria-labelledby="editQuantityPriceLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editQuantityPriceLabel">Chỉnh sửa giá và số lượng sản phẩm</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="modalQuantity" class="form-label">Số lượng:</label>
+                    <input type="number" class="form-control" id="modalQuantity" ng-model="modalQuantity" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="modalPrice" class="form-label">Đơn giá:</label>
+                    <input type="number" class="form-control" id="modalPrice" ng-model="modalPrice" required>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                  <button type="button" class="btn btn-primary" ng-click="applyChanges()">Cập nhập</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--    END model        -->
 
 
 
 
-          </form>
           <!-- END thêm sản phẩm -->
         </div>
       </div>

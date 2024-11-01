@@ -9,6 +9,8 @@
 
   <!-- Fonts and icons -->
   <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
   <script>
     WebFont.load({
       google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -347,7 +349,7 @@
           <div class="alert alert-light" role="alert">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h5><i class="bi bi-list"></i> Danh sách đợt giảm giá</h5>
-              <a href="/admin/create-nhan-vien"><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button></a>
+              <button class="btn btn-primary add-button" ng-click="openModalAdd()"><i class="bi bi-plus"></i> Thêm</button>
             </div>
             <table class="table table-striped">
               <thead class="table-warning">
@@ -372,13 +374,15 @@
                 <td>{{x.ngay_ket_thuc | date:'dd/MM/yyyy'}}</td>
                 <td>{{x.trang_thai == 1 ? 'Còn hạn' :  'Hết hạn'}}</td>
                 <td>
-                  <button class="btn btn-warning" ng-click="openDetail(x.id)">
-                    <i class="bi bi-eye"></i>
-                  </button>
+                  <div class="d-flex">
+<!--                  <button class="btn btn-warning" ng-click="openDetail(x.id)">-->
+<!--                    <i class="bi bi-eye"></i>-->
+<!--                  </button>-->
                   <!-- Nút Sửa Nhân Viên -->
-                  <button class="btn btn-success" ng-click="openUpdateModal(x)">
+                  <button class="btn btn-success" ng-click="openModalUpdate(x)">
                     <i class="bi bi-pencil"></i>
                   </button>
+                  </div>
                 </td>
               </tr>
               </tbody>
@@ -405,155 +409,148 @@
               </nav>
             </div>
 
-            <!--     Show lên thông tin chi tiết của nhân viên         -->
-<!--            <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">-->
-<!--              <div class="modal-dialog modal-lg">-->
-<!--                <div class="modal-content">-->
-<!--                  <div class="modal-header">-->
-<!--                    <h5 class="modal-title" id="detailModalLabel">Thông tin nhân viên</h5>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                  </div>-->
-<!--                  <div class="modal-body">-->
-<!--                    <div class="row">-->
-<!--                      &lt;!&ndash; Hình ảnh đại diện &ndash;&gt;-->
-<!--                      <div class="col-md-4 text-center">-->
-<!--                        <img src="/admin/images/{{nvct.hinh_anh}}" alt="Ảnh đại diện" class="img-thumbnail rounded-circle" style="border-radius: 50%;width: 150px;height: 150px;">-->
-<!--                        <p><strong>Ảnh đại diện</strong></p>-->
-<!--                      </div>-->
+            <!--   Modal thêm đợt giảm giá  -->
+            <div class="modal fade" id="addGiamGiaModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Thêm đợt giảm giá</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <form>
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label for="maDotGG" class="form-label">Mã đợt giảm giá</label>
+                              <input type="text" class="form-control" id="maDotGG" ng-model="newGiamGia.ma_giam_gia">
+                            </div>
+                            <div class="col">
+                              <label for="hoTen" class="form-label">Tên đợt </label>
+                              <input type="text" class="form-control" id="hoTen" ng-model="newGiamGia.ten">
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label for="ngayBatDau" class="form-label">Ngày bắt đầu</label>
+                              <input type="date" class="form-control" id="ngayBatDau" ng-model="newGiamGia.ngay_bat_dau">
+                            </div>
+                            <div class="col">
+                              <label for="ngayKetThuc" class="form-label">Ngày kết thúc</label>
+                              <input type="date" class="form-control" id="ngayKetThuc" ng-model="newGiamGia.ngay_ket_thuc">
+                            </div>
+                          </div>
 
-<!--                      &lt;!&ndash; Thông tin nhân viên &ndash;&gt;-->
-<!--                      <div class="col-md-7">-->
-<!--                        <form>-->
-<!--                          <div class="row mb-3">-->
-<!--                            <div class="col">-->
-<!--                              <label for="tenKhachHang" class="form-label">Mã nhân viên</label>-->
-<!--                              <input type="text" class="form-control" id="tenKhachHang" ng-model="nvct.ma_nhan_vien" disabled>-->
-<!--                            </div>-->
-<!--                            <div class="col">-->
-<!--                              <label for="sdt" class="form-label">Họ tên </label>-->
-<!--                              <input type="text" class="form-control" id="hoTen" ng-model="nvct.ho_ten" disabled>-->
-<!--                            </div>-->
-<!--                            <div class="col">-->
-<!--                              <label for="gioiTinh" class="form-label">Giới tính</label>-->
-<!--                              <input type="text" class="form-control" id="gioiTinh" ng-model="nvct.gioi_tinh_display" disabled>-->
-<!--                            </div>-->
-<!--                          </div>-->
-<!--                          <div class="row mb-3">-->
-<!--                            <div class="col">-->
-<!--                              <label for="email" class="form-label">Chức vụ</label>-->
-<!--                              <input type="email" class="form-control" id="chucVu" ng-model="nvct.chucVu.ten_chuc_vu" disabled>-->
-<!--                            </div>-->
-<!--                            <div class="col">-->
-<!--                              <label for="ngaySinh" class="form-label">Ngày sinh</label>-->
-<!--                              <input type="date" class="form-control" id="ngaySinh" ng-model="nvct.ngay_sinh" disabled>-->
-<!--                            </div>-->
-<!--                          </div>-->
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label  class="form-label">Giá trị giảm (%)</label>
+                              <input type="text" class="form-control" id="sdt" ng-model="newGiamGia.gia_tri">
+                            </div>
+                            <div class="col">
+                              Trạng thái
+                              <div class="d-flex">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault1" ng-value= "1"
+                                         ng-model="newGiamGia.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault1">
+                                    Còn hạn
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault2"
+                                         ng-value="0" ng-model="newGiamGia.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault2">
+                                    hết hạn
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-<!--                          <div class="row mb-3">-->
-<!--                            <div class="col">-->
-<!--                              <label  class="form-label">SDT</label>-->
-<!--                              <input type="text" class="form-control" id="sdt" ng-model="nvct.sdt" disabled>-->
-<!--                            </div>-->
-<!--                            <div class="col">-->
-<!--                              <label  class="form-label">Email</label>-->
-<!--                              <input type="text" class="form-control" id="email" ng-model="nvct.email" disabled>-->
-<!--                            </div>-->
-<!--                          </div>-->
-
-<!--                          <div class="row mb-3">-->
-<!--                            <div class="col">-->
-<!--                              <label  class="form-label">Địa chỉ</label>-->
-<!--                              <input type="text" class="form-control" id="diaChi" ng-model="nvct.dia_chi" disabled>-->
-<!--                            </div>-->
-<!--                          </div>-->
-<!--                        </form>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                  <div class="modal-footer">-->
-<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="addGiamGia()">Thêm giảm giá</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <!--   END MODEL         -->
-            <!-- Modal Cập Nhật Nhân Viên -->
-<!--            <div class="modal fade" id="updateNhanVienModal" tabindex="-1" aria-labelledby="updateNhanVienModalLabel" aria-hidden="true">-->
-<!--              <div class="modal-dialog modal-lg">-->
-<!--                <div class="modal-content">-->
-<!--                  <div class="modal-header">-->
-<!--                    <h5 class="modal-title" id="updateNhanVienModalLabel">Cập nhật thông tin nhân viên</h5>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                  </div>-->
-<!--                  <div class="modal-body">-->
-<!--                    <form name="updateNhanVienForm" ng-submit="updateNhanVien()" novalidate>-->
-<!--                      <div class="row mb-3">-->
-<!--                        <div class="col-md-6">-->
-<!--                          <label for="hoTen" class="form-label">Họ tên</label>-->
-<!--                          <input type="text" class="form-control" id="hoTen" ng-model="selectedNhanVien.ho_ten" required />-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6">-->
-<!--                          <label for="ngaySinh" class="form-label">Ngày sinh</label>-->
-<!--                          <input type="date" class="form-control" id="ngaySinh" ng-model="selectedNhanVien.ngay_sinh" required />-->
-<!--                        </div>-->
 
-<!--                      </div>-->
+            <!-- Modal Cập Nhật-->
+            <div class="modal fade" id="updateGiamGiaModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Sửa đợt giảm giá</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <form>
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label for="maDotGG" class="form-label">Mã đợt giảm giá</label>
+                              <input type="text" class="form-control"  ng-model="updateGG.ma_giam_gia">
+                            </div>
+                            <div class="col">
+                              <label for="hoTen" class="form-label">Tên đợt </label>
+                              <input type="text" class="form-control"  ng-model="updateGG.ten">
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label for="ngayBatDau" class="form-label">Ngày bắt đầu</label>
+                              <input type="date" class="form-control"  ng-model="updateGG.ngay_bat_dau">
+                            </div>
+                            <div class="col">
+                              <label for="ngayKetThuc" class="form-label">Ngày kết thúc</label>
+                              <input type="date" class="form-control"  ng-model="updateGG.ngay_ket_thuc">
+                            </div>
+                          </div>
 
-<!--                      <div class="row mb-3">-->
-<!--                        <div class="col-md-6">-->
-<!--                          <label for="sdt" class="form-label">Số điện thoại</label>-->
-<!--                          <input type="tel" class="form-control" id="sdt" ng-model="selectedNhanVien.sdt" required />-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6">-->
-<!--                          <label for="email" class="form-label">Email</label>-->
-<!--                          <input type="email" class="form-control" id="email" ng-model="selectedNhanVien.email" required />-->
-<!--                        </div>-->
-<!--                      </div>-->
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label  class="form-label">Giá trị giảm (%)</label>
+                              <input type="text" class="form-control"  ng-model="updateGG.gia_tri">
+                            </div>
+                            <div class="col">
+                              Trạng thái
+                              <div class="d-flex">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="RadioDefault1" ng-value= "1"
+                                         ng-model="updateGG.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault1">
+                                    Còn hạn
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="RadioDefault2"
+                                         ng-value="0" ng-model="updateGG.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault2">
+                                    hết hạn
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-<!--                      <div class="row mb-3">-->
-<!--                        <div class="col-md-6">-->
-<!--                          <label class="form-label">Giới tính</label><br />-->
-<!--                          <div class="form-check form-check-inline">-->
-<!--                            <input class="form-check-input" type="radio" id="gioiTinhNam"-->
-<!--                                   ng-model="selectedNhanVien.gioi_tinh" ng-value="0" />-->
-<!--                            <label class="form-check-label" for="gioiTinhNam">Nam</label>-->
-<!--                          </div>-->
-<!--                          <div class="form-check form-check-inline">-->
-<!--                            <input class="form-check-input" type="radio" id="gioiTinhNu"-->
-<!--                                   ng-model="selectedNhanVien.gioi_tinh" ng-value="1" />-->
-<!--                            <label class="form-check-label" for="gioiTinhNu">Nữ</label>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-
-
-<!--                        <div class="col-md-6">-->
-<!--                          <label for="trangThai" class="form-label">Trạng thái</label>-->
-<!--                          <select class="form-select" id="trangThai" ng-model="selectedNhanVien.trang_thai">-->
-<!--                            <option ng-value="1">Kích hoạt</option>-->
-<!--                            <option ng-value="0">Ngừng kích hoạt</option>-->
-<!--                          </select>-->
-<!--                        </div>-->
-
-
-<!--                      </div>-->
-
-<!--                      <div class="mb-3">-->
-<!--                        <label for="diaChi" class="form-label">Địa chỉ</label>-->
-<!--                        <input type="text" class="form-control" id="diaChi" ng-model="selectedNhanVien.dia_chi" required />-->
-<!--                      </div>-->
-
-<!--                      <div class="text-end">-->
-<!--                        <button type="submit" class="btn btn-primary">Cập nhật</button>-->
-<!--                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>-->
-<!--                      </div>-->
-<!--                    </form>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-
-
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="updateGiamGia()">Cập nhât giảm giá</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <!--    end model cập nhật nhân viên                -->
           </div>
         </div>

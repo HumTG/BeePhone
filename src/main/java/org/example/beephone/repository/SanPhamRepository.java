@@ -38,27 +38,29 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
 ////    )
 //    Page<SanPhamCustom> getSanPhamPage(Pageable pageable);
 
-    @Query("SELECT sp.ma_san_pham AS maSanPham, sp.ten AS tenSanPham, " +
+    @Query("SELECT sp.id AS id, sp.ma_san_pham AS maSanPham, sp.ten AS tenSanPham, " +
             "SUM(ctsp.so_luong) AS soLuongTon, sp.trang_thai AS trangThai " +
             "FROM chi_tiet_san_pham ctsp " +
             "JOIN ctsp.sanPham sp " +
             "GROUP BY sp.id, sp.ma_san_pham, sp.ten, sp.trang_thai " +
-            "order by sp.id desc ")
+            "ORDER BY sp.id DESC")
     Page<Object[]> getSanPhamWithSoLuongTon(Pageable pageable);
 
-    @Query("SELECT sp.ma_san_pham AS maSanPham, sp.ten AS tenSanPham, " +
+    @Query("SELECT sp.id AS id, sp.ma_san_pham AS maSanPham, sp.ten AS tenSanPham, " +
             "SUM(ctsp.so_luong) AS soLuongTon, sp.trang_thai AS trangThai " +
             "FROM chi_tiet_san_pham ctsp " +
             "JOIN ctsp.sanPham sp " +
             "WHERE (:maHoacTenSanPham IS NULL OR sp.ma_san_pham LIKE %:maHoacTenSanPham% OR sp.ten LIKE %:maHoacTenSanPham%) " +
             "AND (:trangThai IS NULL OR sp.trang_thai = :trangThai) " +
             "GROUP BY sp.id, sp.ma_san_pham, sp.ten, sp.trang_thai " +
-            "HAVING (:soLuongTon IS NULL OR SUM(ctsp.so_luong) >= :soLuongTon) order by sp.id desc ")
+            "HAVING (:soLuongTon IS NULL OR SUM(ctsp.so_luong) >= :soLuongTon) " +
+            "ORDER BY sp.id DESC")
     Page<Object[]> searchSanPhamWithSoLuongTon(
             @Param("maHoacTenSanPham") String maHoacTenSanPham,
             @Param("trangThai") Integer trangThai,
             @Param("soLuongTon") Integer soLuongTon,
             Pageable pageable);
+
 
 
 

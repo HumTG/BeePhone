@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
@@ -37,6 +39,10 @@ public class san_pham {
 
     @Column(name = "trang_thai")
     private int trang_thai ;
+
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<chi_tiet_san_pham> variants;
+
 
 
 }

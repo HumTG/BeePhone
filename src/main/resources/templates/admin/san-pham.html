@@ -123,8 +123,9 @@
                 <td>{{x.soLuongTon}}</td> <!-- Số lượng tồn -->
                 <td>{{x.trangThai == 1 ? 'Đang kinh doanh' : 'Ngưng kinh doanh'}}</td> <!-- Trạng thái -->
                 <td>
+                  <!-- Nút Xem Chi Tiết -->
                   <button class="btn btn-warning" ng-click="viewDetail(x)">
-                    <i class="bi bi-eye"></i> <!-- Nút xem chi tiết -->
+                    <i class="bi bi-eye"></i>
                   </button>
                   <button class="btn btn-primary" ng-click="editSanPham(x)">
                     <i class="bi bi-pencil"></i> <!-- Nút chỉnh sửa -->
@@ -157,6 +158,55 @@
             </div>
           <!--   End chuyển trang         -->
           </div>
+
+          <!-- Modal Chi Tiết Sản Phẩm -->
+          <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="productDetailLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="productDetailLabel">Chi Tiết Sản Phẩm</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Thông tin sản phẩm -->
+                  <p><strong>Mã sản phẩm:</strong> {{ productDetail.ma_san_pham }}</p>
+                  <p><strong>Tên sản phẩm:</strong> {{ productDetail.ten }}</p>
+                  <p><strong>Nhà sản xuất:</strong> {{ productDetail.nhaSanXuat.ten }}</p>
+                  <p><strong>Chất liệu:</strong> {{ productDetail.chatLieu.ten }}</p>
+                  <p><strong>Mô tả:</strong> {{ productDetail.mo_ta }}</p>
+                  <p><strong>Trạng thái:</strong> {{ productDetail.trang_thai == 1 ? 'Kinh doanh' : 'Ngừng kinh doanh' }}</p>
+
+                  <!-- Bảng Thông Tin Các Biến Thể -->
+                  <h6>Thông Tin Biến Thể</h6>
+                  <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                      <th>Kích cỡ</th>
+                      <th>Màu sắc</th>
+                      <th>Số lượng</th>
+                      <th>Giá bán</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="variant in productDetail.variants">
+                      <td>{{ variant.kichCo.ten }}</td>
+                      <td>{{ variant.mauSac.ten }}</td>
+                      <td>{{ variant.so_luong }}</td>
+                      <td>{{ variant.gia_ban | currency:"":0 }} VNĐ</td>
+                      <td>
+                        <img src="/images/{{variant.anh}}" style="width: 100px ; height: 90px">
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!--   End model detail       -->
 
 
 
@@ -293,6 +343,14 @@
       lineColor: "#ffa534",
       fillColor: "rgba(255, 165, 52, .14)",
     });
+    window.onload = function() {
+      const successMessage = sessionStorage.getItem('successMessage');
+      if (successMessage) {
+        toastr.success(successMessage);
+        sessionStorage.removeItem('successMessage'); // Xóa thông báo sau khi hiển thị
+      }
+    };
+
   </script>
 
   <!-- Toastr JS -->

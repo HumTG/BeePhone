@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SanPhamDTO {
+    private Integer id ;
     private String maSanPham;
     private String tenSanPham;
     private int soLuongTon;
