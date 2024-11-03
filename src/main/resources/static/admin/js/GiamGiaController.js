@@ -2,7 +2,6 @@ var app = angular.module('GiamGiaApp', []);
 var host = "http://localhost:8080/rest/giam-gia";
 
 app.controller('GiamGiaController',function ($scope,$http){
-    console.log("đây là giảm giá controller")
     $scope.currentPage = 0;
     $scope.newGiamGia = {
         id : null,
@@ -82,7 +81,7 @@ app.controller('GiamGiaController',function ($scope,$http){
                 var modalElement = document.getElementById('addGiamGiaModal');
                 var addModal = bootstrap.Modal.getInstance(modalElement);
                 addModal.hide(); // đóng modal
-                $scope.getData();
+                $scope.getData(0)
                 $scope.clear();
                 toastr.success('Thành công', 'OK')
             }) .catch(function(error) {
@@ -127,7 +126,7 @@ app.controller('GiamGiaController',function ($scope,$http){
                 var modalElement = document.getElementById('updateGiamGiaModal');
                 var Modal = bootstrap.Modal.getInstance(modalElement);
                 Modal.hide(); // đóng modal
-                $scope.getData();
+                $scope.getData($scope.currentPage)
                 toastr.success('Sửa giảm giá thành công', 'OK')
             }) .catch(function(error) {
             console.error('Lỗi :', error);

@@ -9,6 +9,7 @@
 
   <!-- Fonts and icons -->
   <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script>
     WebFont.load({
       google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -32,11 +33,16 @@
   <link rel="stylesheet" href="assets/css/plugins.min.css" />
   <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
 
+  <!-- ANGULAR  -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <!-- Toastr CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link rel="stylesheet" href="assets/css/demo.css" />
 </head>
 
-<body>
+<body ng-app="KhuyenMaiApp">
   <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
@@ -278,9 +284,270 @@
         <!-- End Navbar -->
       </div>
 
-      <div class="container">
+      <div class="container" ng-controller="KhuyenMaiController">
         <div class="page-inner">
-          <h1>Quản lý phiếu giảm giá</h1>
+          <h5>Quản lý khuyến mại</h5>
+          <!--     Bộ lọc            -->
+          <div class="alert alert-light" role="alert">
+            <h5><i class="bi bi-funnel-fill"></i>Bộ lọc</h5>
+            <hr>
+            <div class="row mb-3">
+              <!-- Tìm kiếm -->
+              <div class="col-md-4">
+                <label for="search" class="form-label">Tìm kiếm:</label>
+                <input type="text" class="form-control" id="search"
+                       placeholder="Tìm kiếm tên và sđt..."
+                       ng-model="filter.ten_sdt" />
+              </div>
+
+              <!-- Ngày sinh từ -->
+              <div class="col-md-3">
+                <label for="dob_from" class="form-label">Ngày sinh từ:</label>
+                <input type="date" class="form-control" id="dob_from"
+                       ng-model="filter.ngay_sinh_tu" />
+              </div>
+
+              <!-- Ngày sinh đến -->
+              <div class="col-md-3">
+                <label for="dob_to" class="form-label">Ngày sinh đến:</label>
+                <input type="date" class="form-control" id="dob_to"
+                       ng-model="filter.ngay_sinh_den" />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <!-- Trạng thái -->
+              <div class="col-md-2">
+                <label for="status" class="form-label">Trạng thái:</label>
+                <select class="form-select" id="status"
+                        ng-model="filter.trang_thai">
+                  <option value="">Tất cả</option>
+                  <option value="1">Kích hoạt</option>
+                  <option value="0">Không kích hoạt</option>
+                </select>
+              </div>
+
+              <!-- Khoảng tuổi -->
+              <div class="col-md-8">
+                <label for="ageRange" class="form-label">Khoảng tuổi:</label>
+                <input type="range" class="form-range" id="ageRange"
+                       min="18" max="60" ng-model="filter.khoang_tuoi" />
+                <p>Tuổi: {{filter.khoang_tuoi}}</p>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+              <!-- Nút Tìm kiếm và Làm mới -->
+              <button type="button" class="btn btn-primary me-2"
+                      ng-click="searchNhanVien()">Tìm kiếm</button>
+              <button type="button" class="btn btn-danger" ng-click="resetFilter()">Làm mới bộ lọc</button>
+            </div>
+          </div>
+
+          <!--     END Bộ lọc           -->
+          <div class="alert alert-light" role="alert">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5><i class="bi bi-list"></i> Danh sách khuyến mại</h5>
+              <button class="btn btn-primary add-button" ng-click="openModalAdd()"><i class="bi bi-plus"></i> Thêm</button>
+            </div>
+            <table class="table table-striped">
+              <thead class="table-warning">
+              <tr class="text-bg-warning text-center text-white">
+                <th scope="col">STT</th>
+                <th scope="col">Mã khuyến mại</th>
+                <th scope="col">Giá trị giảm</th>
+                <th scope="col">Giá tối thiểu</th>
+                <th scope="col">Ngày bắt đầu</th>
+                <th scope="col">Ngày kết thúc</th>
+                <th scope="col">Ngày tạo</th>
+                <th scope="col">Trạng Thái</th>
+                <th scope="col">Hành Động</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="x in listKM">
+                <td>{{$index+1}}</td>
+                <td>{{x.ma_khuyen_mai}}</td>
+                <td>{{x.gia_tri}}</td>
+                <td>{{x.gia_tri_toi_thieu | currency:'':0}}</td>
+                <td>{{x.ngay_bat_dau | date:'dd/MM/yyyy' }}</td>
+                <td>{{x.ngay_ket_thuc | date:'dd/MM/yyyy'}}</td>
+                <td>{{x.ngay_tao | date:'dd/MM/yyyy'}}</td>
+                <td>{{x.trang_thai == 1 ? 'Còn hạn' :  'Hết hạn'}}</td>
+                <td>
+                  <div class="d-flex">
+
+                    <!-- Nút Sửa-->
+                    <button class="btn btn-success" ng-click="openModalUpdate(x)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="mx-auto p-2" style="width: 200px;">
+              <nav aria-label="Page navigation example" >
+                <ul class="pagination">
+                  <!-- Nút Previous -->
+                  <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
+                    <a class="page-link" href="" ng-click="changePage(currentPage - 1)">Previous</a>
+                  </li>
+
+                  <!-- Nút số trang -->
+                  <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
+                      ng-class="{ 'active': $index === currentPage }">
+                    <a class="page-link" href="" ng-click="changePage($index)">{{$index + 1}}</a>
+                  </li>
+
+                  <!-- Nút Next -->
+                  <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
+                    <a class="page-link" href="" ng-click="changePage(currentPage + 1)">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+
+            <!--   Modal thêm  -->
+            <div class="modal fade" id="addKhuyenMaiModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Thêm khuyến mại</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <form>
+                          <div class="row mb-3">
+<!--                            <div class="col">-->
+<!--                              <label for="maKM" class="form-label">Mã khuyến mại</label>-->
+<!--                              <input type="text" class="form-control" id="maKM" ng-model="newGiamGia.ma_giam_gia">-->
+<!--                            </div>-->
+                            <div class="col">
+                              <label for="hoTen" class="form-label">Giá trị giảm (%)</label>
+                              <input type="text" class="form-control" id="hoTen" ng-model="newKM.gia_tri">
+                            </div>
+                            <div class="col">
+                              <label for="toiDa" class="form-label">Giá trị tối thiểu</label>
+                              <input type="text" class="form-control" id="toiDa" ng-model="newKM.gia_tri_toi_thieu">
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label for="ngayBatDau" class="form-label">Ngày bắt đầu</label>
+                              <input type="date" class="form-control" id="ngayBatDau" ng-model="newKM.ngay_bat_dau">
+                            </div>
+                            <div class="col">
+                              <label for="ngayKetThuc" class="form-label">Ngày kết thúc</label>
+                              <input type="date" class="form-control" id="ngayKetThuc" ng-model="newKM.ngay_ket_thuc">
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <div class="col">
+                              Trạng thái
+                              <div class="d-flex">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault1" ng-value= "1"
+                                         ng-model="newKM.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault1">
+                                    Còn hạn
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="flexRadioDefault2"
+                                         ng-value="0" ng-model="newKM.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault2">
+                                    hết hạn
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="addKM()">Thêm khuyến mại</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--   END MODEL         -->
+
+            <!-- Modal Cập Nhật-->
+            <div class="modal fade" id="updateKMModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Sửa khuyến mại</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <form>
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label for="suaGT" class="form-label">Giá trị giảm (%)</label>
+                              <input type="text" class="form-control" id="suaGT" ng-model="updateKM.gia_tri">
+                            </div>
+                            <div class="col">
+                              <label for="suatoiDa" class="form-label">Giá trị tối thiểu</label>
+                              <input type="text" class="form-control" id="suatoiDa" ng-model="updateKM.gia_tri_toi_thieu">
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <div class="col">
+                              <label for="ngayBatDau2" class="form-label">Ngày bắt đầu</label>
+                              <input type="date" class="form-control" id="ngayBatDau2" ng-model="updateKM.ngay_bat_dau">
+                            </div>
+                            <div class="col">
+                              <label for="ngayKetThuc2" class="form-label">Ngày kết thúc</label>
+                              <input type="date" class="form-control" id="ngayKetThuc2" ng-model="updateKM.ngay_ket_thuc">
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <div class="col">
+                              Trạng thái
+                              <div class="d-flex">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="radio1" ng-value= "1"
+                                         ng-model="updateKM.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault1">
+                                    Còn hạn
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="trangthai" id="radio2"
+                                         ng-value="0" ng-model="updateKM.trang_thai">
+                                  <label class="form-check-label" for="flexRadioDefault2">
+                                    hết hạn
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="updateGiamGia()">Cập nhât</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--    end model cập nhật nhân viên                -->
+          </div>
         </div>
       </div>
 
@@ -413,6 +680,12 @@
       fillColor: "rgba(255, 165, 52, .14)",
     });
   </script>
+
+  <!-- Toastr JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <!-- AngularJS -->
+  <script th:src="@{/admin/js/KhuyenMaiController.js}"></script>
 </body>
 
 </html>

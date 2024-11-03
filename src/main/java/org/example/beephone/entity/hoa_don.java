@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,10 +24,17 @@ public class hoa_don {
 
     private String ma_hoa_don ;
 
-    // Liên kết Many-to-One đến KhachHang
     @ManyToOne
-    @JoinColumn(name = "id_khach_hang")  // Tên cột trong bảng `hoa_don` kết nối với bảng `khach_hang`
+    @JoinColumn(name = "id_khach_hang")
     private khach_hang khachHang;
+
+    @ManyToOne
+    @JoinColumn(name = "id_nhan_vien")
+    private nhan_vien nhanVien;
+
+    @ManyToOne
+    @JoinColumn(name = "id_khuyen_mai")
+    private khuyen_mai khuyenMai;
 
     private Date ngay_tao ;
 
