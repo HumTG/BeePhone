@@ -32,11 +32,16 @@
     <link rel="stylesheet" href="assets/css/plugins.min.css" />
     <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
 
+    <!-- ANGULAR  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="assets/css/demo.css" />
 </head>
 
-<body>
+<body ng-app="BanHangTaiQuayApp">
 <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
@@ -278,9 +283,32 @@
             <!-- End Navbar -->
         </div>
 
-        <div class="container">
+        <div class="container" ng-controller="BanHangTaiQuayCtrl">
             <div class="page-inner">
                 <h1>Bán hàng tại quầy</h1>
+
+                <div class="alert alert-light" role="alert">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item" ng-repeat="a in listHD">
+                            <a class="nav-link" href="#" ng-class="{ 'active': $index === viTriHoaDon }"
+                               ng-click="changeHoaDon($index,a)">
+                                HD{{$index + 1}}
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="row mb-3">
+                        <!-- Tìm kiếm -->
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Tìm kiếm:</label>
+                            <input type="text" class="form-control" id="search"
+                                   placeholder="Tìm kiếm tên và sđt..."
+                                   ng-model="filter.ten_sdt" />
+                        </div>
+
+                </div>
+
+
             </div>
         </div>
 
@@ -413,6 +441,12 @@
         fillColor: "rgba(255, 165, 52, .14)",
     });
 </script>
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- AngularJS -->
+<script th:src="@{/admin/js/BanHangTaiQuayController.js}"></script>
 </body>
 
 </html>
