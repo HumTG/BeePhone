@@ -23,11 +23,13 @@ public class hoa_don_chi_tiet {
 
     private String ma_hoa_don_chi_tiet ;
 
+    @ManyToOne
     @JoinColumn(name = "id_hoa_don")
-    private int id_hoa_don ;
+    private hoa_don hoa_don ;
 
+    @ManyToOne
     @JoinColumn(name = "id_chi_tiet_san_pham")
-    private int id_chi_tiet_san_pham ;
+    private chi_tiet_san_pham chi_tiet_san_pham ;
 
     private int so_luong;
 
