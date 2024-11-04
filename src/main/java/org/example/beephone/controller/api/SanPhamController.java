@@ -77,6 +77,17 @@ public class SanPhamController {
         return ResponseEntity.ok(sanPham);
     }
 
+    @PutMapping("/rest/san-pham/{id}")
+    public ResponseEntity<san_pham> updateSanPham(@PathVariable int id, @RequestBody san_pham sanPham) {
+        san_pham existingSanPham = service.getSanPhamDetail(id);
+        if (existingSanPham == null) {
+            return ResponseEntity.notFound().build();
+        }
+        san_pham updatedSanPham = service.updateSanPham(sanPham);
+        return ResponseEntity.ok(updatedSanPham);
+    }
+
+
 
 
 

@@ -394,6 +394,80 @@ app.controller('SanPhamController', function($scope, $http) {
             });
     };
 
+    // Lấy thông tin sản phẩm và mở modal chỉnh sửa
+    $scope.viewEdit = function(sanPham) {
+        $http.get(`http://localhost:8080/rest/san-pham/${sanPham.id}`)
+            .then(function(response) {
+                $scope.editProduct = response.data;
+                var editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+                editProductModal.show();
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
+                toastr.error("Không thể tải thông tin sản phẩm!");
+            });
+    };
+
+    // Hàm xử lý khi click vào input chọn ảnh
+    $scope.selectImage = function(event, variant) {
+        const input = event.target;
+        input.addEventListener('change', function() {
+            $scope.uploadImage(event, variant);
+        }, { once: true }); // Lắng nghe sự kiện change một lần duy nhất
+    };
+
+    // Hàm upload ảnh và cập nhật preview
+    $scope.uploadImage = function(event, variant) {
+        const input = event.target;
+        const file = input.files ? input.files[0] : null;
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $scope.$apply(function() {
+                    variant.anhPreview = e.target.result; // Hiển thị preview ảnh
+                    variant.anh = file.name; // Lưu tên file thực tế để lưu vào database khi update
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Cập nhật sản phẩm
+    $scope.updateProduct = function() {
+        // Bắt đầu hiển thị loading spinner
+        $scope.loading = true;
+
+        // Gán id sản phẩm cho mỗi biến thể
+        $scope.editProduct.variants.forEach(variant => {
+            variant.id_san_pham = $scope.editProduct.id;
+        });
+
+        $http.put(`http://localhost:8080/rest/san-pham/${$scope.editProduct.id}`, $scope.editProduct)
+            .then(function(response) {
+                toastr.success("Cập nhật sản phẩm thành công!");
+
+                // Đóng modal
+                var editProductModal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+                editProductModal.hide();
+
+                // Đặt lại trạng thái loading về false và reload trang sau khi thành công
+                $scope.loading = false;
+                location.reload();
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi cập nhật sản phẩm:", error);
+                toastr.error("Cập nhật sản phẩm thất bại!");
+
+                // Đặt lại trạng thái loading về false khi có lỗi
+                $scope.loading = false;
+            });
+    };
+
+
+
+
+
 
 
 

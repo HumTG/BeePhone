@@ -46,6 +46,24 @@
       text-overflow: ellipsis;
       max-width: 200px;
     }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8); /* Màu nền mờ */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1050; /* Hiển thị trên cùng */
+      backdrop-filter: blur(5px); /* Hiệu ứng làm mờ */
+    }
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
   </style>
 </head>
 
@@ -127,9 +145,10 @@
                   <button class="btn btn-warning" ng-click="viewDetail(x)">
                     <i class="bi bi-eye"></i>
                   </button>
-                  <button class="btn btn-primary" ng-click="editSanPham(x)">
-                    <i class="bi bi-pencil"></i> <!-- Nút chỉnh sửa -->
+                  <button class="btn btn-primary" ng-click="viewEdit(x)">
+                    <i class="bi bi-pencil-square"></i>
                   </button>
+
                 </td>
               </tr>
               </tbody>
@@ -208,8 +227,88 @@
           </div>
         <!--   End model detail       -->
 
+          <!-- Modal edit -->
+          <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editProductLabel">Chỉnh Sửa Sản Phẩm</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Thông tin sản phẩm -->
+                  <div class="mb-3">
+                    <label>Mã sản phẩm:</label>
+                    <input type="text" class="form-control" ng-model="editProduct.ma_san_pham" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label>Tên sản phẩm:</label>
+                    <input type="text" class="form-control" ng-model="editProduct.ten">
+                  </div>
+                  <div class="mb-3">
+                    <label>Nhà sản xuất:</label>
+                    <select class="form-control" ng-model="editProduct.nhaSanXuat.id" ng-options="nsx.id as nsx.ten for nsx in nhaSanXuatList">
+                      <option value="">Chọn nhà sản xuất</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label>Chất liệu:</label>
+                    <select class="form-control" ng-model="editProduct.chatLieu.id" ng-options="cl.id as cl.ten for cl in chatLieuList">
+                      <option value="">Chọn chất liệu</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label>Mô tả:</label>
+                    <textarea class="form-control" ng-model="editProduct.mo_ta"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <p><strong>Trạng thái:</strong>
+                      <select class="form-select" ng-model="editProduct.trang_thai">
+                        <option value="1">Kinh doanh</option>
+                        <option value="0">Ngừng kinh doanh</option>
+                      </select>
+                    </p>
+                  </div>
 
+                  <!-- Bảng Thông Tin Các Biến Thể -->
+                  <h6>Thông Tin Biến Thể</h6>
+                  <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                      <th>Kích cỡ</th>
+                      <th>Màu sắc</th>
+                      <th>Số lượng</th>
+                      <th>Giá bán</th>
+                      <th>Ảnh</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="variant in editProduct.variants">
+                      <td>{{ variant.kichCo.ten }}</td>
+                      <td>{{ variant.mauSac.ten }}</td>
+                      <td><input type="number" class="form-control" ng-model="variant.so_luong"></td>
+                      <td><input type="number" class="form-control" ng-model="variant.gia_ban"></td>
+                      <td class="text-center">
+                        <label class="btn btn-light">
+                          <img ng-src="{{variant.anhPreview || '/images/' + variant.anh}}" style="width: 100px; height: 90px;">
+                          <input type="file" style="display: none;" accept="image/*"
+                                 ng-click="selectImage($event, variant)"
+                                 ng-model="variant.dummyModel" /> <!-- ng-model giả để theo dõi thay đổi -->
+                        </label>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                  <button type="button" class="btn btn-primary" ng-click="updateProduct()">Lưu Thay Đổi</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
+          <!--    ENd model edit      -->
 
 
         </div>

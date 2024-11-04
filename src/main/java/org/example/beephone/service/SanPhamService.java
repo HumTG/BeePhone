@@ -149,6 +149,31 @@ public class SanPhamService {
         return sanPham;
     }
 
+    // update
+    @Transactional
+    public san_pham updateSanPham(san_pham sanPham) {
+        san_pham existingSanPham = sanPhamRepository.findById(sanPham.getId()).orElse(null);
+        if (existingSanPham != null) {
+            existingSanPham.setTen(sanPham.getTen());
+            existingSanPham.setMo_ta(sanPham.getMo_ta());
+            existingSanPham.setTrang_thai(sanPham.getTrang_thai());
+            existingSanPham.setNhaSanXuat(sanPham.getNhaSanXuat());
+            existingSanPham.setChatLieu(sanPham.getChatLieu());
+
+            // Update các biến thể và đảm bảo id_san_pham được gán cho mỗi biến thể
+            List<chi_tiet_san_pham> updatedVariants = sanPham.getVariants().stream().map(variant -> {
+                variant.setSanPham(existingSanPham); // Gán lại sản phẩm hiện tại cho biến thể
+                return variant;
+            }).collect(Collectors.toList());
+
+            existingSanPham.setVariants(updatedVariants);
+            return sanPhamRepository.save(existingSanPham);
+        }
+        return null;
+    }
+
+
+
 
 
 
