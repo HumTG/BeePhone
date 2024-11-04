@@ -25,8 +25,23 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     $scope.changeHoaDon = function(index,a){
         $scope.viTriHoaDon = index;
         $scope.hoa_don = angular.copy(a);
-        console.log($scope.hoa_don);
+        if ($scope.hoa_don.id != null ) {
+            $scope.getHDCT($scope.hoa_don.id);
+        }
+    }
 
+    /// lấy hdct theo hóa đơn đã chọn
+    $scope.getHDCT = function (idHD){
+        $http.get("http://localhost:8080/rest/hoa-don-chi-tiet/dto/" + idHD).then(function(response) {
+            if (response.status === 200) {
+                $scope.listHDCT = response.data;
+                console.log($scope.listHDCT);
+            } else {
+                console.error("Error: ", response.status);
+            }
+        }).catch(function(error) {
+            console.error("Error occurred: ", error);
+        });
     }
 
 });

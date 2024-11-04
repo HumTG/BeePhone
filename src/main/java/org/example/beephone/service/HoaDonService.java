@@ -26,4 +26,8 @@ public class HoaDonService {
         return hdRP.findAll();
     }
 
+//    public List<hoa_don> getb(){
+//     return hdRP.getHDbyNV(33);
+//    }
+
 }

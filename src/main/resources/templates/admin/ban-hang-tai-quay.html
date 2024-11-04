@@ -288,6 +288,8 @@
                 <h1>Bán hàng tại quầy</h1>
 
                 <div class="alert alert-light" role="alert">
+                    <button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button>
+
                     <ul class="nav nav-tabs">
                         <li class="nav-item" ng-repeat="a in listHD">
                             <a class="nav-link" href="#" ng-class="{ 'active': $index === viTriHoaDon }"
@@ -297,15 +299,50 @@
                         </li>
                     </ul>
                     <hr>
-                    <div class="row mb-3">
-                        <!-- Tìm kiếm -->
-                        <div class="col-md-4">
-                            <label for="search" class="form-label">Tìm kiếm:</label>
-                            <input type="text" class="form-control" id="search"
-                                   placeholder="Tìm kiếm tên và sđt..."
-                                   ng-model="filter.ten_sdt" />
-                        </div>
-
+<!--danh sach sp-->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5><i class="bi bi-list"></i> Hoá đơn chi tiết </h5>
+                        <button class="btn btn-primary add-button" ng-click="openModalAdd()"><i class="bi bi-plus"></i> Thêm sản phẩm</button>
+                    </div>
+                    <table class="table table-striped">
+                        <thead class="table-warning">
+                        <tr class="text-bg-warning text-center text-white">
+                            <th scope="col">STT</th>
+                            <th scope="col">Ảnh</th>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Thuộc tính</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Thành tiền</th>
+                            <th scope="col">Hành Động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="x in listHDCT">
+                            <td>{{$index+1}}</td>
+                            <td>
+                                <img src="/images/{{x.anh}}" style="width: 50px ; height: 40px">
+                            </td>
+                            <td>
+                                <div>{{x.ten_san_pham}}</div>
+                                <div style="color:red;">{{x.don_gia | currency:'':0}}</div>
+                            </td>
+                            <td>
+                                <div>Màu:{{x.ten_mau_sac}}</div>
+                                <div>Dòng máy:{{x.ten_kich_co}}</div>
+                            </td>
+                            <td>{{x.so_luong}}</td>
+                            <td>{{x.don_gia * x.so_luong}}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <button class="btn btn-success" ng-click="openModalUpdate(x)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <!-- END danh sach sp-->
                 </div>
 
 
