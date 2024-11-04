@@ -17,6 +17,7 @@ public class ChiTietSanPhamService {
         return chiTietSanPhamRepository.findAll();
     }
 
+
     public List<chi_tiet_san_pham> updateMultiple(List<chi_tiet_san_pham> chiTietSanPhams) {
         return chiTietSanPhamRepository.saveAll(chiTietSanPhams);
     }

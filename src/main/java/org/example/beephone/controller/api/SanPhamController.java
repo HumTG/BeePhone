@@ -3,6 +3,7 @@ package org.example.beephone.controller.api;
 import org.example.beephone.dto.SanPhamDTO;
 import org.example.beephone.entity.chi_tiet_san_pham;
 import org.example.beephone.entity.san_pham;
+import org.example.beephone.repository.ChiTietSanPhamRepository;
 import org.example.beephone.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -85,6 +86,17 @@ public class SanPhamController {
         }
         san_pham updatedSanPham = service.updateSanPham(sanPham);
         return ResponseEntity.ok(updatedSanPham);
+    }
+
+
+    @Autowired
+    private ChiTietSanPhamRepository chiTietSanPhamRepository;
+
+    // API để lấy danh sách biến thể của một sản phẩm
+    @GetMapping("/rest/san-pham/{productId}/variants")
+    public ResponseEntity<List<chi_tiet_san_pham>> getVariantsByProductId(@PathVariable int productId) {
+        List<chi_tiet_san_pham> variants = chiTietSanPhamRepository.findBySanPhamId(productId);
+        return ResponseEntity.ok(variants);
     }
 
 

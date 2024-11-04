@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,19 +38,6 @@ public class GiamGiaRestController {
         }
     }
 
-    @PostMapping("/rest/giam-gia")
-    public ResponseEntity<?> addGG(@RequestBody giam_gia giam_gia){
-        try{
-//            System.out.println(giam_gia.getNgay_bat_dau());
-//            System.out.println(giam_gia.getNgay_ket_thuc());
-            giamGiaService.addGiamGia(giam_gia);
-            return ResponseEntity.noContent().build();
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra: " + e.getMessage());
-        }
-    }
-
     @GetMapping("rest/giam-gia/{id}")
     public ResponseEntity<giam_gia> findByIDGG(@PathVariable("id") Integer id){
         giam_gia gg = giamGiaService.findById(id)
@@ -61,18 +49,28 @@ public class GiamGiaRestController {
     public ResponseEntity<?> updateGiamGia(@RequestBody giam_gia giam_gia){
         try{
             giamGiaService.updateGiamGia(giam_gia);
-//            System.out.println(giam_gia.getId());
-//            System.out.println(giam_gia.getMa_giam_gia());
-//            System.out.println(giam_gia.getTen());
-//            System.out.println(giam_gia.getGia_tri());
-//            System.out.println(giam_gia.getNgay_bat_dau());
-//            System.out.println(giam_gia.getNgay_ket_thuc());
-//            System.out.println(giam_gia.getTrang_thai());
             return ResponseEntity.ok(Map.of("message", "Cập nhật đợt giảm giá thành công."));
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra: " + e.getMessage());
         }
-
     }
+
+    @PostMapping("/rest/giam-gia")
+    public ResponseEntity<giam_gia> addGiamGia(@RequestBody giam_gia giamGia) {
+        giam_gia savedGiamGia = giamGiaService.addGiamGia(giamGia);
+        return ResponseEntity.ok(savedGiamGia);
+    }
+
+
+    @PutMapping("/rest/giam-gia/{discountId}/apply-to-variants")
+    public ResponseEntity<Void> applyDiscountToVariants(
+            @PathVariable int discountId,
+            @RequestBody List<Integer> variantIds) {
+        giamGiaService.applyDiscountToVariants(discountId, variantIds);
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }

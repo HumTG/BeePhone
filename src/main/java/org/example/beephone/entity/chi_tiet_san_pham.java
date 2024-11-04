@@ -28,7 +28,6 @@ public class chi_tiet_san_pham {
     @JsonIgnore
     private san_pham sanPham ;
 
-
     @JoinColumn(name = "id_mau_sac")
     @ManyToOne
     private mau_sac mauSac ;

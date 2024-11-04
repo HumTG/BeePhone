@@ -9,4 +9,9 @@ public class DotGiamGiaAdminController {
     public String index(){
         return "admin/dot-giam-gia";
     }
+
+    @GetMapping("admin/create-dot-giam-gia")
+    public String add(){
+        return "admin/create-dot-giam-gia";
+    }
 }
