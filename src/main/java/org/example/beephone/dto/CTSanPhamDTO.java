@@ -31,5 +31,7 @@ public class CTSanPhamDTO {
 
     private String anh ;
 
+    private int soLuongThem;
+
     private int trang_thai ;
 }

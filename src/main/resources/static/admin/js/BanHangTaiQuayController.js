@@ -67,6 +67,10 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
 
     /// mở modal chi tiết sp
     $scope.openModalCTSP = function (){
+        if ($scope.hoa_don.id == null){
+            toastr.warning('Chọn hóa đơn trước khi thêm', 'Cảnh báo');
+            return;
+        }
         var modal = new bootstrap.Modal(document.getElementById('chiTietSPModal'));
         modal.show();
     }
@@ -94,6 +98,11 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         }
     };
 
+
+    $scope.themSPvaoHDCT = function (ctsp){
+        console.log(ctsp);
+        console.log("Số lương thêm : " + ctsp.soLuongThem);
+    }
 
 
     // $scope.a = function (){

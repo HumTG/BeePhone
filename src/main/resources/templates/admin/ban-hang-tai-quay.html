@@ -336,7 +336,7 @@
                                 <div>Dòng máy:{{x.ten_kich_co}}</div>
                             </td>
                             <td>{{x.so_luong}}</td>
-                            <td>{{x.don_gia * x.so_luong}}</td>
+                            <td>{{x.don_gia * x.so_luong | currency:'':0}}</td>
                             <td>
                                 <div class="d-flex">
                                     <button class="btn btn-success" ng-click="openModalUpdate(x)">
@@ -351,7 +351,7 @@
 
                     <!-- modal chi tiết sản phẩm-->
                     <div class="modal fade" id="chiTietSPModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="updateModalLabel">Danh sách chi tiết sản phẩm</h5>
@@ -361,16 +361,15 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <table class="table table-striped">
-                                                <thead class="table-primary">
+                                                <thead class="table-dark">
                                                 <tr class="text-bg-warning text-center text-white">
                                                     <th scope="col">STT</th>
                                                     <th scope="col">Ảnh</th>
                                                     <th scope="col">Sản phẩm</th>
                                                     <th scope="col">Giá bán</th>
-                                                    <th scope="col">Số lượng tồn</th>
-                                                    <th scope="col">Kích cỡ</th>
-                                                    <th scope="col">Màu sắc</th>
-                                                    <th scope="col">Hành Động</th>
+                                                    <th scope="col">Thuộc tính</th>
+                                                    <th scope="col">SL thêm</th>
+                                                    <th scope="col">Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -379,14 +378,19 @@
                                                     <td>
                                                         <img src="/images/{{ctsp.anh}}" style="width: 50px ; height: 40px">
                                                     </td>
-                                                    <td>{{ctsp.sanPham}}</td>
-                                                    <td>{{ctsp.gia_ban | currency:'':0}}</td>
-                                                    <td>{{ctsp.so_luong}}</td>
-                                                    <td>{{ctsp.kichCo}}</td>
-                                                    <td>{{ctsp.mauSac}}</td>
+                                                    <td>
+                                                    <div>{{ctsp.sanPham}}</div>
+                                                     <div>SL tồn : <strong style="color: red;font-size: 12px">{{ctsp.so_luong}}</strong></div>
+                                                    </td>
+                                                    <td><span style="color: red">{{ctsp.gia_ban | currency:'':0}}</span> VNĐ</td>
+                                                    <td>
+                                                        <div>{{ctsp.kichCo}}</div>
+                                                        <div>Màu : {{ctsp.mauSac}}</div>
+                                                    </td>
+                                                    <td><input type="number" min="1" style="width: 100px" ng-model="ctsp.soLuongThem"></td>
                                                     <td>
                                                         <div class="d-flex">
-                                                            <button class="btn btn-success" ng-click="openModalUpdate(x)">
+                                                            <button class="btn btn-success" ng-click="themSPvaoHDCT(ctsp)">
                                                                 <i class="bi bi-pencil"></i>
                                                             </button>
                                                         </div>
