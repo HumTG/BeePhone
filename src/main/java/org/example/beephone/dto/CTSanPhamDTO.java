@@ -27,13 +27,7 @@ public class CTSanPhamDTO {
 
     private int so_luong ;
 
-    private BigDecimal gia_nhap ;
-
     private BigDecimal gia_ban ;
-
-    private Date ngay_nhap ;
-
-    private String mo_ta ;
 
     private String anh ;
 

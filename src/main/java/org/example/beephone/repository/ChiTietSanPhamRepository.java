@@ -1,6 +1,8 @@
 package org.example.beephone.repository;
 
 import org.example.beephone.entity.chi_tiet_san_pham;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,6 @@ public interface ChiTietSanPhamRepository extends JpaRepository<chi_tiet_san_pha
     void updateDiscountForVariants(@Param("discountId") int discountId, @Param("variantIds") List<Integer> variantIds);
 
 
+    @Query("SELECT ctsp from chi_tiet_san_pham ctsp where ctsp.trang_thai = 1 and ctsp.so_luong > 0")
+    Page<chi_tiet_san_pham> getCTSPBanHang(Pageable pageable);
 }

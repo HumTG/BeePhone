@@ -25,4 +25,9 @@ public class ChiTietSanPhamController {
         List<chi_tiet_san_pham> updatedChiTietSanPhams = chiTietSanPhamService.updateMultiple(chiTietSanPhams);
         return ResponseEntity.ok(updatedChiTietSanPhams);
     }
+
+    @GetMapping("/dto")
+    public ResponseEntity<?> getCtspDTO(@RequestParam(defaultValue = "0") Integer page){
+        return ResponseEntity.ok(chiTietSanPhamService.getCtspDTO(page));
+    }
 }

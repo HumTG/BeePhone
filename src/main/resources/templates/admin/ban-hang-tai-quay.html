@@ -288,7 +288,7 @@
                 <h1>Bán hàng tại quầy</h1>
 
                 <div class="alert alert-light" role="alert">
-                    <button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button>
+                    <button class="btn btn-primary add-button" ng-click="createHD()"><i class="bi bi-plus"></i> Thêm</button>
 
                     <ul class="nav nav-tabs">
                         <li class="nav-item" ng-repeat="a in listHD">
@@ -302,7 +302,7 @@
 <!--danh sach sp-->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5><i class="bi bi-list"></i> Hoá đơn chi tiết </h5>
-                        <button class="btn btn-primary add-button" ng-click="openModalAdd()"><i class="bi bi-plus"></i> Thêm sản phẩm</button>
+                        <button class="btn btn-primary add-button" ng-click="openModalCTSP()"><i class="bi bi-plus"></i> Thêm sản phẩm</button>
                     </div>
                     <table class="table table-striped">
                         <thead class="table-warning">
@@ -317,6 +317,11 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr ng-if="listHDCT.length === 0">
+                            <td colspan="7" class="text-center text-danger">
+                                Không có sản phẩm nào trong danh sách.
+                            </td>
+                        </tr>
                         <tr ng-repeat="x in listHDCT">
                             <td>{{$index+1}}</td>
                             <td>
@@ -343,6 +348,85 @@
                         </tbody>
                     </table>
                     <!-- END danh sach sp-->
+
+                    <!-- modal chi tiết sản phẩm-->
+                    <div class="modal fade" id="chiTietSPModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateModalLabel">Danh sách chi tiết sản phẩm</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-striped">
+                                                <thead class="table-primary">
+                                                <tr class="text-bg-warning text-center text-white">
+                                                    <th scope="col">STT</th>
+                                                    <th scope="col">Ảnh</th>
+                                                    <th scope="col">Sản phẩm</th>
+                                                    <th scope="col">Giá bán</th>
+                                                    <th scope="col">Số lượng tồn</th>
+                                                    <th scope="col">Kích cỡ</th>
+                                                    <th scope="col">Màu sắc</th>
+                                                    <th scope="col">Hành Động</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="ctsp in listCtspDTO">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>
+                                                        <img src="/images/{{ctsp.anh}}" style="width: 50px ; height: 40px">
+                                                    </td>
+                                                    <td>{{ctsp.sanPham}}</td>
+                                                    <td>{{ctsp.gia_ban | currency:'':0}}</td>
+                                                    <td>{{ctsp.so_luong}}</td>
+                                                    <td>{{ctsp.kichCo}}</td>
+                                                    <td>{{ctsp.mauSac}}</td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <button class="btn btn-success" ng-click="openModalUpdate(x)">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="mx-auto p-2" style="width: 200px;">
+                                                <nav aria-label="Page navigation example" >
+                                                    <ul class="pagination">
+                                                        <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
+                                                            <a class="page-link" href="" ng-click="changePageCTSP(currentPage - 1)">Previous</a>
+                                                        </li>
+
+                                                        <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
+                                                            ng-class="{ 'active': $index === currentPage }">
+                                                            <a class="page-link" href="" ng-click="changePageCTSP($index)">{{$index + 1}}</a>
+                                                        </li>
+
+                                                        <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
+                                                            <a class="page-link" href="" ng-click="changePageCTSP(currentPage + 1)">Next</a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+<!--                                    <button type="button" class="btn btn-primary" ng-click="updateGiamGia()">Cập nhât</button>-->
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- END modal chi tiết sản phẩm-->
+
+                 <br> <br> <br> <br> <hr>
+                <h2>Khách hàng</h2>
                 </div>
 
 
