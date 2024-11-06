@@ -47,4 +47,15 @@ public class KhuyenMaiRestController {
         }
 
     }
+
+    @PutMapping("/rest/khuyen-mai/update-trang-thai-auto")
+    public ResponseEntity<?> capNhatTT(){
+        try {
+            kmSer.updateTrangThaiKM();
+            return ResponseEntity.ok(Map.of("message", "Cập nhật trạng thái khuyến mại thành công."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi xảy ra trong quá trình cập nhật: " + e.getMessage());
+        }
+    }
 }

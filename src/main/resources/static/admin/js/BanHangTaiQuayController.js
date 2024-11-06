@@ -102,6 +102,30 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     $scope.themSPvaoHDCT = function (ctsp){
         console.log(ctsp);
         console.log("Số lương thêm : " + ctsp.soLuongThem);
+        if(ctsp.soLuongThem > ctsp.so_luong){
+            toastr.warning('Số lượng thêm phải ít hơn hoặc bằng số lượng tồn', 'Cảnh báo');
+            return;
+        }
+
+        $http({
+            method: 'POST',
+            url : 'http://localhost:8080/rest/hoa-don-chi-tiet',
+            params: {
+                idHD : $scope.hoa_don.id,
+                idCTSP : ctsp.id,
+                sl : ctsp.soLuongThem
+            }
+        }).then(function(response) {
+            $scope.getHDCT($scope.hoa_don.id);
+
+            var modalElement = document.getElementById('chiTietSPModal');
+            var Modal = bootstrap.Modal.getInstance(modalElement);
+            Modal.hide(); // đóng modal
+            toastr.success('Thêm thành công', 'OK');
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
+        });
+
     }
 
 

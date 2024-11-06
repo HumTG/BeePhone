@@ -58,4 +58,8 @@ public class KhuyenMaiService {
     public void updateKM(khuyen_mai km){
         kmSer.save(km);
     }
+
+    public void updateTrangThaiKM(){
+        kmSer.updateTrangThai();
+    }
 }

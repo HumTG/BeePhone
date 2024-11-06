@@ -44,6 +44,8 @@ public class hoa_don {
 
     private int phuong_thuc_thanh_toan  ;
 
+    private int loai_hoa_don;
+
     private String mo_ta  ;
 
     private int trang_thai  ;

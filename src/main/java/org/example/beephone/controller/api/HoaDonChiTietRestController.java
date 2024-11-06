@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -41,11 +43,23 @@ public class HoaDonChiTietRestController {
     @GetMapping("/dto/{idhd}")
     public ResponseEntity<?> findDTO(@PathVariable("idhd") Integer idhd){
         List<HoaDonChiTietDTO> list = hdctService.hdctDTOByHD(idhd);
-//        if (list.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Không tìm thấy hóa đơn chi tiết có IDHD : " + idhd);
-//        }
         return ResponseEntity.ok(list);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createHDCT(@RequestParam(name = "idHD") Integer idHD,
+                                        @RequestParam(name = "idCTSP") Integer idCTSP,
+                                        @RequestParam(name = "sl") Integer sl ){
+        try{
+            System.out.println("ID HÓA ĐƠN : " + idHD);
+            System.out.println("ID CTSP : " + idCTSP);
+            System.out.println("Số lượng : " + sl);
+            hoa_don_chi_tiet hdct = hdctService.addHoaDonCt(idHD,idCTSP,sl);
+            return ResponseEntity.ok(hdct);
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra: " + e.getMessage());
+        }
     }
 
 }

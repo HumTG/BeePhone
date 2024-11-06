@@ -373,7 +373,11 @@
                 <td>{{x.ngay_bat_dau | date:'dd/MM/yyyy' }}</td>
                 <td>{{x.ngay_ket_thuc | date:'dd/MM/yyyy'}}</td>
                 <td>{{x.ngay_tao | date:'dd/MM/yyyy'}}</td>
-                <td>{{x.trang_thai == 1 ? 'Còn hạn' :  'Hết hạn'}}</td>
+                <td>
+                  <span ng-if="x.trang_thai === 0">Hết hạn</span>
+                  <span ng-if="x.trang_thai === 1">Còn hạn</span>
+                  <span ng-if="x.trang_thai === 2">Chưa bắt đầu</span>
+                </td>
                 <td>
                   <div class="d-flex">
 
