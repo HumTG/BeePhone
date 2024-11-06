@@ -22,4 +22,6 @@ public interface ChiTietSanPhamRepository extends JpaRepository<chi_tiet_san_pha
 
     @Query("SELECT ctsp from chi_tiet_san_pham ctsp where ctsp.trang_thai = 1 and ctsp.so_luong > 0")
     Page<chi_tiet_san_pham> getCTSPBanHang(Pageable pageable);
+
+    List<chi_tiet_san_pham> findByGiamGia_Id(int discountId);
 }

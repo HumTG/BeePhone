@@ -127,7 +127,6 @@ app.controller('GiamGiaController',function ($scope,$http){
             $scope.selectedVariants = [];
         } else {
             $scope.selectedProductId = productId;
-
             // Tải danh sách biến thể của sản phẩm đã chọn
             $http.get(`/rest/san-pham/${productId}/variants`)
                 .then(function (response) {
@@ -183,6 +182,90 @@ app.controller('GiamGiaController',function ($scope,$http){
             $scope.loadProducts(page);
         }
     };
+
+
+    // Detail
+
+    $scope.viewDiscountDetail = function(discountId) {
+        $http.get(`/rest/giam-gia/${discountId}/detail`)
+            .then(function(response) {
+                $scope.discountDetail = response.data.discount;  // Thông tin đợt giảm giá
+                $scope.appliedVariants = response.data.variants; // Danh sách biến thể áp dụng
+
+                // Hiển thị modal chi tiết đợt giảm giá
+                var discountDetailModal = new bootstrap.Modal(document.getElementById('discountDetailModal'));
+                discountDetailModal.show();
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi tải chi tiết đợt giảm giá:", error);
+                toastr.error("Không thể tải thông tin chi tiết đợt giảm giá.");
+            });
+    };
+
+
+    // filter
+
+    // Khởi tạo bộ lọc
+    $scope.filter = {
+        maKhuyenMai: '',
+        giaTriGiam: '',
+        tenKhuyenMai: '',
+        trangThai: '',
+        tuNgay: '',
+        denNgay: ''
+    };
+    // Hàm lấy dữ liệu với bộ lọc
+    $scope.getData = function(page) {
+        let params = {
+            page: page,
+            maKhuyenMai: $scope.filter.maKhuyenMai,
+            giaTriGiam: $scope.filter.giaTriGiam,
+            tenKhuyenMai: $scope.filter.tenKhuyenMai,
+            trangThai: $scope.filter.trangThai,
+            tuNgay: $scope.filter.tuNgay,
+            denNgay: $scope.filter.denNgay
+        };
+        $http.get(host, { params: params })
+            .then(function(response) {
+                $scope.listGG = response.data.content;
+                $scope.totalPages = response.data.totalPages;
+            })
+            .catch(function(error) {
+                console.error('Error fetching data:', error);
+            });
+    };
+
+    // Áp dụng bộ lọc
+    $scope.applyFilters = function() {
+        $scope.getData(0); // Bắt đầu từ trang đầu tiên khi áp dụng bộ lọc
+    };
+
+    // Xóa bộ lọc
+    $scope.clearFilters = function() {
+        $scope.filter = {
+            maKhuyenMai: '',
+            giaTriGiam: '',
+            tenKhuyenMai: '',
+            trangThai: '',
+            tuNgay: '',
+            denNgay: ''
+        };
+        $scope.getData(0); // Lấy lại toàn bộ dữ liệu
+    };
+
+    // Đổi trang
+    $scope.changePage = function(page) {
+        if (page >= 0 && page < $scope.totalPages) {
+            $scope.currentPage = page;
+            $scope.getData($scope.currentPage);
+        }
+    };
+
+    // Gọi dữ liệu ban đầu
+    $scope.getData($scope.currentPage);
+
+
+
 
 
 

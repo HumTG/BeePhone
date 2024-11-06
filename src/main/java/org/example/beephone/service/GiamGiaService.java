@@ -10,11 +10,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class GiamGiaService {
@@ -26,10 +28,55 @@ public class GiamGiaService {
     @Autowired
     private ChiTietSanPhamRepository chiTietSanPhamRepository;
 
-    public Page<giam_gia> getPage(Integer pageNum) {
-        Pageable ggPage = PageRequest.of(pageNum, 8, Sort.by(Sort.Direction.DESC, "id"));
-        return giamGiaRepository.findAll(ggPage);
+    public Page<giam_gia> getPageWithFilters(Integer pageNum, String maKhuyenMai, String giaTriGiam, String tenKhuyenMai, String trangThai, String tuNgay, String denNgay) {
+        Pageable pageable = PageRequest.of(pageNum, 5, Sort.by(Sort.Direction.DESC, "id"));
+
+        // Tạo Specification để lọc dữ liệu
+        Specification<giam_gia> spec = Specification.where(null);
+
+        // Áp dụng bộ lọc nếu các tham số không null hoặc không rỗng
+        if (maKhuyenMai != null && !maKhuyenMai.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(root.get("ma_giam_gia"), "%" + maKhuyenMai + "%"));
+        }
+
+        if (giaTriGiam != null && !giaTriGiam.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("gia_tri"), Float.parseFloat(giaTriGiam)));
+        }
+
+        if (tenKhuyenMai != null && !tenKhuyenMai.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(root.get("ten"), "%" + tenKhuyenMai + "%"));
+        }
+
+        if (trangThai != null && !trangThai.isEmpty()) {
+            int status = "active".equals(trangThai) ? 1 : 0;
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("trang_thai"), status));
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            if (tuNgay != null && !tuNgay.isEmpty()) {
+                Date startDate = dateFormat.parse(tuNgay);
+                spec = spec.and((root, query, criteriaBuilder) ->
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("ngay_bat_dau"), startDate));
+            }
+
+            if (denNgay != null && !denNgay.isEmpty()) {
+                Date endDate = dateFormat.parse(denNgay);
+                spec = spec.and((root, query, criteriaBuilder) ->
+                        criteriaBuilder.lessThanOrEqualTo(root.get("ngay_ket_thuc"), endDate));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // Thực hiện truy vấn với các điều kiện lọc
+        return giamGiaRepository.findAll(spec, pageable);
     }
+
 
     public void capNhatTrangThai(){
         giamGiaRepository.updateTrangThai();
@@ -71,6 +118,30 @@ public class GiamGiaService {
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy đợt giảm giá với ID: " + discountId));
 
         chiTietSanPhamRepository.updateDiscountForVariants(discountId, variantIds);
+    }
+
+    // Lấy thông tin chi tiết của một đợt giảm giá và danh sách biến thể áp dụng
+    public Optional<giam_gia> getDiscountDetail(int discountId) {
+        return giamGiaRepository.findById(discountId);
+    }
+
+    // Lấy danh sách biến thể được áp dụng giảm giá, bao gồm tên sản phẩm
+    public List<Map<String, Object>> getAppliedVariantsWithProductName(int discountId) {
+        List<chi_tiet_san_pham> variants = chiTietSanPhamRepository.findByGiamGia_Id(discountId);
+
+        List<Map<String, Object>> variantDetails = new ArrayList<>();
+        for (chi_tiet_san_pham variant : variants) {
+            Map<String, Object> details = new HashMap<>();
+            details.put("id", variant.getId());
+            details.put("tenSanPham", variant.getSanPham().getTen()); // Thêm tên sản phẩm
+            details.put("kichCo", variant.getKichCo().getTen());
+            details.put("mauSac", variant.getMauSac().getTen());
+            details.put("soLuong", variant.getSo_luong());
+            details.put("giaBan", variant.getGia_ban());
+            details.put("anh", variant.getAnh());
+            variantDetails.add(details);
+        }
+        return variantDetails;
     }
 
 }

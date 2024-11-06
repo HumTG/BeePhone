@@ -163,16 +163,16 @@ CREATE TABLE [nhan_vien] (
       REFERENCES [chuc_vu]([id])
 );
 
-CREATE TABLE "khuyen_mai" (
-  "id" INT IDENTITY,
-  "ma_khuyen_mai" Nvarchar(50),
-  "gia_tri" Float,
-  "gia_tri_toi_thieu" Decimal,
-  "ngay_bat_dau" Date,
-  "ngay_ket_thuc" Date,
-  "ngay_tao" Date,
-  "trang_thai" INT,
-  PRIMARY KEY ("id")
+CREATE TABLE [khuyen_mai] (
+  [id] INT IDENTITY,
+  [ma_khuyen_mai] Nvarchar(50),
+  [gia_tri] Float,
+  [gia_tri_toi_thieu] Decimal,
+  [ngay_bat_dau] Date,
+  [ngay_ket_thuc] Date,
+  [ngay_tao] Date,
+  [trang_thai] INT,
+  PRIMARY KEY ([id])
 );
 
 CREATE TABLE [hoa_don] (
@@ -185,6 +185,7 @@ CREATE TABLE [hoa_don] (
   [tien_sau_giam_gia] Decimal,
   [thanh_tien] Decimal,
   [phuong_thuc_thanh_toan] INT,
+  [loai_hoa_don] INT,
   [mo_ta] Nvarchar(500),
   [trang_thai] INT,
   PRIMARY KEY ([id]),
@@ -360,7 +361,17 @@ VALUES
     (N'KH002', 'user2', N'Trần Thị B', 'tranthib@example.com', '0123456780', 'password2', '1995-05-20', 0, 1),
     (N'KH003', 'user3', N'Lê Văn C', 'levanc@example.com', '0123456781', 'password3', '1992-03-10', 1, 1),
     (N'KH004', 'user4', N'Phạm Thị D', 'phamthid@example.com', '0123456782', 'password4', '1988-07-25', 0, 1),
-    (N'KH005', 'user5', N'Nguyễn Thế E', 'nguyenthe@example.com', '0123456783', 'password5', '1996-11-30', 1, 1);
+    (N'KH005', 'user5', N'Nguyễn Thế E', 'nguyenthe@example.com', '0123456783', 'password5', '1996-11-30', 1, 1),
+	(N'KH006', 'user6', N'Trần Văn F', 'tranvanf@example.com', '0123456784', 'password6', '1993-02-18', 1, 1),
+    (N'KH007', 'user7', N'Lê Thị G', 'lethig@example.com', '0123456785', 'password7', '1990-08-12', 0, 1),
+    (N'KH008', 'user8', N'Phạm Văn H', 'phamvanh@example.com', '0123456786', 'password8', '1991-12-05', 1, 1),
+    (N'KH009', 'user9', N'Hoàng Thị I', 'hoangthii@example.com', '0123456787', 'password9', '1989-04-22', 0, 1),
+    (N'KH010', 'user10', N'Vũ Văn J', 'vuvanj@example.com', '0123456788', 'password10', '1997-09-15', 1, 1),
+    (N'KH011', 'user11', N'Nguyễn Văn K', 'nguyenvank@example.com', '0123456789', 'password11', '1985-06-07', 1, 1),
+    (N'KH012', 'user12', N'Đỗ Thị L', 'dothil@example.com', '0123456790', 'password12', '1994-11-25', 0, 1),
+    (N'KH013', 'user13', N'Phan Văn M', 'phanvanm@example.com', '0123456791', 'password13', '1992-03-18', 1, 1),
+    (N'KH014', 'user14', N'Trịnh Thị N', 'trinhtin@example.com', '0123456792', 'password14', '1998-02-21', 0, 1),
+    (N'KH015', 'user15', N'Bùi Văn O', 'buivano@example.com', '0123456793', 'password15', '1991-10-10', 1, 1);
 
 -- Thêm dữ liệu vào bảng [dia_chi_khach_hang]
 INSERT INTO [dia_chi_khach_hang] ([id_khach_hang], [ma_dia_chi], [dia_chi_chi_tiet], [trang_thai])
@@ -424,22 +435,39 @@ VALUES
 
 
 	-- Thêm dữ liệu vào bảng [khuyen_mai]
-INSERT INTO [khuyen_mai] ([ma_khuyen_mai], [gia_tri], [ngay_bat_dau], [ngay_ket_thuc], [ngay_tao], [trang_thai])
+INSERT INTO khuyen_mai (ma_khuyen_mai, gia_tri, gia_tri_toi_thieu, ngay_bat_dau, ngay_ket_thuc, ngay_tao, trang_thai)
 VALUES 
-    (N'KM001', 10.0, '2024-01-01', '2024-01-15', '2023-12-01', 1),
-    (N'KM002', 15.0, '2024-02-01', '2024-02-14', '2024-01-15', 1),
-    (N'KM003', 20.0, '2024-03-01', '2024-03-31', '2024-02-20', 1),
-    (N'KM004', 25.0, '2024-04-01', '2024-04-30', '2024-03-10', 1),
-    (N'KM005', 30.0, '2024-05-01', '2024-05-31', '2024-04-20', 1);
+('KM001', 0.10, 500.00, '2024-01-01', '2024-01-31', '2024-01-01', 1),
+('KM002', 0.15, 1000.00, '2024-02-01', '2024-02-28', '2024-01-15', 1),
+('KM003', 0.20, 2000.00, '2024-03-01', '2024-03-31', '2024-02-01', 1),
+('KM004', 0.05, 300.00, '2024-04-01', '2024-04-30', '2024-03-01', 1),
+('KM005', 0.25, 1500.00, '2024-05-01', '2024-05-31', '2024-04-01', 1),
+('KM006', 0.30, 2500.00, '2024-06-01', '2024-06-30', '2024-05-01', 1),
+('KM007', 0.10, 700.00, '2024-07-01', '2024-07-31', '2024-06-01', 1),
+('KM008', 0.15, 800.00, '2024-08-01', '2024-08-31', '2024-07-01', 1),
+('KM009', 0.10, 1000.00, '2024-09-01', '2024-09-30', '2024-08-01', 1),
+('KM010', 0.05, 300.00, '2024-10-01', '2024-10-31', '2024-09-01', 1),
+('KM011', 0.20, 2000.00, '2024-11-01', '2024-11-30', '2024-10-01', 1),
+('KM012', 0.25, 2500.00, '2024-12-01', '2024-12-31', '2024-11-01', 1),
+('KM013', 0.30, 3000.00, '2024-12-01', '2024-12-31', '2024-11-01', 1),
+('KM014', 0.15, 1500.00, '2024-12-15', '2025-01-15', '2024-12-01', 1),
+('KM015', 0.05, 500.00, '2025-01-01', '2025-01-31', '2024-12-15', 1);
+
 
 	-- Thêm dữ liệu vào bảng [hoa_don]
-INSERT INTO [hoa_don] ([ma_hoa_don], [id_khach_hang], [id_nhan_vien], [id_khuyen_mai], [ngay_tao], [tien_sau_giam_gia], [thanh_tien], [phuong_thuc_thanh_toan], [mo_ta], [trang_thai])
-VALUES 
-    (N'HDB001', 1, 1, 1, '2024-01-05', 150000, 165000, 1, N'Thanh toán bằng tiền mặt', 6),
-    (N'HDB002', 2, 2, 2, '2024-02-10', 250000, 265000, 2, N'Thẻ tín dụng', 6),
-    (N'HDB003', 3, 1, 3, '2024-03-15', 350000, 370000, 1, N'Thanh toán bằng tiền mặt', 6),
-    (N'HDB004', 4, 3, 4, '2024-04-20', 450000, 475000, 2, N'Thẻ ghi nợ', 6),
-    (N'HDB005', 5, 4, 5, '2024-05-25', 550000, 580000, 1, N'Thanh toán bằng chuyển khoản', 6);
+	INSERT INTO hoa_don (ma_hoa_don, id_khach_hang, id_nhan_vien, id_khuyen_mai, ngay_tao, tien_sau_giam_gia, thanh_tien, phuong_thuc_thanh_toan, loai_hoa_don, mo_ta, trang_thai)
+	VALUES 
+	('HD001', 1, 1, 1, '2024-10-01', 950.00, 1000.00, 1, 1, N'Hóa đơn bán hàng', 1),
+	('HD002', 2, 1, 2, '2024-10-02', 900.00, 1000.00, 1, 1, N'Hóa đơn bán hàng', 1),
+	('HD003', 3, 2, NULL, '2024-10-03', 1200.00, 1200.00, 2, 1, N'Hóa đơn mua hàng', 2),
+	('HD004', 4, 2, 3, '2024-10-04', 800.00, 1000.00, 2, 2, N'Hóa đơn dịch vụ', 1),
+	('HD005', 5, 3, 1, '2024-10-05', 1500.00, 2000.00, 1, 1, N'Hóa đơn bán hàng', 1),
+	('HD006', 6, 3, NULL, '2024-10-06', 500.00, 500.00, 1, 1, N'Hóa đơn bán lẻ', 1),
+	('HD007', 7, 4, 2, '2024-10-07', 1800.00, 2000.00, 1, 1, N'Hóa đơn bán sỉ', 1),
+	('HD008', 8, 4, 3, '2024-10-08', 750.00, 1000.00, 2, 2, N'Hóa đơn dịch vụ', 1),
+	('HD009', 9, 5, NULL, '2024-10-09', 2200.00, 2500.00, 1, 1, N'Hóa đơn đặc biệt', 1),
+	('HD010', 10, 5, 1, '2024-10-10', 1000.00, 1200.00, 2, 1, N'Hóa đơn bán hàng', 2);
+
 
 	-- Thêm dữ liệu vào bảng [hoa_don_chi_tiet]
 INSERT INTO [hoa_don_chi_tiet] ([ma_hoa_don_chi_tiet], [id_hoa_don], [id_chi_tiet_san_pham], [so_luong], [don_gia], [trang_thai])
