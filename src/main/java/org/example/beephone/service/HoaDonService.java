@@ -7,6 +7,11 @@ import org.example.beephone.repository.KhachHangRepository;
 import org.example.beephone.repository.KhuyenMaiRepository;
 import org.example.beephone.repository.NhanVienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -68,5 +73,21 @@ public class HoaDonService {
 
         return code.toString();
     }
+
+    // quản lý hóa đơn ( bán hàng online , danh sách các hóa đơn)
+
+    public Page<hoa_don> getHoaDonByStatus(Integer page, Integer size, Integer trangThai) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Specification<hoa_don> spec = (root, query, criteriaBuilder) -> {
+            if (trangThai != null) {
+                return criteriaBuilder.equal(root.get("trang_thai"), trangThai);
+            }
+            return criteriaBuilder.conjunction();
+        };
+        return hdRP.findAll(spec, pageable);
+    }
+
+    // Search
+
 
 }

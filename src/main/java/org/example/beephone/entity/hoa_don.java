@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,9 +45,14 @@ public class hoa_don {
 
     private int phuong_thuc_thanh_toan  ;
 
+    private int loai_hoa_don  ;
+
     private String mo_ta  ;
 
     private int trang_thai  ;
+
+    @OneToMany(mappedBy = "hoa_don", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<hoa_don_chi_tiet> hoaDonChiTietList;
 
 
 }

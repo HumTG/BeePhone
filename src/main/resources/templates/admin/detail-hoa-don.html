@@ -5,11 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>BeePhone - Admin</title>
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-  <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+  <link rel="icon" th:href="@{/admin/assets/img/kaiadmin/favicon.ico}" type="image/x-icon" />
 
   <!-- Fonts and icons -->
-  <script src="assets/js/plugin/webfont/webfont.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script th:src="@{/admin/assets/js/plugin/webfont/webfont.min.js}"></script>
 
   <script>
     WebFont.load({
@@ -21,7 +21,7 @@
           "Font Awesome 5 Brands",
           "simple-line-icons",
         ],
-        urls: ["assets/css/fonts.min.css"],
+        urls: ["/admin/assets/css/fonts.min.css"],
       },
       active: function () {
         sessionStorage.fonts = true;
@@ -30,13 +30,13 @@
   </script>
 
   <!-- CSS Files -->
-  <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="assets/css/plugins.min.css" />
-  <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+  <link rel="stylesheet" th:href="@{/admin/assets/css/bootstrap.min.css}" />
+  <link rel="stylesheet" th:href="@{/admin/assets/css/plugins.min.css}" />
+  <link rel="stylesheet" th:href="@{/admin/assets/css/kaiadmin.min.css}" />
   <!-- ANGULAR  -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script th:src="@{https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js}"></script>
   <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link rel="stylesheet" href="assets/css/demo.css" />
+  <link rel="stylesheet" th:href="@{/admin/assets/css/demo.css}" />
   <!-- Toastr CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 </head>
@@ -217,7 +217,7 @@
                         </a>
                         <a href="#">
                           <div class="notif-img">
-                            <img src="assets/img/profile2.jpg" alt="Img Profile" />
+                            <img th:src="@{/admin/assets/img/profile2.jpg}" alt="Img Profile" />
                           </div>
                           <div class="notif-content">
                             <span class="block">
@@ -248,7 +248,7 @@
               <li class="nav-item topbar-user dropdown hidden-caret">
                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                   <div class="avatar-sm">
-                    <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
+                    <img src="/admin/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
                   </div>
                   <span class="profile-username">
                     <span class="op-7">Hi,</span>
@@ -260,7 +260,7 @@
                     <li>
                       <div class="user-box">
                         <div class="avatar-lg">
-                          <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
+                          <img src="/admin/assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
                         </div>
                         <div class="u-text">
                           <h4>Nguyễn Đình Hùng</h4>
@@ -283,144 +283,14 @@
         <!-- End Navbar -->
       </div>
 
-      <div class="container" ng-controller="HoaDonController">
+      <div class="container" ng-controller="HoaDonDetailController" ng-init="initializeId(1)">
         <div class="page-inner">
-
-          <h1>Quản lý hóa đơn</h1>
-
-          <!--     Bộ lọc            -->
+          <!-- Thông tin đơn hàng -->
           <div class="alert alert-light" role="alert">
-            <h5><i class="bi bi-funnel-fill"></i> Bộ lọc</h5>
-            <hr>
-            <form>
-              <div class="row g-3">
-                <!-- Tìm kiếm -->
-                <div class="col-md-3">
-                  <label for="search" class="form-label">Tìm kiếm:</label>
-                  <input type="text" class="form-control" id="search" placeholder="Nhập">
-                </div>
-
-                <!-- Loại đơn -->
-                <div class="col-md-3">
-                  <label for="orderType" class="form-label">Loại đơn:</label>
-                  <select class="form-select" id="orderType">
-                    <option selected>Loại đơn</option>
-                    <option value="1">Tại quầy</option>
-                    <option value="2">Online</option>
-                  </select>
-                </div>
-
-                <!-- Ngày bắt đầu -->
-                <div class="col-md-3">
-                  <label for="startDate" class="form-label">Ngày bắt đầu:</label>
-                  <input type="date" class="form-control" id="startDate">
-                </div>
-
-                <!-- Ngày kết thúc -->
-                <div class="col-md-3">
-                  <label for="endDate" class="form-label">Ngày kết thúc:</label>
-                  <input type="date" class="form-control" id="endDate">
-                </div>
-              </div>
-
-              <!-- Nút Tìm kiếm và Làm mới -->
-              <div class="d-flex justify-content-center mt-3">
-                <button type="button" class="btn btn-primary me-2" ng-click="searchSanPham()">Tìm kiếm</button>
-                <button type="button" class="btn btn-danger" ng-click="resetFilter()">Làm mới</button>
-              </div>
-            </form>
+            <h2>Chi Tiết Hóa Đơn: {{ hoaDonDetail.trang_thai }}</h2>
+            <h2>Chi Tiết Hóa Đơn: ${ id }</h2>
           </div>
-          <!-- END Bộ lọc -->
-
-
-          <!--     Danh sách hóa đơn            -->
-          <div class="alert alert-light" role="alert">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5><i class="bi bi-list"></i> Danh sách hóa đơn</h5>
-              <a href="#"><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Tạo đơn hàng</button></a>
-            </div>
-
-            <!-- Thanh tab trạng thái -->
-            <div class="d-flex flex-wrap mb-3">
-              <button type="button" class="btn btn-outline-secondary me-2 mb-2" ng-class="{'active': selectedStatus === null}" ng-click="filterByStatus(null)">Tất cả</button>
-              <button type="button" class="btn btn-outline-secondary me-2 mb-2"
-                      ng-repeat="status in statuses"
-                      ng-click="filterByStatus(status.value)"
-                      ng-class="{'active': selectedStatus === status.value}">
-                {{ status.label }}
-                <span class="badge bg-danger" ng-if="status.count > 0">{{ status.count }}</span>
-              </button>
-
-            </div>
-            <hr>
-
-            <!-- Bảng hiển thị danh sách hóa đơn -->
-            <table class="table table-hover">
-              <thead class="table-warning">
-              <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Mã hóa đơn</th>
-                <th scope="col">Tên khách hàng</th>
-                <th scope="col">Tên nhân viên</th>
-                <th scope="col">Loại</th>
-                <th scope="col">Ngày tạo</th>
-                <th scope="col">Tiền giảm</th>
-                <th scope="col">Tổng tiền</th>
-                <th scope="col">Thao tác</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr ng-repeat="hoaDon in hoaDons">
-                <td>{{$index + 1 + (currentPage * pageSize)}}</td>
-                <td>{{hoaDon.ma_hoa_don}}</td>
-                <td>{{hoaDon.khachHang.ho_ten}}</td>
-                <td>{{hoaDon.nhanVien.ho_ten}}</td>
-                <td>{{hoaDon.loai_hoa_don === 1 ? 'Tại quầy' : 'Online'}}</td>
-                <td>{{hoaDon.ngay_tao | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                <td ng-if="hoaDon.khuyenMai">{{ (hoaDon.khuyenMai.gia_tri * hoaDon.thanh_tien) | currency:'' }} VNĐ</td>
-                <td ng-if="!hoaDon.khuyenMai">Không áp dụng</td>
-                <td>{{ hoaDon.thanh_tien | currency:"":0 }} VNĐ</td>
-                <td>
-                  <a href="/admin/detail-hoa-don/{{hoaDon.id}}">
-                    <button class="btn btn-warning">
-                      <i class="bi bi-eye"></i>
-                    </button>
-                  </a>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-
-            <!--     chuyển trang        -->
-            <div class="mx-auto p-2" style="width: 200px;">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                  <!-- Nút Previous -->
-                  <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
-                    <a class="page-link" href="" ng-click="changePage(currentPage - 1)">Previous</a>
-                  </li>
-                  <!-- Nút số trang -->
-                  <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
-                      ng-class="{ 'active': $index === currentPage }">
-                    <a class="page-link" href="" ng-click="changePage($index)">{{$index + 1}}</a>
-                  </li>
-                  <!-- Nút Next -->
-                  <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
-                    <a class="page-link" href="" ng-click="changePage(currentPage + 1)">Next</a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-            <!--   End chuyển trang         -->
-
-          </div>
-
-
-          <!-- END danh sách hóa đơn -->
-
-
-
-
+          <!-- END thông tin đơn hàng -->
         </div>
       </div>
 
@@ -490,40 +360,40 @@
     <!-- End Custom template -->
   </div>
   <!--   Core JS Files   -->
-  <script src="assets/js/core/jquery-3.7.1.min.js"></script>
-  <script src="assets/js/core/popper.min.js"></script>
-  <script src="assets/js/core/bootstrap.min.js"></script>
+  <script th:src="@{/admin/assets/js/core/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/admin/assets/js/core/popper.min.js}"></script>
+  <script th:src="@{/admin/assets/js/core/bootstrap.min.js}"></script>
 
   <!-- jQuery Scrollbar -->
-  <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
 
   <!-- Chart JS -->
-  <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/chart.js/chart.min.js}"></script>
 
   <!-- jQuery Sparkline -->
-  <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
 
   <!-- Chart Circle -->
-  <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/chart-circle/circles.min.js}"></script>
 
   <!-- Datatables -->
-  <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/datatables/datatables.min.js}"></script>
 
   <!-- Bootstrap Notify -->
-  <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
 
   <!-- jQuery Vector Maps -->
-  <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-  <script src="assets/js/plugin/jsvectormap/world.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+  <script th:src="@{/admin/assets/js/plugin/jsvectormap/world.js}"></script>
 
   <!-- Sweet Alert -->
-  <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+  <script th:src="@{/admin/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
 
   <!-- Kaiadmin JS -->
-  <script src="assets/js/kaiadmin.min.js"></script>  
+  <script th:src="@{/admin/assets/js/kaiadmin.min.js}"></script>
 
   <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-  <script src="assets/js/setting-demo.js"></script>
+  <script th:src="@{/admin/assets/js/setting-demo.js}"></script>
 <!--  <script src="assets/js/demo.js"></script>-->
   <script>
     $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
@@ -554,9 +424,10 @@
     });
   </script>
   <!-- Toastr JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js}"></script>
   <!-- AngularJS -->
   <script th:src="@{/admin/js/HoaDonController.js}"></script>
+  <script th:src="@{/admin/js/HoaDonDetailController.js}"></script>
 </body>
 
 </html>
