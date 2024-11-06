@@ -54,6 +54,7 @@ public class HoaDonService {
         hd.setTien_sau_giam_gia(BigDecimal.ZERO);
         hd.setThanh_tien(BigDecimal.ZERO);
         hd.setPhuong_thuc_thanh_toan(1);
+        hd.setLoai_hoa_don(1);
         hd.setTrang_thai(0);
 
         hdRP.save(hd);

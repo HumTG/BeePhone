@@ -1,19 +1,32 @@
 package org.example.beephone.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.beephone.dto.HoaDonChiTietDTO;
+import org.example.beephone.entity.chi_tiet_san_pham;
+import org.example.beephone.entity.hoa_don;
 import org.example.beephone.entity.hoa_don_chi_tiet;
+import org.example.beephone.repository.ChiTietSanPhamRepository;
 import org.example.beephone.repository.HoaDonChiTietRepository;
+import org.example.beephone.repository.HoaDonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
 public class HoaDonChiTietService {
     @Autowired
     private HoaDonChiTietRepository hdctRP;
+    @Autowired
+    private ChiTietSanPhamRepository ctspRP;
+    @Autowired
+    private HoaDonRepository hdRP;
 
+    ///tìm hóa đơn CT theo id hóa đơn
     public List<hoa_don_chi_tiet> findByIdHD(Integer idhd){
         return hdctRP.findChiTietByHDId(idhd);
     }
@@ -40,5 +53,55 @@ public class HoaDonChiTietService {
             dto.setTrang_thai(chiTiet.getTrang_thai());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    /// thêm sản phẩm vào hdct (tạo hdct mới)
+    public hoa_don_chi_tiet addHoaDonCt(int idHD,int idCTSP,int sl){
+        hoa_don hd = hdRP.findById(idHD)
+                .orElseThrow(() -> new EntityNotFoundException("Không thấy hóa đơn với id: " + idHD));
+
+        chi_tiet_san_pham ctsp = ctspRP.findById(idCTSP)
+                .orElseThrow(() -> new EntityNotFoundException("Không thấy CTSP với id: " + idCTSP));
+
+        hoa_don_chi_tiet hdct = new hoa_don_chi_tiet();
+        hdct.setMa_hoa_don_chi_tiet("HDCT"+generateRandomCode());
+        hdct.setHoa_don(hd);
+        hdct.setChi_tiet_san_pham(ctsp);
+        hdct.setSo_luong(sl);
+        hdct.setTrang_thai(1);
+
+        if(ctsp.getGiamGia() != null){
+           BigDecimal giaBan = ctsp.getGia_ban();
+           float giamGia = ctsp.getGiamGia().getGia_tri();
+
+           BigDecimal phanTramGiam = new BigDecimal(giamGia).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+           BigDecimal giaTriGiam = giaBan.multiply(phanTramGiam);
+
+           BigDecimal giaKhiGiam = giaBan.subtract(giaTriGiam);
+
+           hdct.setDon_gia(giaKhiGiam);
+        }
+        else{
+            hdct.setDon_gia(ctsp.getGia_ban());
+        }
+
+
+        hdctRP.save(hdct);
+        return hdct;
+
+    }
+
+
+    public String generateRandomCode() {
+        // Tạo mã giảm giá ngẫu nhiên (8 ký tự gồm chữ và số)
+        int length = 8;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder code = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            code.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return code.toString();
     }
 }
