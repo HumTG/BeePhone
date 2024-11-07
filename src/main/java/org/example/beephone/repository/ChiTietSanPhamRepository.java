@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,4 +25,14 @@ public interface ChiTietSanPhamRepository extends JpaRepository<chi_tiet_san_pha
     Page<chi_tiet_san_pham> getCTSPBanHang(Pageable pageable);
 
     List<chi_tiet_san_pham> findByGiamGia_Id(int discountId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE chi_tiet_san_pham  c SET c.so_luong = c.so_luong - :soLuong WHERE c.id = :idCTSP")
+    void giamSoLuongSPCT(@Param("soLuong") int soLuong,@Param("idCTSP") Integer idCTSP);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE chi_tiet_san_pham  c SET c.so_luong = c.so_luong + :soLuong WHERE c.id = :idCTSP")
+    void tangSoLuongSPCT(@Param("soLuong") int soLuong,@Param("idCTSP") Integer idCTSP);
 }

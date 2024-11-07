@@ -8,7 +8,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
 
     ///lấy hóa đơn
     $scope.getAllHoaDon = function (){
-        $http.get(url).then(function(response) {
+        $http.get(url + "/ban-hang").then(function(response) {
             if (response.status === 200) {
                 $scope.listHD = response.data;
                 console.log( $scope.listHD);
@@ -28,7 +28,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         if ($scope.hoa_don.id != null ) {
             $scope.getHDCT($scope.hoa_don.id);
         }
-        console.log($scope.hoa_don)
+        // console.log($scope.hoa_don)
     }
 
 
@@ -38,7 +38,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         $http.get("http://localhost:8080/rest/hoa-don-chi-tiet/dto/" + idHD).then(function(response) {
             if (response.status === 200) {
                 $scope.listHDCT = response.data;
-                console.log($scope.listHDCT);
+                 console.log($scope.listHDCT);
             } else {
                 console.error("Error: ", response.status);
             }
@@ -98,10 +98,14 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         }
     };
 
-
+/// thêm sản phẩm vào hóa đơn chi tiết
     $scope.themSPvaoHDCT = function (ctsp){
         console.log(ctsp);
         console.log("Số lương thêm : " + ctsp.soLuongThem);
+        if(ctsp.soLuongThem <= 0){
+            toastr.warning('Số lượng thêm phải lớn hơn 0', 'Cảnh báo');
+            return;
+        }
         if(ctsp.soLuongThem > ctsp.so_luong){
             toastr.warning('Số lượng thêm phải ít hơn hoặc bằng số lượng tồn', 'Cảnh báo');
             return;
@@ -117,7 +121,8 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
             }
         }).then(function(response) {
             $scope.getHDCT($scope.hoa_don.id);
-
+            $scope.changePageCTSP(0);
+            $scope.searchTextCTSP = "";
             var modalElement = document.getElementById('chiTietSPModal');
             var Modal = bootstrap.Modal.getInstance(modalElement);
             Modal.hide(); // đóng modal
@@ -126,6 +131,25 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
             console.error('Error fetching data:', error);
         });
 
+    }
+
+
+///xóa sản phẩm khỏi hóa đơn chi tiết
+    $scope.deleteHDCT= function (hdct){
+        console.log(hdct);
+
+        $http.delete("http://localhost:8080/rest/hoa-don-chi-tiet/" + hdct.id).then(function(response) {
+            if (response.status === 200) {
+                $scope.getHDCT($scope.hoa_don.id);
+                $scope.changePageCTSP(0);
+                toastr.success('Xóa thành công', 'OK');
+
+            } else {
+                console.error("Error: ", status);
+            }
+        }).catch(function(error) {
+            console.error("Error occurred: ", error);
+        });
     }
 
 

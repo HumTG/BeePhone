@@ -13,8 +13,8 @@ import java.util.List;
 
 @Repository
 public interface HoaDonRepository extends JpaRepository<hoa_don,Integer> {
-    @Query("SELECT h from hoa_don h where h.nhanVien.id = :idNV")
-    List<hoa_don> getHDbyNV(@Param("idNV") Integer idNV);
+    @Query("SELECT h from hoa_don h where h.trang_thai = 0")
+    List<hoa_don> getHDBanHang();
 
     Page<hoa_don> findAll(Specification<hoa_don> spec, Pageable pageable);
 

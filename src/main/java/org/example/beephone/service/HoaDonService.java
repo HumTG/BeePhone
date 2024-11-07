@@ -36,9 +36,9 @@ public class HoaDonService {
         return hdRP.findAll();
     }
 
-//    public List<hoa_don> getb(){
-//     return hdRP.getHDbyNV(33);
-//    }
+    public List<hoa_don> getHoaDonBanHang(){
+     return hdRP.getHDBanHang();
+    }
 
     /// tạo hóa đơn cơ bản mới
     public hoa_don createHoaDon(){
