@@ -40,7 +40,11 @@
   <!-- Toastr CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 </head>
-
+<style>
+  .custom-button {
+    height: 38px;
+  }
+</style>
 <body ng-app="HoaDonApp">
   <div class="wrapper">
     <!-- Sidebar -->
@@ -283,14 +287,123 @@
         <!-- End Navbar -->
       </div>
 
-      <div class="container" ng-controller="HoaDonDetailController" ng-init="initializeId(1)">
+      <div class="container" ng-controller="DetailHoaDonController">
         <div class="page-inner">
+
+          <!-- Trạng thái đơn hàng -->
+          <div class="alert alert-light" role="alert">
+          </div>
+          <!-- END trạng thái đơn hàng -->
+
           <!-- Thông tin đơn hàng -->
           <div class="alert alert-light" role="alert">
-            <h2>Chi Tiết Hóa Đơn: {{ hoaDonDetail.trang_thai }}</h2>
-            <h2>Chi Tiết Hóa Đơn: ${ id }</h2>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2>Thông tin đơn hàng: {{ hoaDon.ma_hoa_don }}</h2>
+              <a href="#"><button class="btn btn-primary add-button">Thay đổi địa chỉ</button></a>
+            </div><hr>
+            <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">
+                      Trạng thái : {{ getTrangThai(hoaDon.trang_thai) }}
+                    </label>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">
+                      Loại: {{hoaDon.loai_hoa_don === 1 ? 'Tại quầy' : 'Online'}}
+                    </label>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" ng-repeat="diaChi in hoaDon.khachHang.diaChiKhachHang" ng-if="diaChi.trang_thai == 1">
+                      Địa chỉ: {{ diaChi.dia_chi_chi_tiet }}
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">
+                      Tên khách hàng: {{hoaDon.khachHang.ho_ten}}
+                    </label>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">
+                      Số điện thoại: {{hoaDon.khachHang.sdt}}
+                    </label>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">
+                      Thời gian dự kiến nhận: {{ hoaDon.ngayDuKienNhan }}
+                    </label>
+                  </div>
+                </div>
+            </div>
+
           </div>
           <!-- END thông tin đơn hàng -->
+
+          <!-- Thông tin sản phầm đã mua -->
+          <div class="alert alert-light" role="alert">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2>Thông tin sản phẩm đã mua</h2>
+              <a href="#"><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm sản phẩm</button></a>
+            </div>
+            <!--    Danh sách sản phẩm         -->
+            <table class="table">
+              <thead class="table-warning text-white">
+              <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Ảnh Sản Phẩm</th>
+                <th scope="col">Thông tin sản phẩm</th>
+                <th scope="col">Màu sắc</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Tổng tiền</th>
+                <th scope="col">Trạng Thái</th>
+                <th scope="col">Hành Động</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="x in chiTietHoaDonList track by $index">
+                <th scope="row">{{ $index + 1 }}</th>
+                <td>
+                  <img ng-src="/images/{{ x.chiTiet.chi_tiet_san_pham .anh }}" width="90" height="80">
+                </td>
+                <td>
+                  {{ x.tenSanPham }} <br>
+                  <span class="text-danger">{{ x.chiTiet.don_gia | currency:"":0 }} VNĐ</span><br>
+                  Kích cỡ: {{ x.chiTiet.chi_tiet_san_pham.kichCo.ten }}
+                </td>
+                <td>{{ x.chiTiet.chi_tiet_san_pham.mauSac.ten }}</td>
+                <td>
+                  <input type="number" class="form-control" ng-model="x.chiTiet.so_luong" style="width: 60px;" >
+                </td>
+                <!-- Tính Tổng tiền = Số lượng * Đơn giá -->
+                <td>{{ (x.chiTiet.so_luong * x.chiTiet.don_gia) | currency:"":0 }} VNĐ</td>
+                <td><button class="btn btn-success rounded-pill custom-button">Success</button>
+                </td>
+                <td>
+                  <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <!--   Tổng tiền hàng         -->
+            <div class="container mt-4">
+              <div class="d-flex justify-content-end">
+                <div class="p-2">
+                  <p><strong>Tổng tiền hàng :</strong> <span class="text-primary">{{ getTongTienHang() | currency:"":0 }} VNĐ</span></p>
+                  <p><strong>Phí vận chuyển :</strong> <span>0 VND</span></p>
+                  <p><strong>Voucher giảm giá :</strong> <span>{{tienVorcher | currency:"":0 }} VNĐ</span></p>
+                  <p><strong>Tổng tiền thanh toán:</strong> <span class="text-primary">{{getTongTienHang() - tienVorcher | currency:"":0 }} VNĐ</span></p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- END trạng thái đơn hàng -->
+
+
+
         </div>
       </div>
 

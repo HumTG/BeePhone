@@ -12,7 +12,7 @@ public class HoaDonAdminController {
         return "admin/hoa-don";
     }
 
-    @GetMapping("admin/detail-hoa-don")
+    @GetMapping("admin/detail-hoa-don/{id}")
     public String detail(){
         return "admin/detail-hoa-don";
     }
