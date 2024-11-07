@@ -29,6 +29,13 @@ public class HoaDonRestController {
         return ResponseEntity.ok(hoaDonService.getAll());
     }
 
+    @GetMapping("/ban-hang")
+    public ResponseEntity<?> getHoaDonTaiQuay(){
+        return ResponseEntity.ok(hoaDonService.getHoaDonBanHang());
+    }
+
+
+
     @PostMapping
     public ResponseEntity<hoa_don> createHD(){
         hoa_don hd = hoaDonService.createHoaDon();

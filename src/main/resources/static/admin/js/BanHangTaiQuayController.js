@@ -8,7 +8,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
 
     ///lấy hóa đơn
     $scope.getAllHoaDon = function (){
-        $http.get(url).then(function(response) {
+        $http.get(url + "/ban-hang").then(function(response) {
             if (response.status === 200) {
                 $scope.listHD = response.data;
                 console.log( $scope.listHD);
@@ -102,6 +102,10 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     $scope.themSPvaoHDCT = function (ctsp){
         console.log(ctsp);
         console.log("Số lương thêm : " + ctsp.soLuongThem);
+        if(ctsp.soLuongThem <= 0){
+            toastr.warning('Số lượng thêm phải lớn hơn 0', 'Cảnh báo');
+            return;
+        }
         if(ctsp.soLuongThem > ctsp.so_luong){
             toastr.warning('Số lượng thêm phải ít hơn hoặc bằng số lượng tồn', 'Cảnh báo');
             return;

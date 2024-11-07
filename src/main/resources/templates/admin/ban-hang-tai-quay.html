@@ -390,7 +390,7 @@
                                                         <div>{{ctsp.kichCo}}</div>
                                                         <div>Màu : {{ctsp.mauSac}}</div>
                                                     </td>
-                                                    <td><input type="number" min="1" style="width: 100px" ng-model="ctsp.soLuongThem"></td>
+                                                    <td><input type="number"  style="width: 100px" ng-model="ctsp.soLuongThem"></td>
                                                     <td>
                                                         <div class="d-flex">
                                                             <button class="btn btn-success" ng-click="themSPvaoHDCT(ctsp)">
@@ -432,8 +432,69 @@
 
                     <!-- END modal chi tiết sản phẩm-->
 
-                 <br> <br> <br> <br> <hr>
-                <h2>Khách hàng</h2>
+                 <br> <br> <br> <br>
+
+                    <h2>Khách hàng</h2>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5><i class="bi bi-list"></i>Thông tin khách hàng</h5>
+                        <button class="btn btn-outline-success" ><i class="bi bi-plus"></i> Chọn khách hàng</button>
+                    </div>
+                    <div>
+                        <div class="row mb-3">
+                            <div class="col-md-2 d-flex align-items-center">
+                                <label for="tenKhachHang" class="form-label mb-0">Tên khách hàng :</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="tenKhachHang">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-2 d-flex align-items-center">
+                                <label for="emailKhachHang" class="form-label mb-0">Địa chỉ email :</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="emailKhachHang">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-2 d-flex align-items-center">
+                                <label for="sdtKhachHang" class="form-label mb-0">Số điện thoại :</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="sdtKhachHang">
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    modal khachs hang-->
+
+<!--                    thông tin hóa đơn-->
+                    <br> <br> <br> <br>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-7"></div>
+                        <div class="col-md-5">
+                            <h3>Thông tin thanh toán</h3>
+                            <br>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label"><strong>Tiền hàng</strong></label>
+                                </div>
+                                <div class="col-md-9 text-end"><strong>0</strong></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label"><strong>Giảm giá</strong></label>
+                                </div>
+                                <div class="col-md-9 text-end"><strong>0</strong></div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
 
 
