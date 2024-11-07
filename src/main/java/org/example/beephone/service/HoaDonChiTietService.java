@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -63,22 +64,29 @@ public class HoaDonChiTietService {
         chi_tiet_san_pham ctsp = ctspRP.findById(idCTSP)
                 .orElseThrow(() -> new EntityNotFoundException("Không thấy CTSP với id: " + idCTSP));
 
+        ///kiểm tra hdct đã tồn tại hay chưa
+        Optional<hoa_don_chi_tiet> hdctOptional = hdctRP.findByHDvaCTSP(hd.getId(),ctsp.getId());
+        if(hdctOptional.isPresent()){
+            hoa_don_chi_tiet updateHDCT = hdctOptional.get();
+            updateHDCT.setSo_luong(updateHDCT.getSo_luong() + sl);
+            hdctRP.save(updateHDCT);
+            ctspRP.giamSoLuongSPCT(sl,ctsp.getId());
+            return updateHDCT;
+        }
+
+       ///tạo hdct mới
         hoa_don_chi_tiet hdct = new hoa_don_chi_tiet();
         hdct.setMa_hoa_don_chi_tiet("HDCT"+generateRandomCode());
         hdct.setHoa_don(hd);
         hdct.setChi_tiet_san_pham(ctsp);
         hdct.setSo_luong(sl);
         hdct.setTrang_thai(1);
-
         if(ctsp.getGiamGia() != null){
            BigDecimal giaBan = ctsp.getGia_ban();
            float giamGia = ctsp.getGiamGia().getGia_tri();
-
            BigDecimal phanTramGiam = new BigDecimal(giamGia).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
            BigDecimal giaTriGiam = giaBan.multiply(phanTramGiam);
-
            BigDecimal giaKhiGiam = giaBan.subtract(giaTriGiam);
-
            hdct.setDon_gia(giaKhiGiam);
         }
         else{
@@ -87,6 +95,7 @@ public class HoaDonChiTietService {
 
 
         hdctRP.save(hdct);
+        ctspRP.giamSoLuongSPCT(sl,ctsp.getId());
         return hdct;
 
     }
@@ -103,5 +112,15 @@ public class HoaDonChiTietService {
             code.append(characters.charAt(random.nextInt(characters.length())));
         }
         return code.toString();
+    }
+
+    public void deleteHDCT(hoa_don_chi_tiet hdct){
+        ctspRP.tangSoLuongSPCT(hdct.getSo_luong(),hdct.getChi_tiet_san_pham().getId());
+        hdctRP.delete(hdct);
+    }
+
+    public Optional<hoa_don_chi_tiet> findById(Integer id){
+        Optional<hoa_don_chi_tiet> optional = hdctRP.findById(id);
+        return optional;
     }
 }

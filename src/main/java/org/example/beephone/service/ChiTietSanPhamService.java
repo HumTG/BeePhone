@@ -29,7 +29,7 @@ public class ChiTietSanPhamService {
 
     ///chi tiết sản phẩm dto
     public Page<CTSanPhamDTO> getCtspDTO(int pageNum){
-        Pageable pageable = PageRequest.of(pageNum,3);
+        Pageable pageable = PageRequest.of(pageNum,5);
         Page<chi_tiet_san_pham> listCTSP = chiTietSanPhamRepository.getCTSPBanHang(pageable);
 
         return listCTSP.map(ct ->{
