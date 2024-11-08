@@ -80,14 +80,20 @@ public class HoaDonChiTietRestController {
     public ResponseEntity<?> createHDCT(@RequestParam(name = "idHD") Integer idHD,
                                         @RequestParam(name = "idCTSP") Integer idCTSP
                                        ){
-        try{
-            System.out.println("ID HÓA ĐƠN : " + idHD);
-            System.out.println("ID CTSP : " + idCTSP);
-            hoa_don_chi_tiet hdct = hdctService.addHDCT(idHD,idCTSP);
-            return ResponseEntity.ok(hdct);
+        hoa_don_chi_tiet hdct = hdctService.addHDCT(idHD,idCTSP);
+        return ResponseEntity.ok(hdct);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Integer id){
+        Optional<hoa_don_chi_tiet> op = hdctService.findById(id);
+        if (op.isPresent()) {
+            hoa_don_chi_tiet hdct = op.get();
+            hdctService.deleteHDCTCustom(hdct);
+            return ResponseEntity.ok(Map.of("message", "Xóa sản phẩm khỏi hóa đơn thành công."));
         }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra: " + e.getMessage());
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ID hóa đơn chi tiết không tồn tại.");
         }
     }
 

@@ -55,10 +55,10 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
         if (confirm("Bạn có chắc chắn muốn xóa chi tiết hóa đơn này?")) {
             console.log("Đang xóa chi tiết hóa đơn:", hdct);
 
-            $http.delete("http://localhost:8080/rest/hoa-don-chi-tiet/" + hdct.id)
+            $http.delete("http://localhost:8080/rest/hoa-don-chi-tiet/delete/" + hdct.id)
                 .then(function(response) {
                     if (response.status === 200) {
-                        toastr.success('Xóa thành công', 'OK');
+                        toastr.success('Xóa sản phẩm thành công !', 'Success');
                         // Gọi lại API để cập nhật danh sách sau khi xóa thành công
                         $http.get('/rest/hoa-don/' + id + '/detail')
                             .then(function(response) {

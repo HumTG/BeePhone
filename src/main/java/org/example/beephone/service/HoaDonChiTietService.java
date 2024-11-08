@@ -128,6 +128,7 @@ public class HoaDonChiTietService {
         hoaDonService.tinhTongTienHoaDon(idHD);
     }
 
+
     public Optional<hoa_don_chi_tiet> findById(Integer id){
         Optional<hoa_don_chi_tiet> optional = hdctRP.findById(id);
         return optional;
@@ -169,6 +170,13 @@ public class HoaDonChiTietService {
         ctspRP.giamSoLuongSPCT(1,ctsp.getId());
         return hdct;
 
+    }
+
+    // Chỉ xóa hóa đơn chi tiết không cập nhật lại tổng tiền
+    public void deleteHDCTCustom(hoa_don_chi_tiet hdct){
+        Integer idHD = hdct.getHoa_don().getId();
+        ctspRP.tangSoLuongSPCT(hdct.getSo_luong(),hdct.getChi_tiet_san_pham().getId());
+        hdctRP.delete(hdct);
     }
 
 
