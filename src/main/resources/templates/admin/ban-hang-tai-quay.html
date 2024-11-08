@@ -483,13 +483,19 @@
                                 <div class="col-md-3">
                                     <label class="form-label"><strong>Tiền hàng</strong></label>
                                 </div>
-                                <div class="col-md-9 text-end"><strong>0</strong></div>
+                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.thanh_tien | currency:'':0}}</strong></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
                                     <label class="form-label"><strong>Giảm giá</strong></label>
                                 </div>
-                                <div class="col-md-9 text-end"><strong>0</strong></div>
+                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.thanh_tien - hoaDon_DB.tien_sau_giam_gia | currency:'':0}}</strong></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label"><strong>Tiền khi giá</strong></label>
+                                </div>
+                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}}</strong></div>
                             </div>
 
                         </div>

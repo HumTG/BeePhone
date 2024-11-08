@@ -36,6 +36,16 @@ public class HoaDonRestController {
         return ResponseEntity.ok(hoaDonService.getHoaDonBanHang());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findHoaDonById(@PathVariable("id") Integer id){
+        Optional<hoa_don> optional = hoaDonService.findHoaDonById(id);
+        if (optional.isPresent()) {
+            return ResponseEntity.ok(optional.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn với ID: " + id);
+        }
+    }
+
 
 
     @PostMapping
