@@ -32,7 +32,7 @@ public class HoaDonChiTietRestController {
         return ResponseEntity.ok(listHDCT);
     }
 
-///getAll
+    ///getAll
     @GetMapping
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(hdctService.getALL());
@@ -45,6 +45,7 @@ public class HoaDonChiTietRestController {
         return ResponseEntity.ok(list);
     }
 
+    /// Thêm hóa đơn chi tiết bán tại quầy
     @PostMapping
     public ResponseEntity<?> createHDCT(@RequestParam(name = "idHD") Integer idHD,
                                         @RequestParam(name = "idCTSP") Integer idCTSP,
@@ -61,6 +62,7 @@ public class HoaDonChiTietRestController {
         }
     }
 
+   /// Xóa hóa đơn chi tiết bán tại quầy
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteHDCT(@PathVariable("id") Integer id){
         Optional<hoa_don_chi_tiet> op = hdctService.findById(id);

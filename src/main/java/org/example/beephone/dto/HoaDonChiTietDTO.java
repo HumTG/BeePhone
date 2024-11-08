@@ -33,6 +33,8 @@ public class HoaDonChiTietDTO {
 
     private BigDecimal don_gia ;
 
+    private int so_luong_ton_ctsp;
+
     private int trang_thai ;
 
 }

@@ -54,12 +54,13 @@ public class HoaDonChiTietService {
             dto.setAnh(chiTiet.getChi_tiet_san_pham().getAnh());
             dto.setSo_luong(chiTiet.getSo_luong());
             dto.setDon_gia(chiTiet.getDon_gia());
+            dto.setSo_luong_ton_ctsp(chiTiet.getChi_tiet_san_pham().getSo_luong());
             dto.setTrang_thai(chiTiet.getTrang_thai());
             return dto;
         }).collect(Collectors.toList());
     }
 
-    /// thêm sản phẩm vào hdct (tạo hdct mới)
+    /// thêm sản phẩm vào hdct bán tại quầy (tạo hdct bán tại quầy)
     public hoa_don_chi_tiet addHoaDonCt(int idHD,int idCTSP,int sl){
         hoa_don hd = hdRP.findById(idHD)
                 .orElseThrow(() -> new EntityNotFoundException("Không thấy hóa đơn với id: " + idHD));
