@@ -53,7 +53,7 @@ public class HoaDonChiTietRestController {
             System.out.println("ID HÓA ĐƠN : " + idHD);
             System.out.println("ID CTSP : " + idCTSP);
             System.out.println("Số lượng : " + sl);
-            hoa_don_chi_tiet hdct = hdctService.addHDCT(idHD,idCTSP);
+            hoa_don_chi_tiet hdct = hdctService.addHoaDonCt(idHD,idCTSP,sl);
             return ResponseEntity.ok(hdct);
         }
         catch(Exception e){
