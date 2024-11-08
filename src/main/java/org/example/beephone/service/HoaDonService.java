@@ -95,7 +95,8 @@ public class HoaDonService {
         if(hd.getKhuyenMai() != null && hd.getKhuyenMai().getTrang_thai() == 1){
             float giaTriKhuyenMai = hd.getKhuyenMai().getGia_tri();
             // lấy % giảm
-            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+//            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).setScale(2, RoundingMode.HALF_UP);
             //Số tiền giảm
             BigDecimal giaTriGiam = tienHoaDon.multiply(phanTramGiam);
             // check giảm tối thiểu
