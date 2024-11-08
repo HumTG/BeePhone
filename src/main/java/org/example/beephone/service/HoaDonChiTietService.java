@@ -26,6 +26,8 @@ public class HoaDonChiTietService {
     private ChiTietSanPhamRepository ctspRP;
     @Autowired
     private HoaDonRepository hdRP;
+    @Autowired
+    private HoaDonService hoaDonService;
 
     ///tìm hóa đơn CT theo id hóa đơn
     public List<hoa_don_chi_tiet> findByIdHD(Integer idhd){
@@ -71,6 +73,8 @@ public class HoaDonChiTietService {
             updateHDCT.setSo_luong(updateHDCT.getSo_luong() + sl);
             hdctRP.save(updateHDCT);
             ctspRP.giamSoLuongSPCT(sl,ctsp.getId());
+            ///cập nhật tiền hóa đơn
+            hoaDonService.tinhTongTienHoaDon(idHD);
             return updateHDCT;
         }
 
@@ -96,6 +100,8 @@ public class HoaDonChiTietService {
 
         hdctRP.save(hdct);
         ctspRP.giamSoLuongSPCT(sl,ctsp.getId());
+        ///cập nhật tiền hóa đơn
+        hoaDonService.tinhTongTienHoaDon(idHD);
         return hdct;
 
     }
@@ -115,8 +121,10 @@ public class HoaDonChiTietService {
     }
 
     public void deleteHDCT(hoa_don_chi_tiet hdct){
+        Integer idHD = hdct.getHoa_don().getId();
         ctspRP.tangSoLuongSPCT(hdct.getSo_luong(),hdct.getChi_tiet_san_pham().getId());
         hdctRP.delete(hdct);
+        hoaDonService.tinhTongTienHoaDon(idHD);
     }
 
     public Optional<hoa_don_chi_tiet> findById(Integer id){

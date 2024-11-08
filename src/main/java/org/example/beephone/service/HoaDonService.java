@@ -1,7 +1,9 @@
 package org.example.beephone.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.beephone.entity.hoa_don;
 import org.example.beephone.entity.nhan_vien;
+import org.example.beephone.repository.HoaDonChiTietRepository;
 import org.example.beephone.repository.HoaDonRepository;
 import org.example.beephone.repository.KhachHangRepository;
 import org.example.beephone.repository.KhuyenMaiRepository;
@@ -15,9 +17,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -30,6 +34,8 @@ public class HoaDonService {
     private KhachHangRepository khRP;
     @Autowired
     private KhuyenMaiRepository kmRP;
+    @Autowired
+    private HoaDonChiTietRepository hdctRP;
 
 
     public List<hoa_don> getAll(){
@@ -40,7 +46,7 @@ public class HoaDonService {
      return hdRP.getHDBanHang();
     }
 
-    /// tạo hóa đơn cơ bản mới
+    /// tạo hóa đơn bán hàng tại quầy mới
     public hoa_don createHoaDon(){
         nhan_vien nhanVien = nvRP.findById(5).get();
 
@@ -74,6 +80,49 @@ public class HoaDonService {
 
         return code.toString();
     }
+
+    public Optional<hoa_don> findHoaDonById(Integer idHD){
+        Optional<hoa_don> optionalHoa_don = hdRP.findById(idHD);
+        return optionalHoa_don;
+    }
+
+    ////Tính tổng tiền hóa đơn
+    public void tinhTongTienHoaDon(Integer idHD){
+        BigDecimal tienHoaDon = hdctRP.tinhTongTienHoaDon(idHD);
+        hoa_don hd = hdRP.findById(idHD)
+                .orElseThrow(() -> new EntityNotFoundException("Không thấy hóa đơn với id: " + idHD));
+
+        if(hd.getKhuyenMai() != null && hd.getKhuyenMai().getTrang_thai() == 1){
+            float giaTriKhuyenMai = hd.getKhuyenMai().getGia_tri();
+            // lấy % giảm
+            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+            //Số tiền giảm
+            BigDecimal giaTriGiam = tienHoaDon.multiply(phanTramGiam);
+            // check giảm tối thiểu
+            if(giaTriGiam.compareTo(hd.getKhuyenMai().getGia_tri_toi_thieu()) > 0){
+                BigDecimal giaGiam = tienHoaDon.subtract(hd.getKhuyenMai().getGia_tri_toi_thieu());
+                hdRP.capNhatTienHoaDon(tienHoaDon,giaGiam,idHD);
+//                System.out.println("Quá tối thiểu");
+            }else{
+                BigDecimal giaKhiGiam = tienHoaDon.subtract(giaTriGiam);
+                hdRP.capNhatTienHoaDon(tienHoaDon,giaKhiGiam,idHD);
+//                System.out.println("Không quá tối thiểu");
+//                System.out.println("Tối thiểu : " + hd.getKhuyenMai().getGia_tri_toi_thieu());
+//                System.out.println(phanTramGiam);
+//                System.out.println(giaKhiGiam);
+//                System.out.println(giaKhiGiam);
+
+            }
+
+
+        }else{
+            hdRP.capNhatTienHoaDon(tienHoaDon,tienHoaDon,idHD);
+//            System.out.println("Không giảm giá");
+        }
+
+    }
+
+
 
     // quản lý hóa đơn ( bán hàng online , danh sách các hóa đơn)
 
