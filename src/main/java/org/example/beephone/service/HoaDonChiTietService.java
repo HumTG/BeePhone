@@ -16,6 +16,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,4 +124,45 @@ public class HoaDonChiTietService {
         Optional<hoa_don_chi_tiet> optional = hdctRP.findById(id);
         return optional;
     }
+
+
+    // Tạo hóa đơn chi tiết
+    public hoa_don_chi_tiet addHDCT(int idHD,int idCTSP){
+        hoa_don hd = hdRP.findById(idHD)
+                .orElseThrow(() -> new EntityNotFoundException("Không thấy hóa đơn với id: " + idHD));
+
+        chi_tiet_san_pham ctsp = ctspRP.findById(idCTSP)
+                .orElseThrow(() -> new EntityNotFoundException("Không thấy CTSP với id: " + idCTSP));
+
+        Optional<hoa_don_chi_tiet> hdctOptional = hdctRP.findByHDvaCTSP(hd.getId(),ctsp.getId());
+        if(hdctOptional.isPresent()){
+            hoa_don_chi_tiet updateHDCT = hdctOptional.get();
+            updateHDCT.setSo_luong(updateHDCT.getSo_luong() + 1);
+            hdctRP.save(updateHDCT);
+            ctspRP.giamSoLuongSPCT(1,ctsp.getId());
+            return updateHDCT;
+        }
+
+        ///tạo hdct mới
+        hoa_don_chi_tiet hdct = new hoa_don_chi_tiet();
+        hdct.setMa_hoa_don_chi_tiet("HDCT"+generateRandomCode());
+        hdct.setHoa_don(hd);
+        hdct.setChi_tiet_san_pham(ctsp);
+        hdct.setSo_luong(1);
+        hdct.setTrang_thai(1);
+        if(ctsp.getGiamGia() != null){
+            BigDecimal giaBan = ctsp.getGia_ban();
+            hdct.setDon_gia(giaBan);
+        }
+        else{
+            hdct.setDon_gia(ctsp.getGia_ban());
+        }
+        hdctRP.save(hdct);
+        ctspRP.giamSoLuongSPCT(1,ctsp.getId());
+        return hdct;
+
+    }
+
+
+
 }

@@ -1,19 +1,14 @@
 package org.example.beephone.controller.api;
 
 import org.example.beephone.dto.HoaDonChiTietDTO;
+import org.example.beephone.dto.hoa_don_chi_tiet_request;
 import org.example.beephone.entity.hoa_don_chi_tiet;
 import org.example.beephone.entity.mau_sac;
 import org.example.beephone.service.HoaDonChiTietService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -58,7 +53,7 @@ public class HoaDonChiTietRestController {
             System.out.println("ID HÓA ĐƠN : " + idHD);
             System.out.println("ID CTSP : " + idCTSP);
             System.out.println("Số lượng : " + sl);
-            hoa_don_chi_tiet hdct = hdctService.addHoaDonCt(idHD,idCTSP,sl);
+            hoa_don_chi_tiet hdct = hdctService.addHDCT(idHD,idCTSP);
             return ResponseEntity.ok(hdct);
         }
         catch(Exception e){
@@ -80,5 +75,24 @@ public class HoaDonChiTietRestController {
                     .body("ID hóa đơn chi tiết không tồn tại.");
         }
     }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> createHDCT(@RequestParam(name = "idHD") Integer idHD,
+                                        @RequestParam(name = "idCTSP") Integer idCTSP
+                                       ){
+        try{
+            System.out.println("ID HÓA ĐƠN : " + idHD);
+            System.out.println("ID CTSP : " + idCTSP);
+            hoa_don_chi_tiet hdct = hdctService.addHDCT(idHD,idCTSP);
+            return ResponseEntity.ok(hdct);
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra: " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }

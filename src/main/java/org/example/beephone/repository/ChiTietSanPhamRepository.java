@@ -1,6 +1,7 @@
 package org.example.beephone.repository;
 
 import org.example.beephone.entity.chi_tiet_san_pham;
+import org.example.beephone.entity.hoa_don_chi_tiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +36,5 @@ public interface ChiTietSanPhamRepository extends JpaRepository<chi_tiet_san_pha
     @Modifying
     @Query("UPDATE chi_tiet_san_pham  c SET c.so_luong = c.so_luong + :soLuong WHERE c.id = :idCTSP")
     void tangSoLuongSPCT(@Param("soLuong") int soLuong,@Param("idCTSP") Integer idCTSP);
+
 }

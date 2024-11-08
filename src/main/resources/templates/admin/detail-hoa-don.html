@@ -44,6 +44,19 @@
   .custom-button {
     height: 38px;
   }
+  .discount-badge {
+    position: absolute;
+    top: 5px;
+    left: 85px;
+    background-color: #ffc107; /* Màu nền vàng */
+    color: black;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    z-index: 1;
+  }
+
 </style>
 <body ng-app="HoaDonApp">
   <div class="wrapper">
@@ -345,7 +358,10 @@
           <div class="alert alert-light" role="alert">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h2>Thông tin sản phẩm đã mua</h2>
-              <a href="#"><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm sản phẩm</button></a>
+              <!-- Nút Thêm Sản Phẩm -->
+              <button class="btn btn-primary" ng-click="openProductsModel()">
+                <i class="bi bi-plus"></i> Thêm sản phẩm
+              </button>
             </div>
             <!--    Danh sách sản phẩm         -->
             <table class="table">
@@ -362,29 +378,43 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat="x in chiTietHoaDonList track by $index">
+              <tr ng-repeat="x in chiTietHoaDonList track by $index" ng-init="finalPrice = (x.chiTiet.chi_tiet_san_pham.giamGia && x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri) ? x.chiTiet.don_gia * (1 - x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri / 100): x.chiTiet.don_gia">
                 <th scope="row">{{ $index + 1 }}</th>
-                <td>
-                  <img ng-src="/images/{{ x.chiTiet.chi_tiet_san_pham .anh }}" width="90" height="80">
+                <td style="position: relative;">
+                  <!-- Nhãn giảm giá nếu có giảm giá -->
+                  <div ng-if="x.chiTiet.chi_tiet_san_pham.giamGia && x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri" class="discount-badge">
+                    {{ x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri }}% Giảm
+                  </div>
+                  <img ng-src="/images/{{ x.chiTiet.chi_tiet_san_pham.anh }}" width="90" height="80">
                 </td>
                 <td>
                   {{ x.tenSanPham }} <br>
-                  <span class="text-danger">{{ x.chiTiet.don_gia | currency:"":0 }} VNĐ</span><br>
+                  <!-- Hiển thị giá cũ và giá sau giảm nếu có giảm giá -->
+                  <span ng-if="x.chiTiet.chi_tiet_san_pham.giamGia && x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri">
+                      <span class="text-danger">{{ finalPrice | currency:"":0 }} VNĐ</span><br>
+                      <b class="text-muted" style="text-decoration: line-through;">{{ x.chiTiet.don_gia | currency:"":0 }} VNĐ</b><br>
+                  </span>
+                  <!-- Hiển thị chỉ giá gốc nếu không có giảm giá -->
+                  <span ng-if="!x.chiTiet.chi_tiet_san_pham.giamGia || !x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri">
+                      <span class="text-danger">{{ x.chiTiet.don_gia | currency:"":0 }} VNĐ</span>
+                  </span>
+                  <br>
                   Kích cỡ: {{ x.chiTiet.chi_tiet_san_pham.kichCo.ten }}
                 </td>
                 <td>{{ x.chiTiet.chi_tiet_san_pham.mauSac.ten }}</td>
                 <td>
-                  <input type="number" class="form-control" ng-model="x.chiTiet.so_luong" style="width: 60px;" >
+                  <input type="number" class="form-control" ng-model="x.chiTiet.so_luong" style="width: 60px;">
                 </td>
-                <!-- Tính Tổng tiền = Số lượng * Đơn giá -->
-                <td>{{ (x.chiTiet.so_luong * x.chiTiet.don_gia) | currency:"":0 }} VNĐ</td>
-                <td><button class="btn btn-success rounded-pill custom-button">Success</button>
-                </td>
+                <!-- Tính Tổng tiền = Số lượng * Giá sau giảm (hoặc giá gốc nếu không giảm) -->
+                <td>{{ x.chiTiet.so_luong * finalPrice | currency:"":0 }} VNĐ</td>
+                <td><button class="btn btn-success rounded-pill custom-button">Thành công</button></td>
                 <td>
-                  <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                  <button class="btn btn-danger btn-sm" ng-click="deleteHDCT(x.chiTiet)"><i class="bi bi-trash"></i></button>
                 </td>
               </tr>
               </tbody>
+
+
             </table>
 
             <!--   Tổng tiền hàng         -->
@@ -401,6 +431,92 @@
 
           </div>
           <!-- END trạng thái đơn hàng -->
+
+
+
+          <!-- Model danh sách sản phẩm -->
+          <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="productModalLabel">Danh sách sản phẩm</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Thanh tìm kiếm -->
+                  <input type="text" ng-model="searchTerm" placeholder="Nhập tên sản phẩm" class="form-control mb-3">
+
+                  <!-- Bảng danh sách sản phẩm -->
+                  <table class="table">
+                    <thead class="table-warning text-white">
+                    <tr>
+                      <th>STT</th>
+                      <th>Ảnh</th>
+                      <th>Tên Sản Phẩm</th>
+                      <th>Giá Bán</th>
+                      <th>Số Lượng</th>
+                      <th>Kích Thước</th>
+                      <th>Màu Sắc</th>
+                      <th>Trạng Thái</th>
+                      <th>Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in products | filter:searchTerm track by $index">
+                      <td>{{ $index + 1 }}</td>
+                      <td style="position: relative;">
+                        <!-- Nhãn giảm giá nếu có giảm giá -->
+                        <div ng-if="item.giamGia && item.giamGia.giaTri"
+                             class="discount-badge">
+                          {{ item.giamGia.giaTri }}%
+                        </div>
+
+                        <!-- Hiển thị ảnh sản phẩm -->
+                        <img ng-src="/images/{{ item.anh }}" width="90" height="80" style="overflow: hidden;border-radius: 8px;">
+                      </td>
+                      <td>{{ item.tenSanPham }} [ {{ item.kichCo }} - {{ item.mauSac }} ] </td>
+                      <td>{{ item.giaBan | currency:"":0 }} VND</td>
+                      <td>{{ item.soLuong }}</td>
+                      <td>{{ item.kichCo }}</td>
+                      <td>{{ item.mauSac }}</td>
+                      <td>
+                        <span class="badge" ng-class="{'bg-success': item.trangThai == 1, 'bg-danger': item.trangThai != 1}">
+                          {{ item.trangThai == 1 ? 'Đang kinh doanh' : 'Ngừng kinh doanh' }}
+                        </span>
+                      </td>
+                      <td><button class="btn btn-warning" ng-click="selectProduct(item)">Chọn</button></td>
+                    </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- Điều hướng phân trang -->
+                  <div class="mx-auto p-2" style="width: 200px;">
+                    <nav aria-label="Page navigation example">
+                      <ul class="pagination">
+                        <!-- Nút Previous -->
+                        <li class="page-item" ng-class="{ 'disabled': page === 0 }">
+                          <a class="page-link" href="" ng-click="previousPage(page - 1)">Previous</a>
+                        </li>
+                        <!-- Nút số trang -->
+                        <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
+                            ng-class="{ 'active': $index === page }">
+                          <a class="page-link" href="" ng-click="openProductsModel($index)">{{$index + 1}}</a>
+                        </li>
+                        <!-- Nút Next -->
+                        <li class="page-item" ng-class="{ 'disabled': page === totalPages - 1 }">
+                          <a class="page-link" href="" ng-click="nextPage(page + 1)">Next</a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!--  End model sản phẩm        -->
 
 
 
