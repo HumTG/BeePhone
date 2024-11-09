@@ -481,6 +481,17 @@
                             <br>
                             <div class="row mb-3">
                                 <div class="col-md-3">
+                                    <label class="form-label"><strong>Khuyến mãi</strong></label>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <input type="text" class="form-control" placeholder="Khuyến mãi" ng-model="hoaDon_DB.khuyenMai.ma_khuyen_mai" disabled>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-outline-primary" ng-click="openModalKhuyenMai()">Chọn</button>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
                                     <label class="form-label"><strong>Tiền hàng</strong></label>
                                 </div>
                                 <div class="col-md-9 text-end"><strong>{{hoaDon_DB.thanh_tien | currency:'':0}}</strong></div>
@@ -497,9 +508,81 @@
                                 </div>
                                 <div class="col-md-9 text-end"><strong>{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}}</strong></div>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label"><strong>Phí ship</strong></label>
+                                </div>
+                                <div class="col-md-9 text-end"><strong></strong></div>
+                            </div>
+                            <hr>
+                            <div class="row mb-3">
+                                <div class="col-md-5">
+                                    <label class="form-label"><strong><h3>Tổng tiền</h3></strong></label>
+                                </div>
+                                <div class="col-md-7 text-end"><strong style="color:red;">{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}}</strong></div>
+                            </div>
+                            <div class="row mb-3">
+                                <button type="button" class="btn btn-outline-primary">Thanh toán</button>
+                            </div>
 
                         </div>
                     </div>
+
+<!--                    modal khuyến mại-->
+                    <div class="modal fade" id="khuyenMaiModal" tabindex="-1" aria-labelledby="kmModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="kmModalLabel">Danh sách khuyến mại</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <br>
+                                            <table class="table table-striped">
+                                                <thead class="table-danger">
+                                                <tr class="text-bg-warning text-center text-white">
+                                                    <th scope="col">STT</th>
+                                                    <th scope="col">Mã khuyến mại</th>
+                                                    <th scope="col">Phần trăm giảm</th>
+                                                    <th scope="col">Giảm tối đa</th>
+                                                    <th scope="col">Ngày hết hạn</th>
+                                                    <th scope="col">Áp dụng</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-if="listKhuyenMai.length === 0">
+                                                    <td colspan="7" class="text-center text-danger">
+                                                        Không có khuyến mại có thể dùng
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="km in listKhuyenMai">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>{{km.ma_khuyen_mai}}</td>
+                                                    <td>{{km.gia_tri}}</td>
+                                                    <td><span style="color: red">{{km.gia_tri_toi_thieu | currency:'':0}}</span> VNĐ</td>
+                                                    <td>{{km.ngay_ket_thuc | date:'dd/MM/yyyy'}}</td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <button class="btn btn-success" ng-click="addKMchoHD(km)">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<!--                    end modal khuyến mại-->
 
                 </div>
 

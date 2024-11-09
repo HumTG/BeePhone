@@ -58,4 +58,9 @@ public class KhuyenMaiRestController {
                     .body("Có lỗi xảy ra trong quá trình cập nhật: " + e.getMessage());
         }
     }
+
+    @GetMapping("/rest/khuyen-mai/con-han")
+    public ResponseEntity<?> getKMConHan(){
+        return ResponseEntity.ok(kmSer.getConHan());
+    }
 }

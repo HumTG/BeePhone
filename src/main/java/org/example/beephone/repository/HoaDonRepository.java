@@ -1,6 +1,7 @@
 package org.example.beephone.repository;
 
 import org.example.beephone.entity.hoa_don;
+import org.example.beephone.entity.khuyen_mai;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,5 +31,10 @@ public interface HoaDonRepository extends JpaRepository<hoa_don,Integer> {
     void capNhatTienHoaDon(@Param("thanhTien") BigDecimal thanhTien,@Param("tienSauGiamGia") BigDecimal tienSauGiamGia
             ,@Param("idHD") Integer idHD);
 
+    /// cập nhật khuyến mại cho hóa đơn
+    @Modifying
+    @Transactional
+    @Query("UPDATE hoa_don hd SET hd.khuyenMai = :khuyenMai WHERE hd.id = :idHD")
+    void capNhatKhuyenMaiHD(@Param("khuyenMai") khuyen_mai khuyenMai,@Param("idHD") Integer idHD);
 
 }

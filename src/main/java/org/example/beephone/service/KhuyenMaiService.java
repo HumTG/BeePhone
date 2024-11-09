@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,7 +23,7 @@ public class KhuyenMaiService {
     private static final int MA_NV_LENGTH = 8; // Độ dài mã
 
     public Page<khuyen_mai> getPage(Integer pageNum){
-        Pageable kmPage = PageRequest.of(pageNum,3);
+        Pageable kmPage = PageRequest.of(pageNum,6);
         return kmSer.findAll(kmPage);
     }
 
@@ -47,6 +48,7 @@ public class KhuyenMaiService {
 
         ///add
         kmSer.save(km);
+        kmSer.updateTrangThai();
 
     }
 
@@ -61,5 +63,9 @@ public class KhuyenMaiService {
 
     public void updateTrangThaiKM(){
         kmSer.updateTrangThai();
+    }
+
+    public List<khuyen_mai> getConHan(){
+        return kmSer.getKhuyenMaiConHan();
     }
 }

@@ -2,6 +2,7 @@ package org.example.beephone.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.example.beephone.entity.hoa_don;
+import org.example.beephone.entity.khuyen_mai;
 import org.example.beephone.entity.nhan_vien;
 import org.example.beephone.repository.HoaDonChiTietRepository;
 import org.example.beephone.repository.HoaDonRepository;
@@ -95,32 +96,32 @@ public class HoaDonService {
         if(hd.getKhuyenMai() != null && hd.getKhuyenMai().getTrang_thai() == 1){
             float giaTriKhuyenMai = hd.getKhuyenMai().getGia_tri();
             // lấy % giảm
-//            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
-            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+//            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).setScale(2, RoundingMode.HALF_UP);
             //Số tiền giảm
             BigDecimal giaTriGiam = tienHoaDon.multiply(phanTramGiam);
-            // check giảm tối thiểu
             if(giaTriGiam.compareTo(hd.getKhuyenMai().getGia_tri_toi_thieu()) > 0){
                 BigDecimal giaGiam = tienHoaDon.subtract(hd.getKhuyenMai().getGia_tri_toi_thieu());
                 hdRP.capNhatTienHoaDon(tienHoaDon,giaGiam,idHD);
-//                System.out.println("Quá tối thiểu");
+                System.out.println("Vượt quá ");
             }else{
+                System.out.println("Không vượt quá ");
                 BigDecimal giaKhiGiam = tienHoaDon.subtract(giaTriGiam);
                 hdRP.capNhatTienHoaDon(tienHoaDon,giaKhiGiam,idHD);
-//                System.out.println("Không quá tối thiểu");
-//                System.out.println("Tối thiểu : " + hd.getKhuyenMai().getGia_tri_toi_thieu());
-//                System.out.println(phanTramGiam);
-//                System.out.println(giaKhiGiam);
-//                System.out.println(giaKhiGiam);
 
             }
-
-
         }else{
+            System.out.println("Không giảm ");
             hdRP.capNhatTienHoaDon(tienHoaDon,tienHoaDon,idHD);
-//            System.out.println("Không giảm giá");
         }
 
+    }
+
+    ///cập nhật khuyến mại cho hóa đơn và tính lại tổng tiền
+    public void capNhatKMchoHD(Integer idKM,Integer idHD){
+       khuyen_mai khuyenMai = kmRP.findById(idKM).get();
+       hdRP.capNhatKhuyenMaiHD(khuyenMai,idHD);
+       tinhTongTienHoaDon(idHD);
     }
 
 

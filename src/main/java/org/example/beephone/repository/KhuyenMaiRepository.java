@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface KhuyenMaiRepository extends JpaRepository<khuyen_mai,Integer> {
 
@@ -18,4 +20,7 @@ public interface KhuyenMaiRepository extends JpaRepository<khuyen_mai,Integer> {
             " WHEN km.ngay_bat_dau > CURRENT_DATE  THEN  2 " +
             " ELSE km.trang_thai END")
     void updateTrangThai();
+
+    @Query("SELECT km FROM khuyen_mai km WHERE km.trang_thai = 1")
+    List<khuyen_mai> getKhuyenMaiConHan();
 }

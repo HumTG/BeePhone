@@ -53,6 +53,19 @@ public class HoaDonRestController {
         hoa_don hd = hoaDonService.createHoaDon();
         return ResponseEntity.ok(hd);
     }
+    //cập nhạt khuyến mãi hóa đơn
+    @PutMapping("/update-khuyen-mai")
+    public ResponseEntity<?> capNhatKhuyenMai(@RequestParam(name = "idKM") Integer idKM,@RequestParam(name = "idHD") Integer idHD){
+        try{
+           hoaDonService.capNhatKMchoHD(idKM,idHD);
+           return ResponseEntity.ok(Map.of("message", "Lấy khuyến mại thành công"));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi add khuyến mãi: " + e.getMessage());
+        }
+
+    }
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getHoaDon(@RequestParam(defaultValue = "0") Integer page,

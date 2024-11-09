@@ -164,6 +164,57 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         });
     }
 
+    /// lấy danh sách khuyến mãi còn hạn
+    $scope.getKhuyenMai = function (){
+        $http.get("http://localhost:8080/rest/khuyen-mai/con-han").then(function(response) {
+            if (response.status === 200) {
+                $scope.listKhuyenMai = response.data;
+                console.log($scope.listKhuyenMai);
+            } else {
+                console.error("Error: ", response.status);
+            }
+        }).catch(function(error) {
+            console.error("Error occurred: ", error);
+        });
+    }
+    $scope.getKhuyenMai();
+
+    /// Mở modal khuyến mại
+    $scope.openModalKhuyenMai = function (){
+        if ($scope.hoa_don.id == null){
+            toastr.warning('Chọn hóa đơn trước khi chọn khuyến mại', 'Cảnh báo');
+            return;
+        }
+        if ($scope.listHDCT.length == 0){
+            toastr.warning('Hãy chọn sản phẩm', 'Cảnh báo');
+            return;
+        }
+        var modal = new bootstrap.Modal(document.getElementById('khuyenMaiModal'));
+        modal.show();
+    }
+
+    /// ADD khuyến mại cho hóa đơn
+    $scope.addKMchoHD = function (km){
+        $http({
+            method: 'PUT',
+            url : 'http://localhost:8080/rest/hoa-don/update-khuyen-mai',
+            params: {
+                idKM : km.id,
+                idHD : $scope.hoa_don.id
+            }
+        }).then(function(response) {
+            $scope.getHoaDonDB($scope.hoa_don.id)
+
+            var modalElement = document.getElementById('khuyenMaiModal');
+            var Modal = bootstrap.Modal.getInstance(modalElement);
+            Modal.hide(); // đóng modal
+            toastr.success('Áp dụng thành công', 'OK');
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
+        });
+    }
+
+
 
     // $scope.a = function (){
     //     sessionStorage.setItem('toastrMessage', 'LOAD thành công');

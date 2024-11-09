@@ -13,6 +13,17 @@ app.controller('KhuyenMaiController',function ($scope,$http){
 
     }
 
+    $scope.capNhatTrangThai = function (){
+        $http.put("http://localhost:8080/rest/khuyen-mai/update-trang-thai-auto")
+            .then(function (res){
+                console.log(res)
+            })
+            .catch(function(error) {
+                console.error("Lỗi :"+error)
+            });
+    }
+    $scope.capNhatTrangThai();
+
 
     // Hàm để lấy dữ liệu từ API
     $scope.getData = function(page) {
@@ -42,7 +53,6 @@ app.controller('KhuyenMaiController',function ($scope,$http){
     }
 
     $scope.clear = function (){
-        $scope.newGiamGia.id = null,
             $scope.newKM.gia_tri = 0,
             $scope.newKM.gia_tri_toi_thieu = 0,
             $scope.newKM.ngay_bat_dau = "",
