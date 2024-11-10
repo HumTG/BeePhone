@@ -41,6 +41,21 @@
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="assets/css/demo.css" />
 </head>
+<style>
+    .discount-badge {
+        position: absolute;
+        top: 5px;
+        left: 85px;
+        background-color: #ffc107; /* Màu nền vàng */
+        color: black;
+        font-weight: bold;
+        padding: 3px 6px;
+        border-radius: 3px;
+        font-size: 12px;
+        z-index: 1;
+    }
+
+</style>
 
 <body ng-app="BanHangTaiQuayApp">
 <div class="wrapper">
@@ -325,19 +340,28 @@
                         </tr>
                         <tr ng-repeat="x in listHDCT">
                             <td>{{$index+1}}</td>
-                            <td>
-                                <img src="/images/{{x.anh}}" style="width: 60px ; height: 50px">
+                            <td style="position: relative;">
+                                <div ng-if="x.gia_goc_ctsp > x.don_gia" class="discount-badge">
+                                   -{{x.ten_giam_gia}}%
+                                </div>
+                                <img src="/images/{{x.anh}}" style="width: 80px ; height: 70px">
                             </td>
                             <td>
-                                <div>{{x.ten_san_pham}}</div>
-                                <div style="color:red;">{{x.don_gia | currency:'':0}}</div>
+                                <div><strong>{{x.ten_san_pham}}</strong></div>
+                                <div ng-if="x.gia_goc_ctsp > x.don_gia">
+                                  <span><del><strong>{{x.gia_goc_ctsp | currency:'':0}} VNĐ</strong></del></span><br>
+                                  <span style="color: red"><strong>{{x.don_gia | currency:'':0}} VNĐ</strong></span>
+                                </div>
+                                <div style="color:red;" ng-if="x.gia_goc_ctsp <= x.don_gia">
+                                    <strong>{{x.don_gia | currency:'':0}} VNĐ</strong>
+                                </div>
                             </td>
                             <td>
                                 <div>Màu:{{x.ten_mau_sac}}</div>
                                 <div>Dòng máy:{{x.ten_kich_co}}</div>
                             </td>
                             <td>{{x.so_luong}}</td>
-                            <td>{{x.don_gia * x.so_luong | currency:'':0}}</td>
+                            <td>{{x.don_gia * x.so_luong | currency:'':0}} VNĐ</td>
                             <td>
                                 <div class="d-flex">
                                     <button class="btn btn-warning" ng-click="deleteHDCT(x)">
@@ -494,19 +518,19 @@
                                 <div class="col-md-3">
                                     <label class="form-label"><strong>Tiền hàng</strong></label>
                                 </div>
-                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.thanh_tien | currency:'':0}}</strong></div>
+                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.thanh_tien | currency:'':0}} VNĐ</strong></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
                                     <label class="form-label"><strong>Giảm giá</strong></label>
                                 </div>
-                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.thanh_tien - hoaDon_DB.tien_sau_giam_gia | currency:'':0}}</strong></div>
+                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.thanh_tien - hoaDon_DB.tien_sau_giam_gia | currency:'':0}} VNĐ</strong></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
                                     <label class="form-label"><strong>Tiền khi giá</strong></label>
                                 </div>
-                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}}</strong></div>
+                                <div class="col-md-9 text-end"><strong>{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}} VNĐ</strong></div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
@@ -519,7 +543,7 @@
                                 <div class="col-md-5">
                                     <label class="form-label"><strong><h3>Tổng tiền</h3></strong></label>
                                 </div>
-                                <div class="col-md-7 text-end"><strong style="color:red;">{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}}</strong></div>
+                                <div class="col-md-7 text-end"><strong style="color:red;">{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}} VNĐ</strong></div>
                             </div>
                             <div class="row mb-3">
                                 <button type="button" class="btn btn-outline-primary">Thanh toán</button>

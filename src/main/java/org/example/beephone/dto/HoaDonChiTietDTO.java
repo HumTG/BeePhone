@@ -25,13 +25,15 @@ public class HoaDonChiTietDTO {
 
     private String ten_kich_co;
 
-    private String ten_giam_gia;
+    private float ten_giam_gia;
 
     private String anh;
 
     private int so_luong;
 
     private BigDecimal don_gia ;
+
+    private BigDecimal gia_goc_ctsp;
 
     private int so_luong_ton_ctsp;
 

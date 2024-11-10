@@ -50,10 +50,11 @@ public class HoaDonChiTietService {
             dto.setTen_san_pham(chiTiet.getChi_tiet_san_pham().getSanPham() != null ? chiTiet.getChi_tiet_san_pham().getSanPham().getTen() : null);
             dto.setTen_mau_sac(chiTiet.getChi_tiet_san_pham().getMauSac() != null ? chiTiet.getChi_tiet_san_pham().getMauSac().getTen() : null);
             dto.setTen_kich_co(chiTiet.getChi_tiet_san_pham().getKichCo() != null ? chiTiet.getChi_tiet_san_pham().getKichCo().getTen() : null);
-            dto.setTen_giam_gia(chiTiet.getChi_tiet_san_pham().getGiamGia() != null ? chiTiet.getChi_tiet_san_pham().getGiamGia().getTen() : null);
+            dto.setTen_giam_gia(chiTiet.getChi_tiet_san_pham().getGiamGia() != null ? chiTiet.getChi_tiet_san_pham().getGiamGia().getGia_tri() : 0);
             dto.setAnh(chiTiet.getChi_tiet_san_pham().getAnh());
             dto.setSo_luong(chiTiet.getSo_luong());
             dto.setDon_gia(chiTiet.getDon_gia());
+            dto.setGia_goc_ctsp(chiTiet.getChi_tiet_san_pham().getGia_ban());
             dto.setSo_luong_ton_ctsp(chiTiet.getChi_tiet_san_pham().getSo_luong());
             dto.setTrang_thai(chiTiet.getTrang_thai());
             return dto;
