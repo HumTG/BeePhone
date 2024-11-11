@@ -38,7 +38,7 @@ public class ChiTietSanPhamService {
          dto.setSanPham(ct.getSanPham() != null ? ct.getSanPham().getTen() != null ? ct.getSanPham().getTen() : null :null);
          dto.setMauSac(ct.getMauSac() != null ? ct.getMauSac().getTen() != null ? ct.getMauSac().getTen() : null : null);
          dto.setKichCo(ct.getKichCo() != null ? ct.getKichCo().getTen() != null ? ct.getKichCo().getTen() : null : null);
-         dto.setGiamGia(ct.getGiamGia() != null ? ct.getGiamGia().getTen() != null ? ct.getGiamGia().getTen() : null : null);
+         dto.setGiamGia(ct.getGiamGia() != null ?  ct.getGiamGia().getGia_tri() : 0f);
          dto.setSo_luong(ct.getSo_luong());
          dto.setGia_ban(ct.getGia_ban());
          dto.setAnh(ct.getAnh());

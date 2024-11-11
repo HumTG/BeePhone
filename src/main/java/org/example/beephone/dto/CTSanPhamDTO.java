@@ -23,7 +23,7 @@ public class CTSanPhamDTO {
 
     private String kichCo ;
 
-    private String giamGia ;
+    private float giamGia ;
 
     private int so_luong ;
 

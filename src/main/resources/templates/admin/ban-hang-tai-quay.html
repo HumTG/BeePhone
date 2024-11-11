@@ -92,7 +92,7 @@
                             <p>Thống Kê</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a href="/admin/bang-hang-tai-quay">
                             <i class="fas fa-luggage-cart"></i>
                             <p>Bán Hàng Tại Quầy</p>
@@ -140,7 +140,7 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item active submenu">
+                    <li class="nav-item submenu">
                         <a data-bs-toggle="collapse" href="#tables">
                             <i class="fas fa-user"></i>
                             <p>Quản Lý Tài Khoản</p>
@@ -153,7 +153,7 @@
                                         <span class="sub-item">Nhân Viên</span>
                                     </a>
                                 </li>
-                                <li class="active">
+                                <li>
                                     <a href="/admin/khach-hang">
                                         <span class="sub-item">Khách Hàng</span>
                                     </a>
@@ -462,7 +462,7 @@
                     <hr>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5><i class="bi bi-list"></i>Thông tin khách hàng</h5>
-                        <button class="btn btn-outline-success" ><i class="bi bi-plus"></i> Chọn khách hàng</button>
+                        <button class="btn btn-outline-success" ng-click="openModalKhachHang()"><i class="bi bi-plus"></i> Chọn khách hàng</button>
                     </div>
                     <div>
                         <div class="row mb-3">
@@ -494,6 +494,74 @@
                     </div>
 
 <!--                    modal khachs hang-->
+                    <div class="modal fade" id="khachHangModal" tabindex="-1" aria-labelledby="khModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="khModalLabel">Danh sách khách hàng</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+<!--                                            <input type="text" class="form-control" placeholder="Tìm kiếm" ng-model="searchTextCTSP" style="width: 500px">-->
+<!--                                            <br>-->
+                                            <table class="table table-striped">
+                                                <thead class="table-danger">
+                                                <tr class="text-bg-warning text-center text-white">
+                                                    <th scope="col">STT</th>
+                                                    <th scope="col">Họ và tên</th>
+                                                    <th scope="col">Địa chỉ email</th>
+                                                    <th scope="col">Số điện thoại</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="kh in listKH">
+                                                    <td>{{$index+1}}</td>
+                                                    <td>{{kh.ho_ten}}</td>
+                                                    <td>{{kh.email}}</td>
+                                                    <td>{{kh.sdt}}</td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <button class="btn btn-success" ng-click="">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="mx-auto p-2" style="width: 200px;">
+                                                <nav aria-label="Page navigation example" >
+                                                    <ul class="pagination">
+                                                        <li class="page-item" ng-class="{ 'disabled': pageKhachHang === 0 }">
+                                                            <a class="page-link" href="" ng-click="changePageKH(pageKhachHang - 1)">Previous</a>
+                                                        </li>
+
+                                                        <li class="page-item" ng-repeat="n in [].constructor(tongTrangKH) track by $index"
+                                                            ng-class="{ 'active': $index === pageKhachHang }">
+                                                            <a class="page-link" href="" ng-click="changePageKH($index)">{{$index + 1}}</a>
+                                                        </li>
+
+                                                        <li class="page-item" ng-class="{ 'disabled': pageKhachHang === tongTrangKH - 1 }">
+                                                            <a class="page-link" href="" ng-click="changePageKH(pageKhachHang + 1)">Next</a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <!--                                    <button type="button" class="btn btn-primary" ng-click="updateGiamGia()">Cập nhât</button>-->
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    end modal khach hang-->
 
 <!--                    thông tin hóa đơn-->
                     <br> <br> <br> <br>

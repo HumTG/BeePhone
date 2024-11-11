@@ -25,6 +25,12 @@ public class KhachHangController {
         return ResponseEntity.ok(service.getAll(page));
     }
 
+    /// lấy danh sách khách hàng để bán hàng tại quầy
+    @GetMapping("/ban-hang")
+    public ResponseEntity<?> getKhBanHang(@RequestParam(defaultValue = "0") Integer page) {
+        return ResponseEntity.ok(service.getListKhBanHang(page));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(service.detail(id));

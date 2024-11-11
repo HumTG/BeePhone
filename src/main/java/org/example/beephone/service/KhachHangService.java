@@ -32,6 +32,11 @@ public class KhachHangService {
         return khachHangRepository.getKhachHangDESCID(khachHangPage);
     }
 
+    public Page<khach_hang> getListKhBanHang(Integer page){
+        Pageable khachHangPage = PageRequest.of(page,6);
+        return khachHangRepository.getKhachHangDESCID(khachHangPage);
+    }
+
     public khach_hang detail(Integer id){
         Optional<khach_hang> khachHang = khachHangRepository.findById(id);
         if (khachHang.isPresent()){

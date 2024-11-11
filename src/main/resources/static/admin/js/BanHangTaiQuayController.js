@@ -5,6 +5,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     $scope.viTriHoaDon = 0;
     $scope.hoa_don = {};
     $scope.currentPage = 0;  /// trang của chi tiết sản phẩm
+    $scope.pageKhachHang = 0; /// trang của khách hàng
 
     ///lấy toàn bộ hóa đơn
     $scope.getAllHoaDon = function (){
@@ -213,6 +214,39 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
             console.error('Error fetching data:', error);
         });
     }
+
+
+    /// lấy danh sách khách hàng
+    $scope.getKhachHang = function (viTriTrangKH){
+        $http.get("http://localhost:8080/rest/khach-hang/ban-hang", { params: { page: viTriTrangKH } })
+            .then(function(response) {
+                $scope.listKH = response.data.content; // 'content' là nơi chứa danh sách
+                $scope.tongTrangKH = response.data.totalPages; // Số trang tổng cộng
+            })
+            .catch(function(error) {
+                console.error('Error fetching data:', error);
+            });
+    }
+
+    /// load dữ liệu trang đầu của khách hàng
+    $scope.getKhachHang($scope.pageKhachHang);
+
+    /// mở modal khách hàng
+    $scope.openModalKhachHang = function (){
+        if ($scope.hoa_don.id == null){
+            toastr.warning('Chọn hóa đơn trước khi chọn khách', 'Cảnh báo');
+            return;
+        }
+        var modal = new bootstrap.Modal(document.getElementById('khachHangModal'));
+        modal.show();
+    }
+    /// đổi trang khách hàng
+    $scope.changePageKH = function(p) {
+        if (p >= 0 && p < $scope.tongTrangKH) {
+            $scope.pageKhachHang = p;
+            $scope.getKhachHang($scope.pageKhachHang);
+        }
+    };
 
 
 
