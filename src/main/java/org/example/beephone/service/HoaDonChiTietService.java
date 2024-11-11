@@ -1,6 +1,7 @@
 package org.example.beephone.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.example.beephone.dto.HoaDonChiTietDTO;
 import org.example.beephone.entity.chi_tiet_san_pham;
 import org.example.beephone.entity.hoa_don;
@@ -180,6 +181,17 @@ public class HoaDonChiTietService {
         ctspRP.tangSoLuongSPCT(hdct.getSo_luong(),hdct.getChi_tiet_san_pham().getId());
         hdctRP.delete(hdct);
     }
+
+    // Cập nhật số lượng hóa đơn chi tiết
+    @Transactional
+    public hoa_don_chi_tiet updateSoLuong(int id, int soLuongMoi) {
+        hoa_don_chi_tiet hoaDonChiTiet = hdctRP.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn chi tiết với ID: " + id));
+
+        hoaDonChiTiet.setSo_luong(soLuongMoi);
+        return hdctRP.save(hoaDonChiTiet);
+    }
+
 
 
 

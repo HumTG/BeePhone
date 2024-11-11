@@ -47,6 +47,8 @@ public class hoa_don {
 
     private int loai_hoa_don;
 
+    private BigDecimal phi_ship;
+
     private String mo_ta  ;
 
     private int trang_thai  ;

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +113,23 @@ public class HoaDonRestController {
         response.put("diaChiKhachHang", diaChiList); // Thêm địa chỉ khách hàng vào response
 
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<hoa_don> updateHoaDon(
+            @PathVariable int id,
+            @RequestParam BigDecimal thanhTien ,
+            @RequestParam BigDecimal tienSauGiamGia
+        ) {
+
+        try {
+            hoa_don updatedHoaDon = hoaDonService.updateHoaDon(id, thanhTien,tienSauGiamGia);
+            return ResponseEntity.ok(updatedHoaDon);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
 

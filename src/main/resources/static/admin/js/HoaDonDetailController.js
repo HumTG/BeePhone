@@ -3,12 +3,21 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
     var url = window.location.href;
     var id = url.substring(url.lastIndexOf('/') + 1); // Giả sử ID nằm ở cuối URL
 
+    $scope.currentStatus = 1; // Trạng thái mặc định là "Chờ xác nhận"
+
+    // Hàm cập nhật trạng thái hóa đơn
+    $scope.updateStatus = function(newStatus) {
+        $scope.currentStatus = newStatus;
+        $scope.getData();
+    };
+
     // Gọi API để lấy chi tiết hóa đơn
     $http.get('/rest/hoa-don/' + id + '/detail')
         .then(function(response) {
             // Xử lý dữ liệu từ API
             $scope.hoaDon = response.data.hoaDon;
-            $scope.chiTietHoaDonList = response.data.chiTietHoaDonList;
+            $scope.chiTietHoaDonList = response.data.chiTietHoaDonList ;
+            $scope.currentStatus = response.data.hoaDon.trang_thai;
 
 
             // Lấy ngay_tao từ dữ liệu và tính ngày dự kiến nhận
@@ -19,7 +28,8 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
             $scope.hoaDon.ngayDuKienNhan = $filter('date')(ngayDuKienNhan, 'dd/MM/yyyy');
 
             // Tiền giảm
-            $scope.tienVorcher = $scope.hoaDon.khuyenMai.gia_tri * $scope.hoaDon.thanh_tien
+            $scope.tienVorcher = $scope.hoaDon.khuyenMai.gia_tri * $scope.hoaDon.thanh_tien ;
+
 
 
         })
@@ -79,9 +89,7 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
         }
     };
 
-
-
-// Hàm tính tổng tiền cho cột "Tổng tiền" trong bảng
+    // Hàm tính tổng tiền cho cột "Tổng tiền" trong bảng
     $scope.getTongTienHang = function() {
         // Kiểm tra nếu chiTietHoaDonList là mảng, nếu không thì trả về 0
         if (!Array.isArray($scope.chiTietHoaDonList)) {
@@ -184,7 +192,157 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
 
 
 
+    // Cập nhật lại số lượng trong hóa đơn chi tiết
+    $scope.capNhatSoLuong = function() {
+        $scope.chiTietHoaDonList.forEach(function(item) {
+            let url = '/rest/hoa-don-chi-tiet/update-so-luong/' + item.chiTiet.id;
+            let params = { soLuong: item.chiTiet.so_luong };
 
+            $http.put(url, null, { params: params })
+                .then(function(response) {
+                })
+                .catch(function(error) {
+                    console.error("Lỗi khi cập nhật số lượng:", error);
+                });
+        });
+    };
+
+    // Cập nhật thành tiền , tiền sau giảm giá , trạng thái + 1
+    $scope.capNhatHoaDon = function() {
+        // Lấy giá trị `thanhTien` và `tienSauGiamGia`
+        let thanhTien = $scope.getTongTienHang();
+        let tienSauGiamGia = thanhTien - $scope.tienVorcher;
+
+        // Đường dẫn API với tham số id của hóa đơn
+        let url = '/rest/hoa-don/update/' + id;
+
+        // Gọi API `PUT` để cập nhật hóa đơn với `thanhTien` và `tienSauGiamGia`
+        $http.put(url, null, {
+            params: {
+                thanhTien: thanhTien,
+                tienSauGiamGia: tienSauGiamGia
+            }
+        })
+            .then(function(response) {
+                // Cập nhật lại thông tin hóa đơn trên giao diện nếu cần
+                $scope.hoaDon = response.data;
+                $scope.currentStatus = $scope.hoaDon.trang_thai;
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi cập nhật hóa đơn:", error);
+            });
+    };
+
+    // Hàm mở modal để nhập mô tả
+    $scope.createLichSuHoaDon = function() {
+        // Mở modal để nhập mô tả
+        $('#confirmModal').modal('show');
+    };
+
+    // Hàm xử lý xác nhận khi người dùng nhấn nút "Xác nhận" trong modal
+    $scope.confirmCreateLichSuHoaDon = function() {
+        let nguoiTaoHoaDon = "Tên Người Tạo"; // Thay bằng tên người tạo thực tế
+        let moTa = $scope.moTa; // Lấy mô tả từ modal
+        let trangThai = $scope.currentStatus; // Giữ nguyên trạng thái
+
+        // Gọi API để tạo lịch sử hóa đơn
+        let url = '/api/lich-su-hoa-don/create';
+        $http.post(url, null, {
+            params: {
+                hoaDonId: $scope.hoaDon.id,
+                nguoiTaoHoaDon: nguoiTaoHoaDon,
+                moTa: moTa,
+                trangThai: trangThai
+            }
+        })
+            .then(function(response) {
+                toastr.success('Xác nhận thành công!', 'Success');
+
+                // Đóng modal sau khi xác nhận thành công
+                $('#confirmModal').modal('hide');
+
+                // Cập nhật lại trạng thái hóa đơn trên giao diện nếu cần
+                $scope.currentStatus = trangThai;
+
+                // Nếu trạng thái là "Đã xác nhận" thì in hóa đơn
+                if ($scope.currentStatus == 2) {
+                    $scope.printInvoice();
+                }
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi tạo lịch sử hóa đơn:", error);
+                toastr.error('Có lỗi khi tạo lịch sử hóa đơn!');
+            });
+    };
+
+
+    // In hóa đơn
+    $scope.printInvoice = function() {
+        let invoiceContent = document.getElementById("invoice").innerHTML;
+        let printWindow = window.open("", "_blank");
+        printWindow.document.open();
+        printWindow.document.write(`
+        <html>
+            <head>
+                <title>Hóa Đơn</title>
+                <style>
+                    /* Copy CSS styles from your main stylesheet here */
+                    .invoice-container {
+                        font-family: Arial, sans-serif;
+                        width: 600px;
+                        margin: auto;
+                        padding: 20px;
+                        border: 1px solid #ddd;
+                    }
+
+                    .invoice-container h2, .invoice-container h3 {
+                        text-align: center;
+                    }
+
+                    .invoice-container table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+
+                    .invoice-container table, .invoice-container th, .invoice-container td {
+                        border: 1px solid black;
+                    }
+
+                    .invoice-container th, .invoice-container td {
+                        padding: 8px;
+                        text-align: left;
+                    }
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                ${invoiceContent}
+            </body>
+        </html>
+    `);
+        printWindow.document.close();
+    };
+
+    // Xác nhận trạng thái hóa đơn
+    $scope.confirmBill = function(){
+        $scope.createLichSuHoaDon();
+        $scope.capNhatSoLuong();
+        $scope.capNhatHoaDon();
+    }
+
+    // Hàm mở modal và lấy dữ liệu lịch sử hóa đơn
+    $scope.openLichSuModal = function() {
+        // Gọi API để lấy dữ liệu lịch sử hóa đơn
+        let url = '/api/lich-su-hoa-don/' + $scope.hoaDon.id;
+        $http.get(url)
+            .then(function(response) {
+                $scope.lichSuHoaDonList = response.data; // Lưu dữ liệu lịch sử vào scope
+                $('#lichSuModal').modal('show'); // Mở modal sau khi có dữ liệu
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi lấy lịch sử hóa đơn:", error);
+                toastr.error('Có lỗi khi lấy lịch sử hóa đơn!');
+            });
+    };
 
 
 

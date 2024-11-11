@@ -56,6 +56,97 @@
     font-size: 12px;
     z-index: 1;
   }
+  .progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    /*background-color: #f8f9fa;*/
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .step {
+    text-align: center;
+    position: relative;
+    flex: 1;
+    color: #c0c0c0; /* Màu xám cho các bước chưa hoàn thành */
+  }
+
+  .step.active {
+    color: #007bff; /* Màu xanh cho các bước hoàn thành */
+  }
+
+  .circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #c0c0c0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 24px;
+  }
+
+  .step.active .circle {
+    background-color: #007bff;
+  }
+
+  .arrow {
+    width: 100%;
+    height: 4px;
+    background-color: #c0c0c0;
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    z-index: -1;
+    transform: translateX(-50%);
+  }
+
+  .step.active .arrow {
+    background-color: #007bff;
+  }
+
+  .step:last-child .arrow {
+    display: none; /* Ẩn mũi tên cho bước cuối cùng */
+  }
+
+  .status-text {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .invoice-container {
+    font-family: Arial, sans-serif;
+    width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+  }
+
+  .invoice-container h2, .invoice-container h3 {
+    text-align: center;
+  }
+
+  .invoice-container table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .invoice-container table, .invoice-container th, .invoice-container td {
+    border: 1px solid black;
+  }
+
+  .invoice-container th, .invoice-container td {
+    padding: 8px;
+    text-align: left;
+  }
+
+
+
+
+
 
 </style>
 <body ng-app="HoaDonApp">
@@ -305,6 +396,69 @@
 
           <!-- Trạng thái đơn hàng -->
           <div class="alert alert-light" role="alert">
+
+            <div class="progress-container">
+              <div class="step" ng-class="{'active': currentStatus >= 1}">
+                <div class="circle">
+                  <i class="bi bi-pencil"></i>
+                </div>
+                <div class="arrow"></div>
+                <div class="status-text">Chờ xác nhận</div>
+              </div>
+              <div class="step" ng-class="{'active': currentStatus >= 2}">
+                <div class="circle">
+                  <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="arrow"></div>
+                <div class="status-text">Đã xác nhận</div>
+              </div>
+              <div class="step" ng-class="{'active': currentStatus >= 3}">
+                <div class="circle">
+                  <i class="bi bi-truck"></i>
+                </div>
+                <div class="arrow"></div>
+                <div class="status-text">Chờ vận chuyển</div>
+              </div>
+              <div class="step" ng-class="{'active': currentStatus >= 4}">
+                <div class="circle">
+                  <i class="bi bi-box-seam"></i>
+                </div>
+                <div class="arrow"></div>
+                <div class="status-text">Vận chuyển</div>
+              </div>
+              <div class="step" ng-class="{'active': currentStatus >= 5}">
+                <div class="circle">
+                  <i class="bi bi-cash"></i>
+                </div>
+                <div class="arrow"></div>
+                <div class="status-text">Thanh toán</div>
+              </div>
+              <div class="step" ng-class="{'active': currentStatus >= 6}">
+                <div class="circle">
+                  <i class="bi bi-check2-circle"></i>
+                </div>
+                <div class="arrow"></div>
+                <div class="status-text">Hoàn thành</div>
+              </div>
+              <div class="step" ng-class="{'active': currentStatus === 7}">
+                <div class="circle">
+                  <i class="bi bi-x-circle"></i>
+                </div>
+                <div class="status-text">Hủy</div>
+              </div>
+            </div>
+
+            <!--   Xác nhận         -->
+            <div class="d-flex justify-content-between align-items-center mb-3" >
+              <div class="p-2" ng-if="currentStatus < 6">
+                <button class="btn btn-primary" ng-click="confirmBill()">{{ getTrangThai(hoaDon.trang_thai+1) }}</button>
+
+                <button ng-click="updateStatus(7)" class="btn btn-danger">Hủy</button>
+              </div>
+              <button class="btn btn-danger" ng-click="openLichSuModal()">Lịch sử</button>
+            </div>
+
+
           </div>
           <!-- END trạng thái đơn hàng -->
 
@@ -412,6 +566,7 @@
                   <button class="btn btn-danger btn-sm" ng-click="deleteHDCT(x.chiTiet)"><i class="bi bi-trash"></i></button>
                 </td>
               </tr>
+
               </tbody>
 
 
@@ -516,8 +671,107 @@
               </div>
             </div>
           </div>
-        <!--  End model sản phẩm        -->
+          <!--  End model sản phẩm        -->
 
+          <!-- Modal Xác nhận hóa đơn -->
+          <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="confirmModalLabel">Xác nhận Đơn hàng</h5>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="moTa">Mô Tả</label>
+                      <textarea class="form-control" id="moTa" ng-model="moTa" placeholder="Nhập mô tả"></textarea>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" ng-click="confirmCreateLichSuHoaDon()">Xác nhận</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--   End model xác nhận hóa đơn     -->
+
+          <!-- Hóa đơn (ẩn trên trang chính) -->
+          <div id="invoice" style="display: none;">
+            <div class="invoice-container">
+              <h2>BeePhone </h2>
+              <p>Mã hóa đơn: {{ hoaDon.ma_hoa_don }}</p>
+              <p>Ngày: {{ $filter('date')(ngayTao, 'dd/MM/yyyy HH:mm:ss') }}</p>
+
+              <h3>Thông tin khách hàng</h3>
+              <p>Tên: {{hoaDon.khachHang.ho_ten}}</p>
+              <p ng-repeat="diaChi in hoaDon.khachHang.diaChiKhachHang" ng-if="diaChi.trang_thai == 1">
+                Địa chỉ: {{ diaChi.dia_chi_chi_tiet }}
+              </p>
+              <p>Số điện thoại: {{hoaDon.khachHang.sdt}}</p>
+              <h3>Nội dung đơn hàng</h3>
+              <table class="table">
+                <thead class="table-warning text-white">
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Thông tin sản phẩm</th>
+                  <th scope="col">Số lượng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in chiTietHoaDonList track by $index" ng-init="finalPrice = (x.chiTiet.chi_tiet_san_pham.giamGia && x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri) ? x.chiTiet.don_gia * (1 - x.chiTiet.chi_tiet_san_pham.giamGia.gia_tri / 100): x.chiTiet.don_gia">
+                  <th scope="row">{{ $index + 1 }}</th>
+                  <td>
+                    {{ x.tenSanPham }} [ {{ x.chiTiet.chi_tiet_san_pham.kichCo.ten }} | {{ x.chiTiet.chi_tiet_san_pham.mauSac.ten }} ]
+                  </td>
+                  <td>
+                    {{x.chiTiet.so_luong}}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <h3>Tổng cộng: {{getTongTienHang() - tienVorcher | currency:"":0 }} VNĐ </h3>
+              <p>Chữ ký người nhận:</p>
+              <div style="border: 1px solid #000; width: 300px; height: 100px;"></div>
+            </div>
+          </div>
+          <!-- End bill  -->
+
+          <!-- Modal Lịch sử hóa đơn -->
+          <div class="modal fade" id="lichSuModal" tabindex="-1" role="dialog" aria-labelledby="lichSuModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="lichSuModalLabel">Lịch sử hóa đơn</h5>
+                </div>
+                <div class="modal-body">
+                  <!-- Bảng hiển thị lịch sử hóa đơn -->
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Trạng thái</th>
+                      <th>Ngày</th>
+                      <th>Người xác nhận</th>
+                      <th>Ghi chú</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in lichSuHoaDonList">
+                      <td>{{ $index + 1 }}</td>
+                      <td>{{ getTrangThai(item.trang_thai) }}</td>
+                      <td>{{ item.ngay_tao_hoa_don }}</td>
+                      <td>{{ item.nguoi_tao_hoa_don }}</td>
+                      <td>{{ item.mo_ta }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End model lịch sử hóa đơn-->
 
 
         </div>
@@ -652,6 +906,7 @@
       fillColor: "rgba(255, 165, 52, .14)",
     });
   </script>
+
   <!-- Toastr JS -->
   <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js}"></script>
   <!-- AngularJS -->

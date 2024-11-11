@@ -1,6 +1,7 @@
 package org.example.beephone.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.example.beephone.entity.hoa_don;
 import org.example.beephone.entity.khuyen_mai;
 import org.example.beephone.entity.nhan_vien;
@@ -139,7 +140,25 @@ public class HoaDonService {
         return hdRP.findAll(spec, pageable);
     }
 
-    // Search
+    // Cập nhật lại cột thành tiền , tiền sau giảm giá hóa đơn
+    @Transactional
+    public hoa_don updateHoaDon(int hoaDonId, BigDecimal thanhTien , BigDecimal tienSauGiamGia) {
+        hoa_don hoaDon = hdRP.findById(hoaDonId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với ID: " + hoaDonId));
+
+
+        // Cập nhật tổng tiền hàng vào cột `thanh_tien`
+        hoaDon.setThanh_tien(thanhTien);
+
+        // Tính tổng tiền thanh toán sau khi trừ voucher
+        hoaDon.setTien_sau_giam_gia(tienSauGiamGia);
+
+        // Tăng trạng thái lên 1
+        hoaDon.setTrang_thai(hoaDon.getTrang_thai() + 1);
+
+        // Lưu lại hóa đơn đã cập nhật
+        return hdRP.save(hoaDon);
+    }
 
 
 }

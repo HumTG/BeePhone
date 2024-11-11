@@ -99,6 +99,20 @@ public class HoaDonChiTietRestController {
         }
     }
 
+    // Cập nhật số lượng trong hóa đơn chi tiết
+    @PutMapping("/update-so-luong/{id}")
+    public ResponseEntity<hoa_don_chi_tiet> updateSoLuong(
+            @PathVariable int id,
+            @RequestParam int soLuong) {
+        try {
+            hoa_don_chi_tiet updatedHoaDonChiTiet = hdctService.updateSoLuong(id, soLuong);
+            return ResponseEntity.ok(updatedHoaDonChiTiet);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 
 
 

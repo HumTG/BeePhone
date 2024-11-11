@@ -186,6 +186,7 @@ CREATE TABLE [hoa_don] (
   [thanh_tien] Decimal,
   [phuong_thuc_thanh_toan] INT,
   [loai_hoa_don] INT,
+  [phi_ship] Decimal,
   [mo_ta] Nvarchar(500),
   [trang_thai] INT,
   PRIMARY KEY ([id]),
@@ -259,6 +260,21 @@ CREATE TABLE [danh_gia] (
   CONSTRAINT [FK_danh_gia.id_san_pham_chi_tiet]
     FOREIGN KEY ([id_san_pham_chi_tiet])
       REFERENCES [chi_tiet_san_pham]([id])
+);
+
+CREATE TABLE [lich_su_hoa_don] (
+  [id] INT IDENTITY,
+  [ngay_tao_hoa_don] Date,
+  [nguoi_tao_hoa_don] Nvarchar(255),
+  [nguoi_sua] Nvarchar(255),
+  [ngay_sua_hoa_don] Date,
+  [mo_ta] Nvarchar(255),
+  [id_hoa_don] INT,
+  [trang_thai] INT,
+  PRIMARY KEY ([id]),
+  CONSTRAINT [FK_lich_su_hoa_don.id_hoa_don]
+    FOREIGN KEY ([id_hoa_don])
+      REFERENCES [hoa_don]([id])
 );
 
 
