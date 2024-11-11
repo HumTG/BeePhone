@@ -67,6 +67,19 @@ public class HoaDonRestController {
 
     }
 
+    //cập nhạt khách hàng cho hóa đơn tại quầy
+    @PutMapping("/update-khach-hang-tai-quay")
+    public ResponseEntity<?> capNhatKhachHangTaiQuay(@RequestParam(name = "idKH") Integer idKH,@RequestParam(name = "idHD") Integer idHD){
+        try{
+            hoaDonService.capNhatKhachHangTaiQuay(idKH,idHD);
+            return ResponseEntity.ok(Map.of("message", "Add khách thành công"));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi add khách hàng: " + e.getMessage());
+        }
+
+    }
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getHoaDon(@RequestParam(defaultValue = "0") Integer page,

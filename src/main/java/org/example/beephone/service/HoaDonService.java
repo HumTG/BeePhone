@@ -3,6 +3,7 @@ package org.example.beephone.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.beephone.entity.hoa_don;
+import org.example.beephone.entity.khach_hang;
 import org.example.beephone.entity.khuyen_mai;
 import org.example.beephone.entity.nhan_vien;
 import org.example.beephone.repository.HoaDonChiTietRepository;
@@ -124,6 +125,12 @@ public class HoaDonService {
        khuyen_mai khuyenMai = kmRP.findById(idKM).get();
        hdRP.capNhatKhuyenMaiHD(khuyenMai,idHD);
        tinhTongTienHoaDon(idHD);
+    }
+
+    ///cập nhật khách hàng cho hóa đơn tại quầy
+    public void capNhatKhachHangTaiQuay(Integer idKH,Integer idHD){
+        khach_hang khachHang = khRP.findById(idKH).get();
+        hdRP.capNhatKhachHangHD(khachHang,idHD);
     }
 
 
