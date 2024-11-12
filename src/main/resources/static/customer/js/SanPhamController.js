@@ -15,7 +15,7 @@ app.controller('SanPhamController', function($scope, $http) {
 
     // Hàm để lấy dữ liệu từ API
     $scope.getData = function(page) {
-        $http.get('http://localhost:8080/san-pham', { params: { page: page } })
+        $http.get('http://localhost:8080/rest/san-pham', { params: { page: page } })
             .then(function(response) {
                 // Lưu dữ liệu vào scope để hiển thị
                 $scope.sp = response.data.content; // 'content' là nơi chứa danh sách sản phẩm
@@ -36,4 +36,54 @@ app.controller('SanPhamController', function($scope, $http) {
             $scope.getData($scope.currentPage);
         }
     };
+
+    $scope.isModalOpen = false;
+    $scope.selectedProduct = null;
+    $scope.quantity = 1;
+
+    $scope.selectedProduct = null;
+    $scope.quantity = 1;
+
+    // Hàm mở modal
+    $scope.openModal = function(product) {
+        $scope.selectedProduct = product;
+        $scope.quantity = 1;
+        $('#productModal').modal('show'); // Sử dụng jQuery để hiển thị modal
+    };
+
+    $scope.getUniqueColors = function() {
+        const uniqueColors = [];
+        const colorSet = new Set();
+
+        $scope.selectedProduct.variants.forEach(variant => {
+            if (!colorSet.has(variant.mauSac.ten)) {
+                colorSet.add(variant.mauSac.ten);
+                uniqueColors.push(variant);
+            }
+        });
+
+        return uniqueColors;
+    };
+
+
+
+    // Hàm giảm số lượng
+    $scope.decreaseQuantity = function() {
+        if ($scope.quantity > 1) {
+            $scope.quantity--;
+        }
+    };
+
+    // Hàm tăng số lượng
+    $scope.increaseQuantity = function() {
+        $scope.quantity++;
+    };
+
+    // Hàm thêm vào giỏ hàng
+    $scope.addToCart = function(product) {
+        console.log("Thêm vào giỏ hàng:", product, "Số lượng:", $scope.quantity);
+        $scope.closeModal(); // Đóng modal sau khi thêm vào giỏ hàng
+    };
+
+
 });

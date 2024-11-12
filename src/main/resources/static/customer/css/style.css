@@ -1156,3 +1156,70 @@ figure.instagram-item img.insta-image {
   transform: scale(1.1); /* Hiệu ứng phóng to khi hover */
   transition: transform 0.3s;
 }
+.product-item {
+  position: relative;
+  width: 200px;
+  overflow: hidden;
+}
+
+/* Nhãn giảm giá */
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #FF5722;
+  color: white;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 3px;
+}
+
+/* Ảnh sản phẩm */
+.card-img-top {
+  width: 150px;
+  height: 150px;
+  margin: auto;
+}
+
+/* Nút "Mua Ngay" */
+.buy-now-btn {
+  position: absolute;
+  bottom: -50px; /* Đặt nút bên dưới tầm nhìn */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #FF5722;
+  width: 100%; /* Chiếm toàn bộ chiều rộng của product-item */
+  color: white;
+  border: none;
+  padding: 15px 0; /* Tăng chiều cao của nút */
+  border-radius: 2px;
+  opacity: 0;
+  transition: all 0.3s ease-in-out; /* Tạo hiệu ứng chuyển động */
+}
+
+/* Hiển thị nút "Mua Ngay" khi hover vào product-item */
+.product-item:hover .buy-now-btn {
+  bottom: 0px; /* Di chuyển nút lên */
+  opacity: 1; /* Hiển thị nút */
+}
+
+/* Định dạng giá gốc gạch ngang */
+.original-price {
+  text-decoration: line-through;
+  margin-left: 10px;
+}
+
+.btn-pink {
+  background-color: orange;
+  color: white;
+  width: 100%;
+  padding: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+}
+
+
+

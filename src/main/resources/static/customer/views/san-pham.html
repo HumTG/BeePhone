@@ -1,6 +1,6 @@
 <br><br><br><br><br>
 
-<div class="container">
+<div class="container" ng-controller="SanPhamController">
     <div class="row">
         <div class="col-3">Tìm kiểm sản phẩm</div>
         <div class="col-9">
@@ -26,24 +26,50 @@
         </div>
 
         <!-- Trưng bày sản phẩm -->
-        <div class="col-9" ng-controller="SanPhamController">
+        <div class="col-9">
             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4">
                 <div class="col" ng-repeat="x in sp">
                     <div class="product-item">
-                        <img src="/images/{{x.anh}}" class="card-img-top" alt="..." style="width: 150px;height: 150px; margin: auto">
+                        <!-- Nhãn giảm giá (hiển thị ở góc nếu có giảm giá) -->
+                        <div ng-if="x.variants[0].giamGia" class="discount-badge">
+                            Giảm {{ x.variants[0].giamGia.gia_tri }}%
+                        </div>
+
+                        <!-- Ảnh sản phẩm -->
+                        <img ng-if="x.variants.length > 0" ng-src="/images/{{x.variants[0].anh}}" class="card-img-top"
+                             alt="...">
+
+                        <!-- Nội dung sản phẩm -->
                         <div class="card-body">
-                            <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                {{x.ten_san_pham}}
+                            <h5 class="card-title">
+                                {{x.ten}}
                             </h5>
                             <div class="d-flex justify-content-between align-items-center">
-                                <b class="card-text text-danger">{{ x.gia_ban | currencyVND }}</b>
+                                <p class="text-danger">
+                    <span ng-if="x.variants[0].giamGia">
+                        <span class="text-danger">
+                            {{ x.variants[0].gia_ban * (1 - x.variants[0].giamGia.gia_tri / 100) | currency:"":0 }} VNĐ
+                        </span>
+                        <span class="text-muted original-price">
+                            {{ x.variants[0].gia_ban | currency:"":0 }} VNĐ
+                        </span>
+                    </span>
+                                    <span ng-if="!x.variants[0].giamGia">
+                        {{ x.variants[0].gia_ban | currency:"":0 }} VNĐ
+                    </span>
+                                </p>
                             </div>
                         </div>
+
+                        <!-- Nút "Mua Ngay" -->
+                        <button class="buy-now-btn" ng-click="openModal(x)">MUA NGAY</button>
                     </div>
                 </div>
             </div>
+
+            <!--     Thanh chuyển trang        -->
             <div class="mx-auto p-2" style="width: 200px;">
-                <nav aria-label="Page navigation example" >
+                <nav aria-label="Page navigation example">
                     <ul class="pagination">
                         <!-- Nút Previous -->
                         <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
@@ -63,7 +89,74 @@
                     </ul>
                 </nav>
             </div>
+            <!--    End thanh chuyển trang        -->
 
         </div>
     </div>
+
+    <!-- Modal thông tin biến thể sản phẩm -->
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Ảnh chính của sản phẩm -->
+                            <img ng-src="/images/{{ selectedProduct.variants[0].anh }}" alt="{{ selectedProduct.ten }}" style="width: 100%;"><br>
+
+                            <!-- Hiển thị tất cả ảnh biến thể bên dưới ảnh chính -->
+                            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                                <div ng-repeat="variant in selectedProduct.variants">
+                                    <img ng-src="/images/{{ variant.anh }}" alt="Ảnh biến thể" style="width: 70px; height: 70px; cursor: pointer;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5 class="modal-title" id="productModalLabel">{{ selectedProduct.ten }}</h5>
+                            <p class="text-danger"><strong>Giá:</strong> {{ selectedProduct.variants[0].gia_ban | currency:"":0 }} đ</p>
+                            <p><strong>Mã sản phẩm:</strong> {{ selectedProduct.ma_san_pham }}</p>
+
+                            <!-- Màu sắc -->
+                            <p><strong>Màu sắc</strong></p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                <div ng-repeat="variant in getUniqueColors()">
+                                    <button style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
+                                        {{ variant.mauSac.ten }}
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <!-- Kích thước -->
+                            <p><strong>Kích thước</strong></p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                <div ng-repeat="variant in selectedProduct.variants" class="p-1">
+                                    <button  style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
+                                        {{ variant.kichCo.ten }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Số lượng -->
+                            <p><strong>Số lượng</strong></p>
+                            <div class="quantity-control">
+                                <button ng-click="decreaseQuantity()">-</button>
+                                <input type="text" ng-model="quantity" style="width: 40px; text-align: center;" />
+                                <button ng-click="increaseQuantity()">+</button>
+                            </div>
+
+                            <!-- Nút Thêm vào giỏ hàng --><br>
+                            <button class="btn btn-pink " ng-click="addToCart(selectedProduct)">THÊM VÀO GIỎ HÀNG</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
 </div>

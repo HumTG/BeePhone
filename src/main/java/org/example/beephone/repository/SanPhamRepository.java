@@ -1,8 +1,5 @@
 package org.example.beephone.repository;
 
-import org.example.beephone.dto.SanPhamCustom;
-import org.example.beephone.dto.SanPhamDTO;
-import org.example.beephone.dto.Top5Seller;
 import org.example.beephone.entity.san_pham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,9 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
@@ -29,14 +23,6 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
 //    List<Top5Seller> getTop5Seller();
 //
 //
-////    @Query("SELECT new org.example.beephone.dto.SanPhamCustom(sp.id, sp.ma_san_pham , nsx.ten, sp.ten,sp.mo_ta,sp.trang_thai,ctsp.gia_ban , asp.anh_1) \n" +
-////            "FROM san_pham sp\n" +
-////            "JOIN nha_san_xuat nsx on sp.nhaSanXuat.id  = nsx.id \n" +
-////            "JOIN chi_tiet_san_pham ctsp on ctsp.sanPham.id = sp.id \n" +
-////            "JOIN anh_san_pham asp on chi_tiet_san_pham.id = asp.chiTietSanPham.id\n"
-////
-////    )
-//    Page<SanPhamCustom> getSanPhamPage(Pageable pageable);
 
     @Query("SELECT sp.id AS id, sp.ma_san_pham AS maSanPham, sp.ten AS tenSanPham, " +
             "SUM(ctsp.so_luong) AS soLuongTon, sp.trang_thai AS trangThai " +

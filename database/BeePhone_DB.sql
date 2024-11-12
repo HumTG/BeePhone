@@ -356,16 +356,21 @@ VALUES
 INSERT INTO [chi_tiet_san_pham] 
 ([id_san_pham], [id_mau_sac], [id_kich_co], [id_giam_gia], [so_luong], [gia_nhap], [gia_ban], [ngay_nhap], [mo_ta],[anh], [trang_thai]) 
 VALUES
-(4, 5, 5, NULL, 64, 765742.86, 2226966.65, '2024-05-07', 'Sản phẩm chất lượng cao','anh_7.jpg' ,1),
-(2, 2, 4, NULL, 60, 956303.13, 2661107.10, '2024-08-31', 'Sản phẩm chất lượng cao','anh_3.webp' ,1),
-(2, 5, 4, NULL, 21, 644177.33, 2410053.16, '2023-12-02', 'Sản phẩm chất lượng cao','anh_4.webp' ,1),
-(10, 5, 4, NULL, 91, 1022651.54, 1901921.26, '2024-05-15', 'Sản phẩm chất lượng cao','anh_6.jpg' ,1),
-(3, 1, 4, NULL, 43, 1280756.41, 1864571.13, '2024-08-14', 'Sản phẩm chất lượng cao', 'anh_2.jpg' ,1),
-(9, 2, 2, NULL, 98, 768131.29, 2222554.46, '2024-03-12', 'Sản phẩm chất lượng cao','anh_8.jpg' ,1),
-(1, 3, 2, NULL, 28, 1376167.97, 1993608.21, '2024-01-08', 'Sản phẩm chất lượng cao','anh_5.jpg' ,1),
-(7, 1, 1, NULL, 66, 563925.69, 2272021.49, '2023-11-16', 'Sản phẩm chất lượng cao','anh_9.jpg' ,1),
-(8, 4, 1, NULL, 50, 957542.31, 2984578.36, '2024-09-02', 'Sản phẩm chất lượng cao','anh_1.jpg' ,1),
-(5, 3, 3, NULL, 12, 1492034.48, 2723629.74, '2024-10-26', 'Sản phẩm chất lượng cao','anh_10.jpg' ,1);
+(4, 5, 5, 1, 64, 765742.86, 150000, '2024-05-07', 'Sản phẩm chất lượng cao','anh_7.jpg' ,1),
+(6, 2, 4, 2, 60, 956303.13, 100000, '2024-08-31', 'Sản phẩm chất lượng cao','anh_3.webp' ,1),
+(2, 5, 4, NULL, 21, 644177.33, 80000, '2023-12-02', 'Sản phẩm chất lượng cao','anh_4.webp' ,1),
+(10, 5, 4, NULL, 91, 1022651.54, 20000, '2024-05-15', 'Sản phẩm chất lượng cao','anh_6.jpg' ,1),
+(3, 1, 4, NULL, 43, 1280756.41, 55000, '2024-08-14', 'Sản phẩm chất lượng cao', 'anh_2.jpg' ,1),
+(9, 2, 2, NULL, 98, 768131.29, 10000, '2024-03-12', 'Sản phẩm chất lượng cao','anh_8.jpg' ,1),
+(1, 3, 2, NULL, 28, 1376167.97, 12000, '2024-01-08', 'Sản phẩm chất lượng cao','anh_5.jpg' ,1),
+(7, 1, 1, NULL, 66, 563925.69, 50000, '2023-11-16', 'Sản phẩm chất lượng cao','anh_9.jpg' ,1),
+(8, 4, 1, NULL, 50, 957542.31, 85000, '2024-09-02', 'Sản phẩm chất lượng cao','anh_1.jpg' ,1),
+(5, 3, 3, NULL, 12, 1492034.48, 70000, '2024-10-26', 'Sản phẩm chất lượng cao','anh_10.jpg' ,1),
+(11, 2, 2, NULL, 98, 768131.29, 10000, '2024-03-12', 'Sản phẩm chất lượng cao','anh_8.jpg' ,1),
+(12, 3, 2, NULL, 28, 1376167.97, 12000, '2024-01-08', 'Sản phẩm chất lượng cao','anh_5.jpg' ,1),
+(13, 1, 1, 2, 66, 563925.69, 50000, '2023-11-16', 'Sản phẩm chất lượng cao','anh_9.jpg' ,1),
+(14, 4, 1, NULL, 50, 957542.31, 85000, '2024-09-02', 'Sản phẩm chất lượng cao','anh_1.jpg' ,1),
+(15, 3, 3, 1, 12, 1492034.48, 70000, '2024-10-26', 'Sản phẩm chất lượng cao','anh_10.jpg' ,1);
 
 
 

@@ -1,14 +1,13 @@
 package org.example.beephone.service;
 
-import org.example.beephone.dto.SanPhamCustom;
 import org.example.beephone.dto.SanPhamDTO;
-import org.example.beephone.dto.Top5Seller;
 import org.example.beephone.entity.*;
 import org.example.beephone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -44,10 +43,11 @@ public class SanPhamService {
 //        return sanPhamRepository.getTop5Seller();
 //    }
 //
-//    public Page<SanPhamCustom> getPage(Integer page){
-//        Pageable pageable = PageRequest.of(page,15);
-//        return sanPhamRepository.getSanPhamPage(pageable);
-//    }
+    public Page<san_pham> getSanPhamWithPagination(int page, int size) {
+        // Sử dụng PageRequest với sắp xếp theo id giảm dần
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+        return sanPhamRepository.findAll(pageRequest);
+    }
 
 
     public Page<SanPhamDTO> getSanPhamWithSoLuongTon(int page, int size) {
@@ -77,7 +77,6 @@ public class SanPhamService {
     }
 
 
-    // Thêm sản phẩm chính vào cơ sở dữ liệu
     // Thêm sản phẩm chính vào cơ sở dữ liệu
     public san_pham addSanPham(String ten, String moTa, int nhaSanXuatId, int chatLieuId, int trangThai) {
         san_pham newSanPham = new san_pham();
@@ -171,6 +170,10 @@ public class SanPhamService {
         }
         return null;
     }
+
+
+
+
 
 
 
