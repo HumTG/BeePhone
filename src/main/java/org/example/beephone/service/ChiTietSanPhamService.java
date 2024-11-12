@@ -43,6 +43,7 @@ public class ChiTietSanPhamService {
          dto.setGia_ban(ct.getGia_ban());
          dto.setAnh(ct.getAnh());
          dto.setSoLuongThem(1);
+         dto.setTrangThaiGiamGia(ct.getGiamGia() != null ? ct.getGiamGia().getTrang_thai() : 0);
          dto.setTrang_thai(ct.getTrang_thai());
          return dto;
         });

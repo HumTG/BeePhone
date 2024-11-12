@@ -33,5 +33,7 @@ public class CTSanPhamDTO {
 
     private int soLuongThem;
 
+    private int trangThaiGiamGia;
+
     private int trang_thai ;
 }

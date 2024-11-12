@@ -58,21 +58,27 @@ app.controller('KhuyenMaiController',function ($scope,$http){
             $scope.newKM.ngay_bat_dau = "",
             $scope.newKM.ngay_ket_thuc = "",
             $scope.newKM.trang_thai = 1
+            document.getElementById("errToiThieu").innerText = "";
+            document.getElementById("errDate").innerText = "";
+            document.getElementById("errGiaTri").innerText = "";
     }
 
 ///add
     $scope.addKM = function (){
+        if ($scope.validateAddKM() == 0){
+            return;
+        }
         var khuyen_mai = {
             gia_tri: Number($scope.newKM.gia_tri),
             gia_tri_toi_thieu: Number($scope.newKM.gia_tri_toi_thieu),
             ngay_bat_dau: new Date($scope.newKM.ngay_bat_dau),
             ngay_ket_thuc: new Date($scope.newKM.ngay_ket_thuc),
-            trang_thai : $scope.newKM.trang_thai
+            trang_thai : 1
         }
 
         $http.post('http://localhost:8080/rest/khuyen-mai', khuyen_mai)
             .then(function (respone){
-                console.log(khuyen_mai)
+                // console.log(khuyen_mai)
 
                 var modalElement = document.getElementById('addKhuyenMaiModal');
                 var addModal = bootstrap.Modal.getInstance(modalElement);
@@ -135,6 +141,41 @@ app.controller('KhuyenMaiController',function ($scope,$http){
                 timeOut: 3000
             });
         });
+    }
+
+
+    $scope.validateAddKM = function (){
+        let err = false;
+
+        if(isNaN($scope.newKM.gia_tri)){
+            document.getElementById("errGiaTri").innerText = "Sai định dạng giá trị";
+            err = true;
+        }else if ($scope.newKM.gia_tri <= 0 || $scope.newKM.gia_tri > 100){
+            document.getElementById("errGiaTri").innerText = "Giá trị phải nằm trong khoảng 1-100";
+            err = true;
+        }
+
+        if(isNaN($scope.newKM.gia_tri_toi_thieu)){
+            document.getElementById("errToiThieu").innerText = "Sai định dạng giá trị tối thiểu";
+            err = true;
+        }else if ($scope.newKM.gia_tri_toi_thieu <= 0 ){
+            document.getElementById("errToiThieu").innerText = "Giá trị tối thiểu phải lớn hơn 0";
+            err = true;
+        }
+
+        if (!($scope.newKM.ngay_bat_dau) || !($scope.newKM.ngay_ket_thuc) ){
+            document.getElementById("errDate").innerText = "Không để trống ngày";
+            err = true;
+        }else if (new Date($scope.newKM.ngay_bat_dau).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) ){
+            document.getElementById("errDate").innerText = "Ngày bắt đầu phải hơn hoặc bằng ngày hiện tại";
+            err = true;
+        } else if (new Date($scope.newKM.ngay_bat_dau) >= new Date($scope.newKM.ngay_ket_thuc) ){
+            document.getElementById("errDate").innerText = "Ngày kết thúc phải lớn hơn ngày bắt đầu";
+            err = true;
+        }
+
+        return err ? 0 : 1;
+
     }
 
 

@@ -89,7 +89,7 @@ public class HoaDonChiTietService {
         hdct.setChi_tiet_san_pham(ctsp);
         hdct.setSo_luong(sl);
         hdct.setTrang_thai(1);
-        if(ctsp.getGiamGia() != null){
+        if(ctsp.getGiamGia() != null && ctsp.getGiamGia().getTrang_thai() == 1){
            BigDecimal giaBan = ctsp.getGia_ban();
            float giamGia = ctsp.getGiamGia().getGia_tri();
            BigDecimal phanTramGiam = new BigDecimal(giamGia).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
