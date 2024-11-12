@@ -10,6 +10,10 @@ app.config(function($routeProvider) {
             templateUrl : "/customer/views/san-pham.html",
             controller : "SanPhamController"
         })
+        .when("/cart", {
+            templateUrl : "/customer/views/cart.html",
+            controller : "SanPhamController"
+        })
         .otherwise({
             redirectTo: '/'
         });

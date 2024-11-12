@@ -1,6 +1,6 @@
 <br><br><br><br><br>
 
-<div class="container" ng-controller="SanPhamController">
+<div class="container" >
     <div class="row">
         <div class="col-3">Tìm kiểm sản phẩm</div>
         <div class="col-9">
@@ -114,41 +114,65 @@
 
                         <div class="col-md-6">
                             <h5 class="modal-title" id="productModalLabel">{{ selectedProduct.ten }}</h5>
-                            <p class="text-danger"><strong>Giá:</strong> {{ selectedProduct.variants[0].gia_ban | currency:"":0 }} đ</p>
                             <p><strong>Mã sản phẩm:</strong> {{ selectedProduct.ma_san_pham }}</p>
+
+                            <!-- Giá sản phẩm -->
+                            <p class="text-danger"><strong>Giá:</strong>
+                                <span ng-if="selectedVariant">
+                                    <span ng-if="selectedVariant.giamGia">
+                                        <!-- Hiển thị giá sau giảm -->
+                                        {{ (selectedVariant.gia_ban * (1 - selectedVariant.giamGia.gia_tri / 100)) | currency:"":0 }} đ
+                                    </span>
+                                    <span ng-if="!selectedVariant.giamGia">
+                                        <!-- Hiển thị giá gốc nếu không có giảm giá -->
+                                        {{ selectedVariant.gia_ban | currency:"":0 }} đ
+                                    </span>
+                                </span>
+                                <span ng-if="!selectedVariant">Vui lòng chọn màu sắc và kích cỡ</span>
+                            </p>
 
                             <!-- Màu sắc -->
                             <p><strong>Màu sắc</strong></p>
                             <div style="display: flex; flex-wrap: wrap; gap: 5px;">
-                                <div ng-repeat="variant in getUniqueColors()">
-                                    <button style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
+                                <div ng-repeat="variant in getUniqueColors()" ng-click="selectColor(variant.mauSac.ten)">
+                                    <button ng-class="{'selected': selectedColor === variant.mauSac.ten}"
+                                            style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
                                         {{ variant.mauSac.ten }}
                                     </button>
                                 </div>
                             </div>
 
-
                             <!-- Kích thước -->
                             <p><strong>Kích thước</strong></p>
                             <div style="display: flex; flex-wrap: wrap; gap: 5px;">
-                                <div ng-repeat="variant in selectedProduct.variants" class="p-1">
-                                    <button  style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
+                                <div ng-repeat="variant in selectedProduct.variants | filter: { mauSac: { ten: selectedColor } }"
+                                     ng-click="selectSize(variant.kichCo.ten, variant)">
+                                    <button ng-class="{'selected': selectedSize === variant.kichCo.ten}"
+                                            style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
                                         {{ variant.kichCo.ten }}
                                     </button>
                                 </div>
                             </div>
 
+                            <!-- Số lượng tồn -->
+                            <p><strong>Số lượng tồn:</strong> {{ selectedVariant ? selectedVariant.so_luong : 'Vui lòng chọn màu sắc và kích cỡ' }}</p>
+
                             <!-- Số lượng -->
                             <p><strong>Số lượng</strong></p>
                             <div class="quantity-control">
-                                <button ng-click="decreaseQuantity()">-</button>
-                                <input type="text" ng-model="quantity" style="width: 40px; text-align: center;" />
-                                <button ng-click="increaseQuantity()">+</button>
+                                <button ng-click="decreaseQuantity()" ng-disabled="!selectedVariant">-</button>
+                                <input type="text" ng-model="quantity" ng-disabled="!selectedVariant" style="width: 40px; text-align: center;" />
+                                <button ng-click="increaseQuantity()" ng-disabled="!selectedVariant">+</button>
                             </div>
 
-                            <!-- Nút Thêm vào giỏ hàng --><br>
-                            <button class="btn btn-pink " ng-click="addToCart(selectedProduct)">THÊM VÀO GIỎ HÀNG</button>
+                            <!-- Nút Thêm vào giỏ hàng -->
+                            <br>
+                            <button class="btn btn-pink" ng-click="addToCart(selectedProduct)" ng-disabled="!selectedVariant">
+                                THÊM VÀO GIỎ HÀNG
+                            </button>
                         </div>
+
+
                     </div>
                 </div>
             </div>

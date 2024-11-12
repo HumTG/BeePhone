@@ -41,8 +41,9 @@ app.controller('SanPhamController', function($scope, $http) {
     $scope.selectedProduct = null;
     $scope.quantity = 1;
 
-    $scope.selectedProduct = null;
-    $scope.quantity = 1;
+    $scope.selectedColor = null;
+    $scope.selectedSize = null;
+    $scope.selectedVariant = null;
 
     // Hàm mở modal
     $scope.openModal = function(product) {
@@ -51,6 +52,7 @@ app.controller('SanPhamController', function($scope, $http) {
         $('#productModal').modal('show'); // Sử dụng jQuery để hiển thị modal
     };
 
+    // Hàm lấy danh sách màu sắc duy nhất
     $scope.getUniqueColors = function() {
         const uniqueColors = [];
         const colorSet = new Set();
@@ -63,6 +65,19 @@ app.controller('SanPhamController', function($scope, $http) {
         });
 
         return uniqueColors;
+    };
+
+    // Chọn màu sắc
+    $scope.selectColor = function(color) {
+        $scope.selectedColor = color;
+        $scope.selectedSize = null;
+        $scope.selectedVariant = null;
+    };
+
+    // Chọn kích cỡ và cập nhật sản phẩm chi tiết
+    $scope.selectSize = function(size, variant) {
+        $scope.selectedSize = size;
+        $scope.selectedVariant = variant;
     };
 
 
@@ -79,11 +94,81 @@ app.controller('SanPhamController', function($scope, $http) {
         $scope.quantity++;
     };
 
-    // Hàm thêm vào giỏ hàng
-    $scope.addToCart = function(product) {
-        console.log("Thêm vào giỏ hàng:", product, "Số lượng:", $scope.quantity);
-        $scope.closeModal(); // Đóng modal sau khi thêm vào giỏ hàng
+
+    // Khởi tạo giỏ hàng từ LocalStorage nếu có dữ liệu
+    $scope.cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Hàm lưu giỏ hàng vào LocalStorage
+    $scope.saveCart = function() {
+        localStorage.setItem('cart', JSON.stringify($scope.cart));
     };
+    // Hàm đếm số lượng sản phẩm trong giỏ hàng
+    $scope.getCartItemCount = function() {
+        return $scope.cart.length; // Đếm số mục trong giỏ hàng
+    };
+
+
+    // Hàm thêm sản phẩm vào giỏ hàng
+    $scope.addToCart = function(selectedProduct) {
+        if ($scope.selectedVariant) {
+            // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+            const existingProduct = $scope.cart.find(item =>
+                item.product.id === selectedProduct.id && item.variant.id === $scope.selectedVariant.id
+            );
+
+            if (existingProduct) {
+                // Nếu sản phẩm đã tồn tại, tăng số lượng
+                existingProduct.quantity += $scope.quantity;
+            } else {
+                // Nếu sản phẩm chưa tồn tại, thêm vào giỏ
+                $scope.cart.push({
+                    product: selectedProduct,
+                    variant: $scope.selectedVariant,
+                    quantity: $scope.quantity
+                });
+            }
+
+            // Lưu giỏ hàng vào LocalStorage
+            $scope.saveCart();
+
+            toastr.success('Sản phẩm đã được thêm vào giỏ hàng');
+            // Cập nhật giao diện ngay lập tức
+            $timeout(function() {
+                $scope.getCartItemCount();
+            }, 0); // Đặt thời gian là 0 để kích hoạt ngay
+        } else {
+            toastr.error('Vui lòng chọn màu sắc và kích cỡ');
+        }
+    };
+
+// Hàm cập nhật giỏ hàng khi số lượng thay đổi
+    $scope.updateCart = function() {
+        $scope.cart = $scope.cart.filter(item => item.quantity > 0);
+        $scope.saveCart(); // Cập nhật lại LocalStorage sau khi thay đổi
+    };
+
+// Xóa sản phẩm khỏi giỏ hàng
+    $scope.removeFromCart = function(index) {
+        $scope.cart.splice(index, 1);
+        $scope.saveCart(); // Cập nhật lại LocalStorage sau khi xóa
+        toastr.info('Sản phẩm đã được xóa khỏi giỏ hàng');
+    };
+
+// Hàm tính tổng tiền từng sản phẩm trong giỏ
+    $scope.calculateTotalPrice = function(item) {
+        let price = item.variant.gia_ban;
+        if (item.variant.giamGia) {
+            price = price * (1 - item.variant.giamGia.gia_tri / 100);
+        }
+        return price * item.quantity;
+    };
+
+// Hàm tính tổng giá trị đơn hàng
+    $scope.calculateCartTotal = function() {
+        return $scope.cart.reduce((total, item) => total + $scope.calculateTotalPrice(item), 0);
+    };
+
+
 
 
 });

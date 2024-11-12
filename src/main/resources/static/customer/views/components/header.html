@@ -99,13 +99,19 @@
                                             </svg>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="cart.html">
+                                    <li style="position: relative;" ng-controller="SanPhamController">
+                                        <a href="#!cart">
                                             <svg class="cart">
                                                 <use xlink:href="#cart"></use>
                                             </svg>
+                                            <!-- Hiển thị số lượng sản phẩm, chỉ hiện nếu số lượng lớn hơn 0 -->
+                                            <span ng-if="getCartItemCount() > 0"
+                                                  style="position: absolute; top: -5px; right: -10px; background-color: #FF5722; color: white; padding: 2px 6px; border-radius: 50%; font-size: 12px;">
+                                                {{ getCartItemCount() }}
+                                            </span>
                                         </a>
                                     </li>
+
                                 </ul>
                             </div>
                         </li>
