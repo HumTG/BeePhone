@@ -578,15 +578,15 @@
                             <h3>Thông tin khách đặt online</h3>
                             <br>
                             <div class="row mb-3">
-                             <input type="text" class="form-control" placeholder="Họ và tên khách hàng" >
+                             <input type="text" class="form-control" placeholder="Họ và tên khách hàng" ng-model="hoaDon_DB.khachHang.ho_ten">
                             </div>
                             <br>
                             <div class="row mb-3">
-                                <input type="text" class="form-control" placeholder="Email" >
+                                <input type="text" class="form-control" placeholder="Email" ng-model="hoaDon_DB.khachHang.email">
                             </div>
                             <br>
                             <div class="row mb-3">
-                                <input type="text" class="form-control" placeholder="Số điện thoại" >
+                                <input type="text" class="form-control" placeholder="Số điện thoại" ng-model="hoaDon_DB.khachHang.sdt">
                             </div>
                             <br>
                             <div class="row mb-3">
@@ -594,15 +594,14 @@
                                     <label class="form-label"><strong>Địa chỉ :</strong></label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-select" aria-label="Default select example">
-                                        <option selected>Open this select menu</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
+                                    <select class="form-select" ng-model="selectedKhachHang"
+                                        ng-options="diaChi.id as diaChi.dia_chi_chi_tiet for diaChi in hoaDon_DB.khachHang.diaChiKhachHang">
+                                        <option value="" disabled selected>Chọn địa chỉ</option>
+
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-outline-secondary">Add</button>
+                                    <button type="button" class="btn btn-outline-secondary" ng-click="checkDiaChi()">Add</button>
                                 </div>
                             </div>
                             <br>
@@ -673,7 +672,7 @@
                                 <div class="col-md-7 text-end"><strong style="color:red;">{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}} VNĐ</strong></div>
                             </div>
                             <div class="row mb-3">
-                                <button type="button" class="btn btn-outline-primary">Thanh toán</button>
+                                <button type="button" class="btn btn-outline-primary" ng-click="xacNhanHoaDon()">Thanh toán</button>
                             </div>
 
                         </div>
@@ -734,10 +733,59 @@
                         </div>
                     </div>
 <!--                    end modal khuyến mại-->
-
                 </div>
 
+<!--                   In hóa đơn-->
+                <div id="invoice" style="display: none;">
+                    <div class="invoice-container">
+                        <h2>BeePhone </h2>
+                        <p>Mã hóa đơn: {{ hoaDon_DB.ma_hoa_don }}</p>
+                        <p>Ngày: {{ hoaDon_DB.ngay_tao }}</p>
 
+                        <h3>Thông tin khách hàng</h3>
+                        <p>Tên: {{hoaDon_DB.khachHang.ho_ten}}</p>
+                        <p ng-repeat="diaChi in hoaDon_DB.khachHang.diaChiKhachHang" ng-if="diaChi.trang_thai == 1">
+                            Địa chỉ: {{ diaChi.dia_chi_chi_tiet }}
+                        </p>
+                        <p>Số điện thoại: {{hoaDon_DB.khachHang.sdt}}</p>
+                        <h3>Nội dung đơn hàng</h3>
+                        <table class="table">
+                            <thead class="table-warning text-white">
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Thông tin sản phẩm</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Đơn giá</th>
+                                <th scope="col">Thành tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="inHdct in listHDCT" >
+                                <th scope="row">{{ $index + 1 }}</th>
+                                <td>
+                                    {{ inHdct.ten_san_pham }} [ {{ inHdct.ten_kich_co }} | {{ inHdct.ten_mau_sac }} ]
+                                </td>
+                                <td>
+                                    {{inHdct..so_luong}}
+                                </td>
+                                <td>
+                                    {{inHdct.don_gia | currency:"":0}} VNĐ
+                                </td>
+                                <td>
+                                    {{inHdct..so_luong * inHdct.don_gia | currency:"":0 }} VNĐ
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <h4>Tổng cộng: {{hoaDon_DB.thanh_tien | currency:"":0 }} VNĐ </h4> <br>
+                        <h4>Giảm giá: {{ hoaDon_DB.thanh_tien - hoaDon_DB.tien_sau_giam_gia | currency:"":0 }} VNĐ </h4> <br>
+                        <h3>Tổng tiền phải trả : {{hoaDon_DB.tien_sau_giam_gia | currency:"":0 }} VNĐ </h3> <br>
+                        <p>Chữ ký người nhận:</p>
+                        <div style="border: 1px solid #000; width: 300px; height: 100px;"></div>
+                    </div>
+                </div>
+
+<!--                   End in hóa đơn-->
             </div>
         </div>
 

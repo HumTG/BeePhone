@@ -52,7 +52,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         $http.get("http://localhost:8080/rest/hoa-don-chi-tiet/dto/" + idHD).then(function(response) {
             if (response.status === 200) {
                 $scope.listHDCT = response.data;
-                 // console.log($scope.listHDCT);
+                  // console.log($scope.listHDCT);
             } else {
                 console.error("Error: ", response.status);
             }
@@ -268,6 +268,79 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
             console.error('Error fetching data:', error);
         });
     }
+
+    $scope.checkDiaChi = function (){
+        // console.log($scope.selectedKhachHang);
+    }
+
+    /// xác nhận đơn tại quầy
+    $scope.xacNhanHoaDon = function (){
+        let loaiHD =  $scope.hoaDon_DB.loai_hoa_don;
+        $http({
+            method: 'PUT',
+            url : 'http://localhost:8080/rest/hoa-don/xac-nhan-don',
+            params: {
+                idHD : $scope.hoa_don.id,
+                loaiHD : loaiHD
+            }
+        }).then(function(response) {
+            toastr.success('Xác nhận đơn thành công', 'OK');
+            $scope.printInvoice();
+            setTimeout(function (){
+                window.location.reload();
+            },3000);
+
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
+        });
+
+    }
+
+    /// In hóa đơn
+    $scope.printInvoice = function() {
+        let invoiceContent = document.getElementById("invoice").innerHTML;
+        let printWindow = window.open("", "_blank");
+        printWindow.document.open();
+        printWindow.document.write(`
+        <html>
+            <head>
+                <title>Hóa Đơn</title>
+                <style>
+                    /* Copy CSS styles from your main stylesheet here */
+                    .invoice-container {
+                        font-family: Arial, sans-serif;
+                        width: 600px;
+                        margin: auto;
+                        padding: 20px;
+                        border: 1px solid #ddd;
+                    }
+
+                    .invoice-container h2, .invoice-container h3 {
+                        text-align: center;
+                    }
+
+                    .invoice-container table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+
+                    .invoice-container table, .invoice-container th, .invoice-container td {
+                        border: 1px solid black;
+                    }
+
+                    .invoice-container th, .invoice-container td {
+                        padding: 8px;
+                        text-align: left;
+                    }
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                ${invoiceContent}
+            </body>
+        </html>
+    `);
+        printWindow.document.close();
+    };
 
 
 

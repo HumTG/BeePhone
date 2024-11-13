@@ -33,4 +33,18 @@ public class LichSuHoaDonService {
     public List<lich_su_hoa_don> getLichSuByHoaDonId(int hoaDonId) {
         return lichSuHoaDonRepository.findByHoaDonId(hoaDonId);
     }
+
+    ///tạo lịch sử cho hóa đơn tại quầy
+    public void taoLichSuTaiQuay(hoa_don hoaDon,int trangThai) {
+        lich_su_hoa_don lichSuHoaDon = new lich_su_hoa_don();
+
+        lichSuHoaDon.setNgay_tao_hoa_don(Date.valueOf(LocalDate.now()));
+        lichSuHoaDon.setNgay_sua_hoa_don(Date.valueOf(LocalDate.now()));
+        lichSuHoaDon.setNguoi_tao_hoa_don("Admin");
+        lichSuHoaDon.setMo_ta("Hóa đơn tại quầy");
+        lichSuHoaDon.setHoaDon(hoaDon);
+        lichSuHoaDon.setTrang_thai(trangThai);
+
+        lichSuHoaDonRepository.save(lichSuHoaDon);
+    }
 }

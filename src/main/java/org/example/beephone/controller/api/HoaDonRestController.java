@@ -80,6 +80,19 @@ public class HoaDonRestController {
 
     }
 
+    @PutMapping("/xac-nhan-don")
+    public ResponseEntity<?> xacNhanDonTaiQuay(@RequestParam(name = "idHD") Integer idHD,
+                                               @RequestParam(name = "loaiHD") Integer loaiHD){
+        try{
+            hoaDonService.capNhatTrangThaiTaiQuay(idHD);
+            return ResponseEntity.ok(Map.of("message", "Xác nhận hóa đơn thành công"));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi xác nhận hóa đơn: " + idHD + e.getMessage());
+        }
+
+    }
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getHoaDon(@RequestParam(defaultValue = "0") Integer page,

@@ -39,6 +39,7 @@ public class HoaDonService {
     private KhuyenMaiRepository kmRP;
     @Autowired
     private HoaDonChiTietRepository hdctRP;
+    @Autowired LichSuHoaDonService lsHoaDonService;
 
 
     public List<hoa_don> getAll(){
@@ -132,6 +133,15 @@ public class HoaDonService {
         khach_hang khachHang = khRP.findById(idKH).get();
         hdRP.capNhatKhachHangHD(khachHang,idHD);
     }
+
+    ///cập nhật trạng thái cho hóa đơn tại quầy
+    public void capNhatTrangThaiTaiQuay(int idHd){
+        hoa_don hoaDon = hdRP.findById(idHd).get();
+        hdRP.capNhatTrangThaiHD(6,idHd);
+        lsHoaDonService.taoLichSuTaiQuay(hoaDon,6);
+
+    }
+
 
 
 
