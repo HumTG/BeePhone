@@ -631,7 +631,8 @@
                                 <div class="col-md d-flex align-items-center">
                                     <label class="form-label me-2"><strong>Giao hàng :</strong></label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" style="height: 22px;width:50px ">
+                                        <input class="form-check-input" type="checkbox" ng-model="switchGiaoHang" ng-change="checkGiaoHang()"
+                                               role="switch" id="flexSwitchCheckDefault" style="height: 22px;width:50px ">
                                     </div>
                                 </div>
                             </div>
@@ -766,13 +767,13 @@
                                     {{ inHdct.ten_san_pham }} [ {{ inHdct.ten_kich_co }} | {{ inHdct.ten_mau_sac }} ]
                                 </td>
                                 <td>
-                                    {{inHdct..so_luong}}
+                                    {{inHdct.so_luong}}
                                 </td>
                                 <td>
                                     {{inHdct.don_gia | currency:"":0}} VNĐ
                                 </td>
                                 <td>
-                                    {{inHdct..so_luong * inHdct.don_gia | currency:"":0 }} VNĐ
+                                    {{inHdct.so_luong * inHdct.don_gia | currency:"":0 }} VNĐ
                                 </td>
                             </tr>
                             </tbody>

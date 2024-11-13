@@ -273,6 +273,10 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         // console.log($scope.selectedKhachHang);
     }
 
+    $scope.checkGiaoHang = function (){
+        console.log($scope.switchGiaoHang);
+    }
+
     /// xác nhận đơn tại quầy
     $scope.xacNhanHoaDon = function (){
         let loaiHD =  $scope.hoaDon_DB.loai_hoa_don;

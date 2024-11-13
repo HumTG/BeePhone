@@ -39,7 +39,8 @@ public class HoaDonService {
     private KhuyenMaiRepository kmRP;
     @Autowired
     private HoaDonChiTietRepository hdctRP;
-    @Autowired LichSuHoaDonService lsHoaDonService;
+    @Autowired
+    private LichSuHoaDonService lsHoaDonService;
 
 
     public List<hoa_don> getAll(){
