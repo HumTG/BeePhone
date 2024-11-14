@@ -52,7 +52,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         $http.get("http://localhost:8080/rest/hoa-don-chi-tiet/dto/" + idHD).then(function(response) {
             if (response.status === 200) {
                 $scope.listHDCT = response.data;
-                  // console.log($scope.listHDCT);
+                   console.log($scope.listHDCT);
             } else {
                 console.error("Error: ", response.status);
             }
@@ -275,6 +275,18 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
 
     $scope.checkGiaoHang = function (){
         console.log($scope.switchGiaoHang);
+    }
+
+    $scope.openModalThanhToan = function (){
+        if (!($scope.hoa_don.id)){
+            toastr.warning('Chọn hóa đơn trước khi thanh toán', 'Cảnh báo');
+        } else if ($scope.listHDCT.length == 0){
+            toastr.warning('Không có sản phẩm trong hóa đơn', 'Cảnh báo');
+        } else {
+            var modal = new bootstrap.Modal(document.getElementById('xacNhanTTModal'));
+            modal.show();
+        }
+
     }
 
     /// xác nhận đơn tại quầy
