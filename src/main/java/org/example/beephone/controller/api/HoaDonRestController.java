@@ -47,8 +47,6 @@ public class HoaDonRestController {
         }
     }
 
-
-
     @PostMapping
     public ResponseEntity<hoa_don> createHD(){
         hoa_don hd = hoaDonService.createHoaDon();
@@ -157,6 +155,16 @@ public class HoaDonRestController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    // Tạo hóa đơn khi đặt hàng bên web người dùng đặt hàng
+    @PostMapping("/add")
+    public ResponseEntity<hoa_don> createHoaDon(
+            @RequestBody hoa_don hoaDon,
+            @RequestParam Integer idKhachHang ) {
+        hoa_don createdHoaDon = hoaDonService.save(hoaDon,idKhachHang);
+        return ResponseEntity.ok(createdHoaDon);
+    }
+
 
 
 }

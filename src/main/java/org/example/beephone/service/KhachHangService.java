@@ -103,6 +103,8 @@ public class KhachHangService {
         return maKH.toString();
     }
 
+
+
 //    public Page<nhan_vien> filterNhanVien(String tenSdt, String ngaySinhTu, String ngaySinhDen,
 //                                          Integer trangThai, Integer maxTuoi, int page, int size) {
 //
@@ -114,4 +116,10 @@ public class KhachHangService {
 //        // Gọi repository với các điều kiện tìm kiếm
 //        return khachHangRepository.searchNhanVien(tenSdt, dateFrom, dateTo, trangThai, maxTuoi, pageable);
 //    }
+
+    // Tạo khách hàn bên web khi khách hàng không đăng nhập S
+    public khach_hang save(khach_hang khachHang) {
+        khachHang.setMa_khach_hang(generateMaKhachHang());
+        return khachHangRepository.save(khachHang);
+    }
 }

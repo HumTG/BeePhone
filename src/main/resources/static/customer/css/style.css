@@ -1191,10 +1191,10 @@ figure.instagram-item img.insta-image {
   width: 100%; /* Chiếm toàn bộ chiều rộng của product-item */
   color: white;
   border: none;
-  padding: 15px 0; /* Tăng chiều cao của nút */
+  padding: 7px 0; /* Tăng chiều cao của nút */
   border-radius: 2px;
   opacity: 0;
-  transition: all 0.3s ease-in-out; /* Tạo hiệu ứng chuyển động */
+  transition: all 0.5s ease-in-out; /* Tạo hiệu ứng chuyển động */
 }
 
 /* Hiển thị nút "Mua Ngay" khi hover vào product-item */
@@ -1209,6 +1209,7 @@ figure.instagram-item img.insta-image {
   margin-left: 10px;
 }
 
+/* Nút Thêm giỏ hàng khi chọn vào sản phẩm */
 .btn-pink {
   background-color: orange;
   color: white;
@@ -1220,6 +1221,8 @@ figure.instagram-item img.insta-image {
   border: none;
   border-radius: 5px;
 }
+
+
 
 
 

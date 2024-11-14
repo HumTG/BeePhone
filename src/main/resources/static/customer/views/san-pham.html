@@ -41,22 +41,22 @@
 
                         <!-- Nội dung sản phẩm -->
                         <div class="card-body">
-                            <h5 class="card-title">
+                            <h5 class="card-title d-inline-block text-truncate marquee-text" style="max-width: 150px;">
                                 {{x.ten}}
                             </h5>
                             <div class="d-flex justify-content-between align-items-center">
-                                <p class="text-danger">
-                    <span ng-if="x.variants[0].giamGia">
-                        <span class="text-danger">
-                            {{ x.variants[0].gia_ban * (1 - x.variants[0].giamGia.gia_tri / 100) | currency:"":0 }} VNĐ
-                        </span>
-                        <span class="text-muted original-price">
-                            {{ x.variants[0].gia_ban | currency:"":0 }} VNĐ
-                        </span>
-                    </span>
+                                <p class="text-danger" >
+                                    <span ng-if="x.variants[0].giamGia">
+                                        <span class="text-danger">
+                                            {{ x.variants[0].gia_ban * (1 - x.variants[0].giamGia.gia_tri / 100) | currency:"":0 }} VNĐ
+                                        </span>
+                                        <span class="text-muted original-price">
+                                            {{ x.variants[0].gia_ban | currency:"":0 }} VNĐ
+                                        </span>
+                                    </span>
                                     <span ng-if="!x.variants[0].giamGia">
-                        {{ x.variants[0].gia_ban | currency:"":0 }} VNĐ
-                    </span>
+                                    {{ x.variants[0].gia_ban | currency:"":0 }} VNĐ
+                                    </span>
                                 </p>
                             </div>
                         </div>

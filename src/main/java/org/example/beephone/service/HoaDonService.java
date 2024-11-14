@@ -180,4 +180,16 @@ public class HoaDonService {
     }
 
 
+    // Tạo hóa đơn bên người dùng
+    public hoa_don save(hoa_don hoaDon,Integer idKhachHang) {
+        hoaDon.setMa_hoa_don("HD"+generateRandomCode());
+        Optional<khach_hang> khachHang = khRP.findById(idKhachHang);
+        if (khachHang.isPresent()) {
+            hoaDon.setKhachHang(khachHang.get());
+        }
+        LocalDate localDate = LocalDate.now();
+        Date sqlDate = Date.valueOf(localDate);
+        hoaDon.setNgay_tao(sqlDate);
+        return hdRP.save(hoaDon);
+    }
 }

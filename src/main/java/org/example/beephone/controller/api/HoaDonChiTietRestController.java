@@ -32,6 +32,18 @@ public class HoaDonChiTietRestController {
         return ResponseEntity.ok(listHDCT);
     }
 
+
+
+    // Tạo hóa đơn chi tiết khi người dùng đặt hàng
+    @PostMapping("/add-customer")
+    public ResponseEntity<hoa_don_chi_tiet> createHoaDonChiTiet(
+            @RequestBody hoa_don_chi_tiet hoaDonChiTiet,
+            @RequestParam Integer idHoaDon) {
+        hoa_don_chi_tiet createdHoaDonChiTiet = hdctService.save(hoaDonChiTiet,idHoaDon);
+        return ResponseEntity.ok(createdHoaDonChiTiet);
+    }
+
+
     ///getAll
     @GetMapping
     public ResponseEntity<?> getAll(){

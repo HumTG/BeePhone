@@ -21,10 +21,11 @@ public class dia_chi_khach_hang {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "id_khach_hang")
+    @JoinColumn(name = "id_khach_hang", nullable = false)
     private khach_hang khachHang ;
 
     private String ma_dia_chi ;
+
 
     private String dia_chi_chi_tiet ;
 

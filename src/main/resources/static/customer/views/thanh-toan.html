@@ -1,0 +1,127 @@
+<br><br><br><br><br>
+<div class="container mt-4">
+    <div class="row">
+        <!-- Thông tin người nhận -->
+        <div class="col-md-4">
+            <h5 class="section-title">1. Thông tin người nhận</h5>
+                <!-- Form nhập thông tin người nhận -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Họ tên *</label>
+                    <input type="text" class="form-control" id="name" ng-model="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Điện thoại *</label>
+                    <input type="tel" class="form-control" id="phone" ng-model="phone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" class="form-control" id="email" ng-model="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Địa chỉ chi tiết *</label>
+                    <input type="text" class="form-control" id="address" ng-model="addressDetail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">Tỉnh/Thành phố *</label>
+                    <select class="form-select" id="city" ng-model="selectedCity" ng-options="city.name for city in cities" ng-change="updateDistricts()" required>
+                        <option value="">Chọn tỉnh/thành phố</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="district" class="form-label">Quận/Huyện *</label>
+                    <select class="form-select" id="district" ng-model="selectedDistrict" ng-options="district.name for district in districts" required>
+                        <option value="">Chọn quận/huyện</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="note" class="form-label">Ghi chú</label>
+                    <textarea class="form-control" id="note" ng-model="note" rows="3"></textarea>
+                </div>
+                <small class="text-muted">
+                    Đơn hàng trên website được xử lý trong giờ hành chính. Vui lòng liên hệ fanpage ngoài khung giờ trên để được hỗ trợ.
+                </small>
+        </div>
+
+        <!-- Phương thức thanh toán -->
+        <div class="col-md-4">
+            <h5 class="section-title">2. Phương thức thanh toán</h5>
+            <div class="card p-3 mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransfer" ng-model="paymentMethod" ng-value="1">
+                    <label class="form-check-label" for="bankTransfer">
+                        Chuyển khoản trước toàn bộ tiền hàng
+                    </label>
+                </div>
+                <small class="text-muted">
+                    Với phương thức Chuyển khoản trước toàn bộ tiền hàng, bộ phận CSKH sẽ gọi điện để xác nhận đơn hàng và hướng dẫn cách thức thanh toán chuyển khoản.
+                </small>
+            </div>
+            <div class="card p-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="cod" ng-model="paymentMethod" ng-value="2">
+                    <label class="form-check-label" for="cod">
+                        Thanh toán khi nhận hàng
+                    </label>
+                </div>
+                <small class="text-muted">
+                    Thanh toán khi nhận hàng (COD).
+                </small>
+            </div>
+        </div>
+
+
+        <!-- Thông tin giỏ hàng -->
+        <div class="col-md-4">
+            <h5 class="section-title">3. Thông tin giỏ hàng</h5>
+            <div class="card p-3">
+                <ul class="list-unstyled mb-3">
+                    <li class="d-flex justify-content-between border-bottom pb-2" ng-repeat="item in cart">
+                        <div>
+                            <strong>{{ item.product.ten }} [ {{ item.variant.mauSac.ten }} - {{ item.variant.kichCo.ten }} ]</strong><br>
+                            <small>Đơn giá: {{ item.variant.gia_ban | currency:"":0 }} đ</small>
+                        </div>
+                        <div>
+                            <strong>Số lượng: {{ item.quantity }}</strong><br>
+                            <span class="text-danger">{{ calculateTotalPrice(item) | currency:"":0 }} đ</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="d-flex justify-content-between mt-2">
+                    <span><strong>Tạm tính</strong></span>
+                    <span><strong>{{ calculateCartTotal() | currency:"":0 }} đ</strong></span>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <span><strong>Phí vận chuyển</strong></span>
+                    <span>Liên hệ sau</span>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <span><strong>Mã giảm giá</strong></span>
+                    <span>0 đ</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <strong>Tổng cộng</strong>
+                    <strong class="text-danger">{{ calculateCartTotal() | currency:"":0 }} đ</strong>
+                </div>
+                <div class="input-group mt-3">
+                    <input type="text" class="form-control" placeholder="Mã giảm giá">
+                    <button class="btn" style="background-color: orange; color: white;">Áp dụng</button>
+                </div>
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="agreeTerms">
+                    <label class="form-check-label" for="agreeTerms">
+                        Tôi đồng ý với các điều khoản <a href="#" style="color: orange;">chính sách giao hàng</a>
+                    </label>
+                </div>
+                <div class="text-end mt-3">
+                    <button class="btn btn-pink w-100" ng-click="confirmOrder()" style="background-color: orange; color: white;">Thanh toán</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<br><br><br><br><br>

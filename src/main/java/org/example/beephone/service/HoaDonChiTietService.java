@@ -193,6 +193,13 @@ public class HoaDonChiTietService {
     }
 
 
-
-
+    // Tạo hóa đơn chi tiết khi người dùng đặt hàng bên web
+    public hoa_don_chi_tiet save(hoa_don_chi_tiet hoaDonChiTiet,Integer idHoaDon) {
+        hoaDonChiTiet.setMa_hoa_don_chi_tiet("HDCT"+generateRandomCode());
+        Optional<hoa_don> hoaDon = hdRP.findById(idHoaDon);
+        if (hoaDon.isPresent()) {
+            hoaDonChiTiet.setHoa_don(hoaDon.get());
+        }
+        return hdctRP.save(hoaDonChiTiet);
+    }
 }
