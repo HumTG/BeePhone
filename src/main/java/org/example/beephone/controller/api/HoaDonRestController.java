@@ -79,9 +79,14 @@ public class HoaDonRestController {
     }
 
     @PutMapping("/xac-nhan-don")
-    public ResponseEntity<?> xacNhanDonTaiQuay(@RequestParam(name = "idHD") Integer idHD,
+    public ResponseEntity<?> xacNhanDonTaiQuay(@RequestBody hoa_don hoaDon,
+                                               @RequestParam(name = "idHD") Integer idHD,
                                                @RequestParam(name = "loaiHD") Integer loaiHD){
         try{
+            System.out.println("ID hóa đơn : " + idHD);
+            System.out.println("Loại hóa đơn: " + loaiHD);
+            System.out.println("Phí ship : " + hoaDon.getPhi_ship());
+
             hoaDonService.capNhatTrangThaiTaiQuay(idHD);
             return ResponseEntity.ok(Map.of("message", "Xác nhận hóa đơn thành công"));
         }

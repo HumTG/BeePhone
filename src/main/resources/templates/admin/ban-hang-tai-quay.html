@@ -575,6 +575,7 @@
                     <div class="row mb-3">
                         <div class="col-md-1"></div>
                         <div class="col-md-5">
+                            <div ng-if="switchGiaoHang">
                             <h3>Thông tin khách đặt online</h3>
                             <br>
                             <div class="row mb-3">
@@ -606,8 +607,9 @@
                             </div>
                             <br>
                             <div class="row mb-3">
-                                <textarea class="form-control" rows="3" placeholder="Mô tả"></textarea>
+                                <textarea class="form-control" rows="3" placeholder="Mô tả" ng-model="hoaDon_DB.mo_ta"></textarea>
                             </div>
+                        </div>
                         </div>
                         <div class="col-md-1"></div>
 
@@ -662,7 +664,7 @@
                                 <div class="col-md-4">
                                 </div>
                                 <div class="col-md-5 text-end">
-                                    <input type="text" class="form-control" ng-model="hoaDon_DB.phi_ship" >
+                                    <input type="number" class="form-control" ng-model="hoaDon_DB.phi_ship" >
                                 </div>
                             </div>
                             <hr>
@@ -670,7 +672,7 @@
                                 <div class="col-md-5">
                                     <label class="form-label"><strong><h3>Tổng tiền</h3></strong></label>
                                 </div>
-                                <div class="col-md-7 text-end"><strong style="color:red;">{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}} VNĐ</strong></div>
+                                <div class="col-md-7 text-end"><strong style="color:red;">{{hoaDon_DB.tien_sau_giam_gia + hoaDon_DB.phi_ship | currency:'':0}} VNĐ</strong></div>
                             </div>
                             <div class="row mb-3">
                                 <button type="button" class="btn btn-outline-primary" ng-click="openModalThanhToan()">Thanh toán</button>
@@ -798,8 +800,9 @@
                             </tr>
                             </tbody>
                         </table>
-                        <h4>Tổng cộng: {{hoaDon_DB.thanh_tien | currency:"":0 }} VNĐ </h4> <br>
-                        <h4>Giảm giá: {{ hoaDon_DB.thanh_tien - hoaDon_DB.tien_sau_giam_gia | currency:"":0 }} VNĐ </h4> <br>
+                        <h4>Tổng cộng: {{hoaDon_DB.thanh_tien | currency:"":0 }} VNĐ </h4>
+                        <h4>Giảm giá: {{ hoaDon_DB.thanh_tien - hoaDon_DB.tien_sau_giam_gia | currency:"":0 }} VNĐ </h4>
+                        <h4>Phí ship: {{ hoaDon_DB.phi_ship | currency:"":0 }} VNĐ </h4>
                         <h3>Tổng tiền phải trả : {{hoaDon_DB.tien_sau_giam_gia | currency:"":0 }} VNĐ </h3> <br>
                         <p>Chữ ký người nhận:</p>
                         <div style="border: 1px solid #000; width: 300px; height: 100px;"></div>

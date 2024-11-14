@@ -6,6 +6,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     $scope.hoa_don = {};
     $scope.currentPage = 0;  /// trang của chi tiết sản phẩm
     $scope.pageKhachHang = 0; /// trang của khách hàng
+    $scope.switchGiaoHang = false;
 
     ///lấy toàn bộ hóa đơn
     $scope.getAllHoaDon = function (){
@@ -291,13 +292,16 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
 
     /// xác nhận đơn tại quầy
     $scope.xacNhanHoaDon = function (){
-        let loaiHD =  $scope.hoaDon_DB.loai_hoa_don;
+        let loaiHD =  $scope.switchGiaoHang ? 1 : 0;
+
         $http({
             method: 'PUT',
             url : 'http://localhost:8080/rest/hoa-don/xac-nhan-don',
+            data : $scope.hoaDon_DB,
             params: {
                 idHD : $scope.hoa_don.id,
                 loaiHD : loaiHD
+                // idDiaChi : $scope.selectedKhachHang
             }
         }).then(function(response) {
             toastr.success('Xác nhận đơn thành công', 'OK');
