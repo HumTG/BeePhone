@@ -673,7 +673,7 @@
                                 <div class="col-md-7 text-end"><strong style="color:red;">{{hoaDon_DB.tien_sau_giam_gia | currency:'':0}} VNĐ</strong></div>
                             </div>
                             <div class="row mb-3">
-                                <button type="button" class="btn btn-outline-primary" ng-click="xacNhanHoaDon()">Thanh toán</button>
+                                <button type="button" class="btn btn-outline-primary" ng-click="openModalThanhToan()">Thanh toán</button>
                             </div>
 
                         </div>
@@ -734,6 +734,26 @@
                         </div>
                     </div>
 <!--                    end modal khuyến mại-->
+
+<!--                    modal xác nhận thanh toán-->
+                    <div class="modal fade" id="xacNhanTTModal" tabindex="-1" aria-labelledby="xacNhanTTModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="xacNhanTTModalLabel">Thanh toán</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                 <h5>Xác nhận thanh toán ?</h5>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" ng-click="xacNhanHoaDon()">Đồng ý</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<!--                    end modal xác nhận thanh toán-->
                 </div>
 
 <!--                   In hóa đơn-->
