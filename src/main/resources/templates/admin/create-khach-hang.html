@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>BeePhone - Admin</title>
-    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <link rel="icon" href="/admin/assets/img/kaiadmin/favicon.ico" type="image/x-icon"/>
 
 
     <!-- Fonts and icons -->
@@ -22,7 +22,7 @@
 
     <script>
         WebFont.load({
-            google: { families: ["Public Sans:300,400,500,600,700"] },
+            google: {families: ["Public Sans:300,400,500,600,700"]},
             custom: {
                 families: [
                     "Font Awesome 5 Solid",
@@ -40,14 +40,14 @@
 
 
     <!-- CSS Files -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="assets/css/plugins.min.css"/>
+    <link rel="stylesheet" href="assets/css/kaiadmin.min.css"/>
     <!-- ANGULAR  -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="/admin/assets/css/demo.css" />
+    <link rel="stylesheet" href="/admin/assets/css/demo.css"/>
     <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
     <style>
@@ -80,7 +80,7 @@
     </style>
 </head>
 
-<body ng-app="NhanVienApp">
+<body ng-app="KhachHangApp" ng-init="loadCustomerDetails()">
 <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
@@ -220,7 +220,8 @@
 
                     <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                         <li class="nav-item topbar-icon dropdown hidden-caret">
-                            <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown"
+                            <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
+                               data-bs-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-bell"></i>
                                 <span class="notification">4</span>
@@ -256,7 +257,7 @@
                                             </a>
                                             <a href="#">
                                                 <div class="notif-img">
-                                                    <img src="assets/img/profile2.jpg" alt="Img Profile" />
+                                                    <img src="assets/img/profile2.jpg" alt="Img Profile"/>
                                                 </div>
                                                 <div class="notif-content">
                             <span class="block">
@@ -278,16 +279,18 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <a class="see-all" href="javascript:void(0);">See all notifications<i class="fa fa-angle-right"></i>
+                                    <a class="see-all" href="javascript:void(0);">See all notifications<i
+                                            class="fa fa-angle-right"></i>
                                     </a>
                                 </li>
                             </ul>
                         </li>
 
                         <li class="nav-item topbar-user dropdown hidden-caret">
-                            <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                            <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
+                               aria-expanded="false">
                                 <div class="avatar-sm">
-                                    <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
+                                    <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle"/>
                                 </div>
                                 <span class="profile-username">
                     <span class="op-7">Hi,</span>
@@ -299,12 +302,14 @@
                                     <li>
                                         <div class="user-box">
                                             <div class="avatar-lg">
-                                                <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
+                                                <img src="assets/img/profile.jpg" alt="image profile"
+                                                     class="avatar-img rounded"/>
                                             </div>
                                             <div class="u-text">
                                                 <h4>Nguyễn Đình Hùng</h4>
                                                 <p class="text-muted">abc@gmail.com</p>
-                                                <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Thông Tin Cá Nhân</a>
+                                                <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">Thông Tin
+                                                    Cá Nhân</a>
                                             </div>
                                         </div>
                                     </li>
@@ -322,215 +327,206 @@
             <!-- End Navbar -->
         </div>
 
-        <!--Content-->
+        <!--content-->
         <div class="container d-flex justify-content-center align-items-center vh-100">
-            <div class="bg-white p-5 rounded shadow" style="width: 800px;">
-                <h2 class="text-center mb-4">Thêm Tài Khoản Khách Hàng</h2>
-                <form id="customerForm" class="needs-validation" novalidate>
+            <div class="bg-white p-5 rounded shadow" style="width: 700px; max-width: 100%;">
+                <h2 class="text-center mb-4 fw-bold">{{ isEditing ? "Cập Nhật Khách Hàng" : "Thêm Mới Khách Hàng"
+                    }}</h2>
+
+                <!-- Form khách hàng -->
+                <form id="customerForm" ng-controller="KhachHangController" ng-init="initializeEdit()"
+                      ng-submit="isEditing ? updateCustomer() : addCustomer()">
+
+                    <!-- Họ tên và Tài khoản -->
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="hoTen" class="form-label">Họ và tên</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="hoTen"
-                                   name="hoTen"
-                                   pattern="^[a-zA-ZÀ-ỹ\s]+$"
-                                   minlength="2"
-                                   required>
-                            <div class="invalid-feedback">
-                                <span class="error-required">Họ tên không được để trống</span>
-                                <span class="error-minlength">Họ tên phải có ít nhất 2 ký tự</span>
-                                <span class="error-pattern">Họ tên chỉ được chứa chữ cái và khoảng trắng</span>
-                            </div>
+                            <label for="hoTen" class="form-label">Họ và Tên</label>
+                            <input type="text" class="form-control" id="hoTen" ng-model="khachHang.hoTen"
+                                   placeholder="Nhập họ tên" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                            <input type="date"
-                                   class="form-control"
-                                   id="ngaySinh"
-                                   name="ngaySinh"
-                                   required>
-                            <div class="invalid-feedback">
-                                <span class="error-required">Ngày sinh không được để trống</span>
-                                <span class="error-min">Tuổi không được quá 100</span>
-                                <span class="error-max">Phải đủ 18 tuổi</span>
-                            </div>
+                            <label for="taiKhoan" class="form-label">Tài Khoản</label>
+                            <input type="text" class="form-control" id="taiKhoan" ng-model="khachHang.taiKhoan"
+                                   placeholder="Nhập tài khoản" required>
                         </div>
                     </div>
+
+                    <!-- Mật khẩu và Ngày sinh -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="matKhau" class="form-label">Mật Khẩu</label>
+                            <input type="password" class="form-control" id="matKhau" ng-model="khachHang.matKhau"
+                                   placeholder="Nhập mật khẩu" ng-required="!isEditing">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ngaySinh" class="form-label">Ngày Sinh</label>
+                            <input type="date" class="form-control" id="ngaySinh" ng-model="khachHang.ngaySinh"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Email và Số điện thoại -->
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email"
-                                   class="form-control"
-                                   id="email"
-                                   name="email"
-                                   pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                                   required>
-                            <div class="invalid-feedback">
-                                <span class="error-required">Email không được để trống</span>
-                                <span class="error-email">Email không đúng định dạng</span>
-                                <span class="error-pattern">Email không đúng định dạng</span>
-                            </div>
+                            <input type="email" class="form-control" id="email" ng-model="khachHang.email"
+                                   placeholder="Nhập email hợp lệ" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="sdt" class="form-label">Số điện thoại</label>
-                            <input type="tel"
-                                   class="form-control"
-                                   id="sdt"
-                                   name="sdt"
-                                   pattern="^(0[3|5|7|8|9])+([0-9]{8})$"
-                                   required>
-                            <div class="invalid-feedback">
-                                <span class="error-required">Số điện thoại không được để trống</span>
-                                <span class="error-pattern">Số điện thoại không đúng định dạng (10 số, bắt đầu bằng 03, 05, 07, 08, 09)</span>
-                            </div>
+                            <label for="sdt" class="form-label">Số Điện Thoại</label>
+                            <input type="tel" class="form-control" id="sdt" ng-model="khachHang.sdt"
+                                   placeholder="Nhập số điện thoại" required>
                         </div>
                     </div>
+
+                    <!-- Giới tính và Trạng thái -->
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Giới tính</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="gioiTinh"
-                                       value="0"
-                                       id="gioiTinhNam"
-                                       required>
-                                <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                            <label class="form-label">Giới Tính</label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="gioiTinhNam"
+                                           ng-model="khachHang.gioiTinh" value="0" required>
+                                    <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="gioiTinhNu"
+                                           ng-model="khachHang.gioiTinh" value="1">
+                                    <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                                </div>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="gioiTinh"
-                                       value="1"
-                                       id="gioiTinhNu">
-                                <label class="form-check-label" for="gioiTinhNu">Nữ</label>
-                            </div>
-                            <div class="invalid-feedback">Vui lòng chọn giới tính</div>
                         </div>
+
+                        <!--Trạng thái-->
                         <div class="col-md-6">
-                            <label for="trangThai" class="form-label">Trạng thái</label>
-                            <select class="form-select"
-                                    id="trangThai"
-                                    name="trangThai"
-                                    required>
-                                <option value="" disabled selected>Chọn trạng thái</option>
-                                <option value="1">Kích hoạt</option>
-                                <option value="0">Ngừng kích hoạt</option>
+                            <label for="trangThai" class="form-label">Trạng Thái</label>
+                            <select class="form-select" id="trangThai" ng-model="khachHang.trangThai" required>
+                                <option value="1">Kích Hoạt</option>
+                                <option value="0">Ngừng Kích Hoạt</option>
                             </select>
-                            <div class="invalid-feedback">Vui lòng chọn trạng thái</div>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label for="diaChi" class="form-label">Địa chỉ</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="diaChi"
-                                   name="diaChi"
-                                   minlength="5"
-                                   required>
-                            <div class="invalid-feedback">
-                                <span class="error-required">Địa chỉ không được để trống</span>
-                                <span class="error-minlength">Địa chỉ phải có ít nhất 5 ký tự</span>
+
+
+                    <!-- Thêm địa chỉ -->
+                    <div class="mb-3">
+                        <label for="diaChi" class="form-label">Địa Chỉ</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="diaChi" ng-model="address.diaChi"
+                                   placeholder="Nhập địa chỉ">
+                            <button type="button" class="btn btn-outline-primary" ng-click="addAddress()">Thêm Địa Chỉ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Thay đổi cách hiển thị địa chỉ trong danh sách -->
+                    <ul class="list-group mb-3" ng-if="khachHang.diaChiChiTiet.length">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            ng-repeat="diaChi in khachHang.diaChiChiTiet">
+                            <div class="d-flex align-items-center">
+            <span ng-class="{'text-primary fw-bold': diaChi.trangThai === 1}">
+                {{ diaChi.diaChiChiTiet }}
+                <span ng-if="diaChi.trangThai === 1" class="badge bg-primary ms-2">Mặc định</span>
+            </span>
                             </div>
-                        </div>
-                    </div>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check me-3">
+                                    <input type="radio"
+                                           class="form-check-input"
+                                           name="defaultAddress"
+                                           ng-checked="diaChi.trangThai === 1"
+                                           ng-click="setDefaultAddress($index)">
+                                    <label class="form-check-label">Mặc định</label>
+                                </div>
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                        ng-click="removeAddress($index)">
+                                    Xóa
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Nút hành động -->
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Thêm</button>
-                        <a href="/admin/khach-hang" class="btn btn-outline-secondary ms-2">Hủy</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi" ng-class="isEditing ? 'bi-save' : 'bi-person-plus-fill'"></i>
+                            {{ isEditing ? 'Cập Nhật' : 'Thêm Mới' }}
+                        </button>
+
+                        <a href="/admin/khach-hang" class="btn btn-outline-secondary ms-2">
+                            <i class="bi bi-x-circle"></i> Hủy
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Modal Xác Nhận -->
-                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmModalLabel">Xác nhận</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Bạn có chắc chắn muốn thêm khách hàng này không?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                <button type="button" class="btn btn-primary" ng-click="confirmAddKhachHang()">Đồng ý</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
-
     </div>
+</div>
+</div>
 
-    <!-- Custom template | don't include it in your project! -->
-    <div class="custom-template">
-        <div class="title">Settings</div>
-        <div class="custom-content">
-            <div class="switcher">
-                <div class="switch-block">
-                    <h4>Logo Header</h4>
-                    <div class="btnSwitch">
-                        <button type="button" class="selected changeLogoHeaderColor" data-color="dark"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="blue"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="green"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
-                        <br />
-                        <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
-                    </div>
+<!-- Custom template | don't include it in your project! -->
+<div class="custom-template">
+    <div class="title">Settings</div>
+    <div class="custom-content">
+        <div class="switcher">
+            <div class="switch-block">
+                <h4>Logo Header</h4>
+                <div class="btnSwitch">
+                    <button type="button" class="selected changeLogoHeaderColor" data-color="dark"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="blue"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="green"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
+                    <br/>
+                    <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
+                    <button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
                 </div>
-                <div class="switch-block">
-                    <h4>Navbar Header</h4>
-                    <div class="btnSwitch">
-                        <button type="button" class="changeTopBarColor" data-color="dark"></button>
-                        <button type="button" class="changeTopBarColor" data-color="blue"></button>
-                        <button type="button" class="changeTopBarColor" data-color="purple"></button>
-                        <button type="button" class="changeTopBarColor" data-color="light-blue"></button>
-                        <button type="button" class="changeTopBarColor" data-color="green"></button>
-                        <button type="button" class="changeTopBarColor" data-color="orange"></button>
-                        <button type="button" class="changeTopBarColor" data-color="red"></button>
-                        <button type="button" class="selected changeTopBarColor" data-color="white"></button>
-                        <br />
-                        <button type="button" class="changeTopBarColor" data-color="dark2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="blue2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="purple2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="green2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="orange2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="red2"></button>
-                    </div>
+            </div>
+            <div class="switch-block">
+                <h4>Navbar Header</h4>
+                <div class="btnSwitch">
+                    <button type="button" class="changeTopBarColor" data-color="dark"></button>
+                    <button type="button" class="changeTopBarColor" data-color="blue"></button>
+                    <button type="button" class="changeTopBarColor" data-color="purple"></button>
+                    <button type="button" class="changeTopBarColor" data-color="light-blue"></button>
+                    <button type="button" class="changeTopBarColor" data-color="green"></button>
+                    <button type="button" class="changeTopBarColor" data-color="orange"></button>
+                    <button type="button" class="changeTopBarColor" data-color="red"></button>
+                    <button type="button" class="selected changeTopBarColor" data-color="white"></button>
+                    <br/>
+                    <button type="button" class="changeTopBarColor" data-color="dark2"></button>
+                    <button type="button" class="changeTopBarColor" data-color="blue2"></button>
+                    <button type="button" class="changeTopBarColor" data-color="purple2"></button>
+                    <button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
+                    <button type="button" class="changeTopBarColor" data-color="green2"></button>
+                    <button type="button" class="changeTopBarColor" data-color="orange2"></button>
+                    <button type="button" class="changeTopBarColor" data-color="red2"></button>
                 </div>
-                <div class="switch-block">
-                    <h4>Sidebar</h4>
-                    <div class="btnSwitch">
-                        <button type="button" class="changeSideBarColor" data-color="white"></button>
-                        <button type="button" class="selected changeSideBarColor" data-color="dark"></button>
-                        <button type="button" class="changeSideBarColor" data-color="dark2"></button>
-                    </div>
+            </div>
+            <div class="switch-block">
+                <h4>Sidebar</h4>
+                <div class="btnSwitch">
+                    <button type="button" class="changeSideBarColor" data-color="white"></button>
+                    <button type="button" class="selected changeSideBarColor" data-color="dark"></button>
+                    <button type="button" class="changeSideBarColor" data-color="dark2"></button>
                 </div>
             </div>
         </div>
-        <div class="custom-toggle">
-            <i class="icon-settings"></i>
-        </div>
     </div>
-    <!-- End Custom template -->
+    <div class="custom-toggle">
+        <i class="icon-settings"></i>
+    </div>
+</div>
+<!-- End Custom template -->
 </div>
 <!--   Core JS Files   -->
 <script src="assets/js/core/jquery-3.7.1.min.js"></script>
@@ -601,10 +597,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-
-    <!-- AngularJS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 <!-- Tải tệp controller -->
 <script th:src="@{/admin/js/KhachHangController.js}"></script>
 </body>

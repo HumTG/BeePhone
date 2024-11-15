@@ -330,8 +330,8 @@
 
                     <div class="d-flex justify-content-center">
                         <!-- Nút Tìm kiếm và Làm mới -->
-                        <button type="button" class="btn btn-primary me-2">Tìm kiếm</button>
-                        <button type="reset" class="btn btn-danger">Làm mới bộ lọc</button>
+                        <button type="button" class="btn btn-primary me-2" ng-click="filterCustomers()">Tìm kiếm</button>
+                        <button type="reset" class="btn btn-danger" ng-click="resetFilters()">Làm mới bộ lọc</button>
                     </div>
                 </div>
                 <div class="alert alert-light" role="alert">
@@ -341,188 +341,212 @@
                             <button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Thêm</button>
                         </a>
                     </div>
-                    <!--   Danh sách Khách hàng         -->
-                    <table class="table table-striped">
-                        <thead class="table-warning">
-                        <tr class="text-bg-warning text-center text-white">
-                            <th scope="col">STT</th>
-                            <th scope="col">Mã khách hàng</th>
-                            <th scope="col">Họ Và Tên</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">SĐT</th>
-                            <th scope="col">Ngày Sinh</th>
-                            <th scope="col">Giới Tính</th>
-                            <th scope="col">Trạng Thái</th>
-                            <th scope="col">Hành Động</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-if="kh.length === 0">
-                            <td colspan="8">Không có dữ liệu để hiển thị</td>
-                        </tr>
-                        <tr ng-repeat="x in kh">
-                            <td>{{$index + 1}}</td>
-                            <td>{{x.ma_khach_hang}}</td>
-                            <td>{{x.ho_ten}}</td>
-                            <td>{{x.email}}</td>
-                            <td>{{x.sdt}}</td>
-                            <td>{{x.ngay_sinh | date:'dd/MM/yyyy'}}</td>
-                            <td>{{x.gioi_tinh === 0 ? 'Nam' : 'Nữ'}}</td>
-                            <td>{{x.trang_thai === 1 ? 'Kích hoạt' : 'Ngừng Kích Hoạt'}}</td>
-                            <td>
-                                <button class="btn btn-warning" ng-click="openDetail(x.id)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn btn-success" ng-click="openUpdateModal(x)">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div class="mx-auto p-2" style="width: 200px;">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <!-- Nút Previous -->
-                                <li class="page-item" ng-class="{ 'disabled': currentPage === 0 }">
-                                    <a class="page-link" href="" ng-click="changePage(currentPage - 1)">Previous</a>
-                                </li>
+                    <!-- Danh sách Khách hàng -->
+                    <div ng-controller="KhachHangController">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr class="bg-primary text-white text-center">
+                                    <th>STT</th>
+                                    <th>Mã khách hàng</th>
+                                    <th>Họ Và Tên</th>
+                                    <th>Email</th>
+                                    <th>SĐT</th>
+                                    <th>Ngày Sinh</th>
+                                    <th>Giới Tính</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- Hiển thị khi không có dữ liệu -->
+                                <tr ng-if="!kh || kh.length === 0" class="text-center">
+                                    <td colspan="9" class="py-3">
+                                        <i class="bi bi-inbox fs-4 d-block mb-2"></i>Không có dữ liệu khách hàng
+                                    </td>
+                                </tr>
+                                <!-- Hiển thị dữ liệu khách hàng -->
+                                <tr ng-repeat="x in kh" class="align-middle">
+                                    <td class="text-center">{{$index + 1}}</td>
+                                    <td>{{x.maKhachHang}}</td>
+                                    <td>{{x.hoTen}}</td>
+                                    <td>{{x.email}}</td>
+                                    <td>{{x.sdt}}</td>
+                                    <td class="text-center">{{x.ngaySinh | date:'dd/MM/yyyy'}}</td>
+                                    <td class="text-center">
+                                        <span ng-if="x.gioiTinh === 0" class="badge bg-info">Nam</span>
+                                        <span ng-if="x.gioiTinh === 1" class="badge bg-danger">Nữ</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span ng-if="x.trangThai === 1" class="badge bg-success">Kích hoạt</span>
+                                        <span ng-if="x.trangThai === 0"
+                                              class="badge bg-secondary">Ngừng kích hoạt</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <!-- Nút Xem chi tiết -->
+                                        <button type="button" class="btn btn-sm btn-info me-1"
+                                                ng-click="openDetail(x.id); $('#detailModal').modal('show');"
+                                                title="Xem chi tiết">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <!-- Nút Sửa (dẫn đến trang create-khach-hang.html với id khách hàng) -->
+                                        <button class="btn btn-warning btn-sm" ng-click="navigateToEditPage(x.id)"
+                                                title="Sửa">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-                                <!-- Nút số trang -->
-                                <li class="page-item" ng-repeat="n in [].constructor(totalPages) track by $index"
-                                    ng-class="{ 'active': $index === currentPage }">
-                                    <a class="page-link" href="" ng-click="changePage($index)">{{$index + 1}}</a>
-                                </li>
+                        <!-- Modal Chi tiết khách hàng -->
+                        <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="detailModalLabel">
+                                            <i class="fas fa-user-circle me-2"></i>Chi tiết khách hàng
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body py-4">
+                                        <!-- Thông tin cơ bản -->
+                                        <div class="row g-4">
+                                            <div class="col-md-4 text-center border-end">
+                                                <div class="mb-4">
+                                                    <div class="avatar-circle mx-auto mb-3">
+                                                        <span class="initials">{{khct.hoTen.charAt(0)}}</span>
+                                                    </div>
+                                                    <h5 class="mb-1">{{khct.hoTen}}</h5>
+                                                    <p class="text-muted mb-0">{{khct.maKhachHang}}</p>
+                                                </div>
+                                                <div class="d-flex justify-content-center">
+                            <span class="badge"
+                                  ng-class="{'bg-success': khct.trangThai === 1, 'bg-danger': khct.trangThai === 0}">
+                                <i class="fas"
+                                   ng-class="{'fa-check-circle': khct.trangThai === 1, 'fa-times-circle': khct.trangThai === 0}"></i>
+                                {{khct.trangThai === 1 ? 'Đang hoạt động' : 'Không hoạt động'}}
+                            </span>
+                                                </div>
+                                            </div>
 
-                                <!-- Nút Next -->
-                                <li class="page-item" ng-class="{ 'disabled': currentPage === totalPages - 1 }">
-                                    <a class="page-link" href="" ng-click="changePage(currentPage + 1)">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                                            <div class="col-md-8">
+                                                <div class="row g-3">
+                                                    <!-- Thông tin chi tiết -->
+                                                    <div class="col-12">
+                                                        <div class="card border-0 bg-light">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title mb-3">
+                                                                    <i class="fas fa-info-circle me-2"></i>Thông tin chi
+                                                                    tiết
+                                                                </h6>
+                                                                <div class="row g-3">
+                                                                    <div class="col-sm-6">
+                                                                        <div class="detail-item">
+                                                                            <small class="text-muted d-block">Tài
+                                                                                khoản</small>
+                                                                            <span>{{khct.taiKhoan}}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="detail-item">
+                                                                            <small class="text-muted d-block">Email</small>
+                                                                            <span>{{khct.email}}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="detail-item">
+                                                                            <small class="text-muted d-block">Số điện
+                                                                                thoại</small>
+                                                                            <span>{{khct.sdt}}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="detail-item">
+                                                                            <small class="text-muted d-block">Ngày
+                                                                                sinh</small>
+                                                                            <span>{{khct.ngaySinh | date:'dd/MM/yyyy'}}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="detail-item">
+                                                                            <small class="text-muted d-block">Giới
+                                                                                tính</small>
+                                                                            <span>
+                                                        <i class="fas"
+                                                           ng-class="{'fa-mars text-primary': khct.gioiTinh === 0, 'fa-venus text-danger': khct.gioiTinh === 1}"></i>
+                                                        {{khct.gioiTinh === 0 ? 'Nam' : 'Nữ'}}
+                                                    </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                    <!-- Modal Chi tiết khách hàng -->
-                    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="detailModalLabel">Chi tiết khách hàng</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><strong>Mã khách hàng:</strong> {{khct.ma_khach_hang}}</p>
-                                            <p><strong>Họ và tên:</strong> {{khct.ho_ten}}</p>
-                                            <p><strong>Email:</strong> {{khct.email}}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p><strong>Số điện thoại:</strong> {{khct.sdt}}</p>
-                                            <p><strong>Ngày sinh:</strong> {{khct.ngay_sinh | date:'dd/MM/yyyy'}}</p>
-                                            <p><strong>Giới tính:</strong> {{khct.gioi_tinh_display}}</p>
-                                            <p><strong>Trạng thái:</strong> {{khct.trang_thai === 1 ? 'Kích hoạt' : 'Không kích hoạt'}}</p>
+                                                    <!-- Địa chỉ -->
+                                                    <div class="col-12">
+                                                        <div class="card border-0">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title mb-3">
+                                                                    <i class="fas fa-map-marker-alt me-2"></i>Thông tin
+                                                                    địa chỉ
+                                                                </h6>
+
+                                                                <!-- Địa chỉ mặc định -->
+                                                                <div class="mb-4">
+                                                                    <div class="address-card primary-address">
+                                                                        <div class="address-badge">
+                                                                            <span class="badge bg-primary">Mặc định</span>
+                                                                        </div>
+                                                                        <div ng-if="defaultAddress">
+                                                                            <p class="mb-0">
+                                                                                <i class="fas fa-home me-2"></i>{{defaultAddress.diaChiChiTiet}}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div ng-if="!defaultAddress" class="text-muted">
+                                                                            <i class="fas fa-info-circle me-2"></i>Chưa
+                                                                            có địa chỉ mặc định
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Địa chỉ khác -->
+                                                                <div class="other-addresses">
+                                                                    <h6 class="text-muted mb-3">Địa chỉ khác</h6>
+                                                                    <div class="address-list">
+                                                                        <div class="address-item"
+                                                                             ng-repeat="addr in otherAddresses">
+                                                                            <p class="mb-0">
+                                                                                <i class="fas fa-map-pin me-2"></i>{{addr.diaChiChiTiet}}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="no-address text-muted"
+                                                                             ng-if="!otherAddresses || otherAddresses.length === 0">
+                                                                            <i class="fas fa-info-circle me-2"></i>Không
+                                                                            có địa chỉ khác
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal Sửa khách hàng -->
-                    <div class="modal fade" id="updateKhachHangModal" tabindex="-1" aria-labelledby="updateKhachHangModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="updateKhachHangModalLabel">Cập nhật thông tin khách hàng</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form name="updateKhachHangForm" ng-submit="updateKhachHang()" novalidate>
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label for="hoTen" class="form-label">Họ tên</label>
-                                                <input type="text" class="form-control" id="hoTen" ng-model="selectedKhachHang.ho_ten" required />
-                                                <div ng-show="updateKhachHangForm.hoTen.$touched && updateKhachHangForm.hoTen.$invalid" class="text-danger">
-                                                    Họ tên là bắt buộc.
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                                                <input type="date" class="form-control" id="ngaySinh" ng-model="selectedKhachHang.ngay_sinh" required />
-                                                <div ng-show="updateKhachHangForm.ngaySinh.$touched && updateKhachHangForm.ngaySinh.$invalid" class="text-danger">
-                                                    Ngày sinh là bắt buộc.
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label for="sdt" class="form-label">Số điện thoại</label>
-                                                <input type="tel" class="form-control" id="sdt" ng-model="selectedKhachHang.sdt" required pattern="[0-9]{10}" />
-                                                <div ng-show="updateKhachHangForm.sdt.$touched && updateKhachHangForm.sdt.$invalid" class="text-danger">
-                                                    Vui lòng nhập số điện thoại hợp lệ (10 chữ số).
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" ng-model="selectedKhachHang.email" required />
-                                                <div ng-show="updateKhachHangForm.email.$touched && updateKhachHangForm.email.$invalid" class="text-danger">
-                                                    Vui lòng nhập email hợp lệ.
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Giới tính</label><br />
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" id="gioiTinhNam" ng-model="selectedKhachHang.gioi_tinh" ng-value="0" required />
-                                                    <label class="form-check-label" for="gioiTinhNam">Nam</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" id="gioiTinhNu" ng-model="selectedKhachHang.gioi_tinh" ng-value="1" required />
-                                                    <label class="form-check-label" for="gioiTinhNu">Nữ</label>
-                                                </div>
-                                                <div ng-show="updateKhachHangForm.gioi_tinh.$touched && updateKhachHangForm.gioi_tinh.$invalid" class="text-danger">
-                                                    Vui lòng chọn giới tính.
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <label for="trangThai" class="form-label">Trạng thái</label>
-                                                <select class="form-select" id="trangThai" ng-model="selectedKhachHang.trang_thai" required>
-                                                    <option ng-value="1">Kích hoạt</option>
-                                                    <option ng-value="0">Ngừng kích hoạt</option>
-                                                </select>
-                                                <div ng-show="updateKhachHangForm.trangThai.$touched && updateKhachHangForm.trangThai.$invalid" class="text-danger">
-                                                    Vui lòng chọn trạng thái.
-                                                </div>
-                                            </div>
-                                        </div>
-
-<!--                                        <div class="mb-3">-->
-<!--                                            <label for="diaChi" class="form-label">Địa chỉ</label>-->
-<!--                                            <input type="text" class="form-control" id="diaChi" ng-model="selectedKhachHang.dia_chi" required />-->
-<!--                                            <div ng-show="updateKhachHangForm.diaChi.$touched && updateKhachHangForm.diaChi.$invalid" class="text-danger">-->
-<!--                                                Địa chỉ là bắt buộc.-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-
-                                        <div class="text-end">
-                                            <button type="submit" class="btn btn-primary" ng-disabled="updateKhachHangForm.$invalid">Cập nhật</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                        </div>
-                                    </form>
+                                    <div class="modal-footer border-0 bg-light">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-2"></i>Đóng
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -655,6 +679,120 @@
         fillColor: "rgba(255, 165, 52, .14)",
     });
 </script>
+<style>
+    /* Custom CSS để làm đẹp modal */
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        background-color: #primary;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    }
+
+    .avatar-circle .initials {
+        font-size: 40px;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .detail-item {
+        padding: 8px 0;
+    }
+
+    .detail-item small {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
+
+    .detail-item span {
+        font-weight: 500;
+    }
+
+    .address-card {
+        position: relative;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+    }
+
+    .primary-address {
+        border: 2px solid #4e73df;
+        background-color: #f8f9fc;
+    }
+
+    .address-badge {
+        position: absolute;
+        top: -10px;
+        right: 10px;
+    }
+
+    .address-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .address-item {
+        padding: 10px;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        margin-bottom: 8px;
+    }
+
+    .no-address {
+        padding: 15px;
+        text-align: center;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    /* Thêm hiệu ứng hover cho các phần tử */
+    .address-item:hover {
+        background-color: #e9ecef;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Animation cho modal */
+    .modal.fade .modal-dialog {
+        transition: transform 0.3s ease-out;
+    }
+
+    .modal.fade.show .modal-dialog {
+        transform: none;
+    }
+
+    /* Scrollbar tùy chỉnh */
+    .address-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .address-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .address-list::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    .address-list::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
 
 <!-- AngularJS -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
