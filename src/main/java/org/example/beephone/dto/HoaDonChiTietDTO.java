@@ -33,7 +33,7 @@ public class HoaDonChiTietDTO {
 
     private BigDecimal don_gia ;
 
-    private BigDecimal gia_goc_ctsp;
+    private BigDecimal gia_ctsp;
 
     private int so_luong_ton_ctsp;
 

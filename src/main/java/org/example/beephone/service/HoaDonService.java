@@ -95,6 +95,7 @@ public class HoaDonService {
     ////Tính tổng tiền hóa đơn
     public void tinhTongTienHoaDon(Integer idHD){
         BigDecimal tienHoaDon = hdctRP.tinhTongTienHoaDon(idHD);
+        System.out.println("Tổng tiền hóa đơn : " + tienHoaDon);
         hoa_don hd = hdRP.findById(idHD)
                 .orElseThrow(() -> new EntityNotFoundException("Không thấy hóa đơn với id: " + idHD));
 

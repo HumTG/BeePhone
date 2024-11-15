@@ -55,7 +55,13 @@ public class HoaDonChiTietService {
             dto.setAnh(chiTiet.getChi_tiet_san_pham().getAnh());
             dto.setSo_luong(chiTiet.getSo_luong());
             dto.setDon_gia(chiTiet.getDon_gia());
-            dto.setGia_goc_ctsp(chiTiet.getChi_tiet_san_pham().getGia_ban());
+
+            BigDecimal phanTramGiam = chiTiet.getChi_tiet_san_pham().getGiamGia() != null ?
+            new BigDecimal(chiTiet.getChi_tiet_san_pham().getGiamGia().getGia_tri()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP)
+                    : BigDecimal.ZERO;
+            BigDecimal giaCuaCTSP = chiTiet.getDon_gia().multiply(BigDecimal.ONE.subtract(phanTramGiam));
+            dto.setGia_ctsp(giaCuaCTSP);
+
             dto.setSo_luong_ton_ctsp(chiTiet.getChi_tiet_san_pham().getSo_luong());
             dto.setTrang_thai(chiTiet.getTrang_thai());
             return dto;
@@ -89,17 +95,18 @@ public class HoaDonChiTietService {
         hdct.setChi_tiet_san_pham(ctsp);
         hdct.setSo_luong(sl);
         hdct.setTrang_thai(1);
-        if(ctsp.getGiamGia() != null && ctsp.getGiamGia().getTrang_thai() == 1){
-           BigDecimal giaBan = ctsp.getGia_ban();
-           float giamGia = ctsp.getGiamGia().getGia_tri();
-           BigDecimal phanTramGiam = new BigDecimal(giamGia).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
-           BigDecimal giaTriGiam = giaBan.multiply(phanTramGiam);
-           BigDecimal giaKhiGiam = giaBan.subtract(giaTriGiam);
-           hdct.setDon_gia(giaKhiGiam);
-        }
-        else{
-            hdct.setDon_gia(ctsp.getGia_ban());
-        }
+        hdct.setDon_gia(ctsp.getGia_ban());
+//        if(ctsp.getGiamGia() != null && ctsp.getGiamGia().getTrang_thai() == 1){
+//           BigDecimal giaBan = ctsp.getGia_ban();
+//           float giamGia = ctsp.getGiamGia().getGia_tri();
+//           BigDecimal phanTramGiam = new BigDecimal(giamGia).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+//           BigDecimal giaTriGiam = giaBan.multiply(phanTramGiam);
+//           BigDecimal giaKhiGiam = giaBan.subtract(giaTriGiam);
+//           hdct.setDon_gia(giaKhiGiam);
+//        }
+//        else{
+//            hdct.setDon_gia(ctsp.getGia_ban());
+//        }
 
 
         hdctRP.save(hdct);
