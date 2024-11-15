@@ -582,37 +582,40 @@
                     <div class="row mb-3">
                         <div class="col-md-1"></div>
                         <div class="col-md-5">
-                            <div ng-if="switchGiaoHang">
+                            <div ng-show="switchGiaoHang">
                             <h3>Thông tin khách đặt online</h3>
                             <br>
                             <div class="row mb-3">
-                             <input type="text" class="form-control" placeholder="Họ và tên khách hàng" ng-model="hoaDon_DB.khachHang.ho_ten">
+                             <input type="text" class="form-control" placeholder="Họ và tên khách hàng" ng-model="hoaDon_DB.khachHang.ho_ten" disabled>
                             </div>
-                            <br>
-                            <div class="row mb-3">
-                                <input type="text" class="form-control" placeholder="Email" ng-model="hoaDon_DB.khachHang.email">
-                            </div>
-                            <br>
-                            <div class="row mb-3">
-                                <input type="text" class="form-control" placeholder="Số điện thoại" ng-model="hoaDon_DB.khachHang.sdt">
-                            </div>
-                            <br>
-                            <div class="row mb-3">
-                                <div class="col-md-2">
-                                    <label class="form-label"><strong>Địa chỉ :</strong></label>
-                                </div>
-                                <div class="col-md-8">
-                                    <select class="form-select" ng-model="selectedKhachHang"
-                                            ng-options="diaChi as diaChi.dia_chi_chi_tiet for diaChi in hoaDon_DB.khachHang.diaChiKhachHang">
-                                        <option value="" disabled selected>Chọn địa chỉ</option>
-                                    </select>
 
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" placeholder="Email" ng-model="hoaDon_DB.khachHang.email" disabled>
+                            </div>
+
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" placeholder="Số điện thoại" ng-model="hoaDon_DB.khachHang.sdt" disabled>
+                            </div>
+
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" placeholder="Địa chỉ chi tiết" >
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label for="city" class="form-label">Tỉnh/Thành phố *</label>
+                                    <select class="form-select" id="city" ng-model="selectedCity" ng-options="city.name for city in cities" ng-change="updateDistricts()" required>
+                                        <option value="">Chọn tỉnh/thành phố</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-outline-secondary" ng-click="checkDiaChi()">Add</button>
+                                <div class="col-6">
+                                    <label for="district" class="form-label">Quận/Huyện *</label>
+                                    <select class="form-select" id="district" ng-model="selectedDistrict" ng-options="district.name for district in districts" required>
+                                        <option value="">Chọn quận/huyện</option>
+                                    </select>
                                 </div>
                             </div>
-                            <br>
+
                             <div class="row mb-3">
                                 <textarea class="form-control" rows="3" placeholder="Mô tả" ng-model="hoaDon_DB.mo_ta"></textarea>
                             </div>

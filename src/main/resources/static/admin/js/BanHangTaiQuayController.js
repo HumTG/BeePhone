@@ -1,7 +1,7 @@
 var app = angular.module('BanHangTaiQuayApp', []);
 var url = "http://localhost:8080/rest/hoa-don"
 
-app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
+app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     $scope.viTriHoaDon = 0;
     $scope.hoa_don = {};
     $scope.currentPage = 0;  /// trang của chi tiết sản phẩm
@@ -372,16 +372,41 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     };
 
 
+    // Khởi tạo các biến lưu trữ danh sách tỉnh/thành phố và quận/huyện
+    $scope.cities = [];
+    $scope.districts = [];
 
-    // $scope.a = function (){
-    //     sessionStorage.setItem('toastrMessage', 'LOAD thành công');
-    //     window.location.reload();
-    // }
-    // angular.element(document).ready(function() {
-    //     var message = sessionStorage.getItem('toastrMessage');
-    //     if (message) {
-    //         toastr.success(message, 'OK');
-    //         sessionStorage.removeItem('toastrMessage');
-    //     }
-    // });
+    // Hàm để lấy danh sách tỉnh/thành phố từ API
+    $scope.loadCities = function() {
+        $http.get('https://provinces.open-api.vn/api/?depth=2')
+            .then(function(response) {
+                $scope.cities = response.data;
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi tải danh sách tỉnh/thành phố:", error);
+            });
+    };
+
+    // Hàm để cập nhật danh sách quận/huyện dựa trên tỉnh/thành phố được chọn
+    $scope.updateDistricts = function() {
+        console.log("Chọn thành phố :" + $scope.selectedCity)
+        if ($scope.selectedCity) {
+            $scope.districts = $scope.selectedCity.districts;
+        } else {
+            $scope.districts = [];
+        }
+    };
+
+    // Gọi hàm loadCities để tải danh sách tỉnh/thành phố ngay khi controller được khởi tạo
+    $scope.loadCities();
+
+    // Hàm để lấy địa chỉ đầy đủ từ các trường thông tin địa chỉ
+    $scope.getFullAddress = function() {
+        let addressDetail = $scope.addressDetail || ""; // Địa chỉ chi tiết
+        let city = $scope.selectedCity ? $scope.selectedCity.name : ""; // Tên tỉnh/thành phố
+        let district = $scope.selectedDistrict ? $scope.selectedDistrict.name : ""; // Tên quận/huyện
+
+        // Nối các phần địa chỉ lại với nhau
+        return `${addressDetail}, ${district}, ${city}`;
+    };
 });
