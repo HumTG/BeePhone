@@ -41,7 +41,7 @@ public class LichSuHoaDonService {
         lichSuHoaDon.setNgay_tao_hoa_don(Date.valueOf(LocalDate.now()));
         lichSuHoaDon.setNgay_sua_hoa_don(Date.valueOf(LocalDate.now()));
         lichSuHoaDon.setNguoi_tao_hoa_don("Admin");
-        lichSuHoaDon.setMo_ta("Hóa đơn tại quầy");
+        lichSuHoaDon.setMo_ta("đã xác nhận");
         lichSuHoaDon.setHoaDon(hoaDon);
         lichSuHoaDon.setTrang_thai(trangThai);
 

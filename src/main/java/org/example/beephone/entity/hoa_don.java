@@ -36,7 +36,7 @@ public class hoa_don {
     @ManyToOne
     @JoinColumn(name = "id_khuyen_mai")
     private khuyen_mai khuyenMai;
-
+    
     private String dia_chi_nguoi_nhan ;
 
     private Date ngay_tao ;

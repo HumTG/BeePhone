@@ -54,10 +54,12 @@ public class HoaDonService {
     /// tạo hóa đơn bán hàng tại quầy mới
     public hoa_don createHoaDon(){
         nhan_vien nhanVien = nvRP.findById(5).get();
+        khach_hang khachHang = khRP.findById(1).get();
 
         hoa_don hd = new hoa_don();
         hd.setMa_hoa_don("HD"+generateRandomCode());
         hd.setNhanVien(nhanVien);
+        hd.setKhachHang(khachHang);
         // lấy ngày hiện tại
         LocalDate localDate = LocalDate.now();
         Date sqlDate = Date.valueOf(localDate);
@@ -141,6 +143,14 @@ public class HoaDonService {
         hoa_don hoaDon = hdRP.findById(idHd).get();
         hdRP.capNhatTrangThaiHD(6,idHd);
         lsHoaDonService.taoLichSuTaiQuay(hoaDon,6);
+
+    }
+
+    ///cập nhật hóa đơn khách gọi đặt online
+    public void capNhatHDKhachGoi(int idHd,hoa_don hdView){
+        hdRP.capNhatHDGoiOnline(1,hdView.getDia_chi_nguoi_nhan(),hdView.getPhi_ship(),hdView.getMo_ta(),idHd);
+        hoa_don hoaDon = hdRP.findById(idHd).get();
+        lsHoaDonService.taoLichSuTaiQuay(hoaDon,1);
 
     }
 
