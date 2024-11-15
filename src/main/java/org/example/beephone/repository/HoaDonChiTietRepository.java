@@ -20,7 +20,12 @@ public interface HoaDonChiTietRepository extends JpaRepository<hoa_don_chi_tiet,
     @Query("SELECT hdct from hoa_don_chi_tiet hdct WHERE hdct.hoa_don.id = :hdID AND hdct.chi_tiet_san_pham.id = :ctspID")
     Optional<hoa_don_chi_tiet> findByHDvaCTSP(@Param("hdID") Integer hdID,@Param("ctspID") Integer ctspID);
 
-    @Query("SELECT SUM(hdct.so_luong * hdct.don_gia) FROM hoa_don_chi_tiet hdct WHERE hdct.hoa_don.id = :idHD")
+    @Query("SELECT SUM(hdct.so_luong * (hdct.don_gia * (1 - COALESCE(hdct.chi_tiet_san_pham.giamGia.gia_tri/100, 0)))) " +
+            "FROM hoa_don_chi_tiet hdct " +
+            "JOIN hdct.hoa_don hd " +
+            "JOIN hdct.chi_tiet_san_pham ctsp " +
+            "LEFT JOIN ctsp.giamGia gg " +
+            "WHERE hd.id = :idHD")
     BigDecimal tinhTongTienHoaDon(@Param("idHD") Integer idHD);
 
 
