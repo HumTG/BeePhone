@@ -23,4 +23,7 @@ public interface KhachHangRepository extends JpaRepository<khach_hang, Integer> 
     // Query không phân trang nhưng sắp xếp giảm dần theo ID
     List<khach_hang> findAll(Sort sort);
 
+    @Query("SELECT kh FROM khach_hang kh WHERE kh.id <> 1 ORDER BY kh.id ASC")
+    Page<khach_hang> getKhachHangBanHang(Pageable pageable);
+
 }
