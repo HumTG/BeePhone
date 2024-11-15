@@ -270,9 +270,18 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         });
     }
 
-    $scope.checkDiaChi = function (){
-        // console.log($scope.selectedKhachHang);
-    }
+    $scope.selectedKhachHang = null;
+
+    $scope.checkDiaChi = function () {
+        if ($scope.selectedKhachHang) {
+            console.log($scope.selectedKhachHang.id);  // In ra ID của địa chỉ
+            console.log($scope.selectedKhachHang.dia_chi_chi_tiet);  // In ra chi tiết địa chỉ
+        } else {
+            console.log("Chưa chọn địa chỉ.");
+        }
+    };
+
+
 
     $scope.checkGiaoHang = function (){
         console.log($scope.switchGiaoHang);

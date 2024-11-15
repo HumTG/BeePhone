@@ -62,7 +62,7 @@ app.controller('SanPhamController', function($scope, $http) {
 
     // Nhà sản xuất
 
-    $scope.nhaSanXuatList = []; // Danh sách nhà sản xuất
+    $scope.nhaSanXuatList = [] ; // Danh sách nhà sản xuất
     $scope.selectedNhaSanXuatId = null; // ID của nhà sản xuất đã chọn
 
     // Lấy danh sách nhà sản xuất từ API
