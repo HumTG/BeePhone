@@ -166,6 +166,30 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
         });
     }
 
+/// mở modal thay đổi số lượng sp
+    $scope.openModalSLSP = function (spct){
+        $scope.slCTSP = angular.copy(spct);
+        // console.log($scope.slCTSP);
+
+        var modalSLSP = new bootstrap.Modal(document.getElementById('thayDoiSLSP'));
+        modalSLSP.show();
+    }
+
+    ///thay đổi số lượng sp trong hóa đơn chi tiết
+    $scope.thayDoiSlInHDCT = function (){
+        if (!Number.isInteger($scope.slCTSP.so_luong) || $scope.slCTSP.so_luong <= 0 ){
+            toastr.warning('Số lượng phải là số nguyên dương lớn hơn 0', 'OK');
+            return;
+        }
+        if ($scope.slCTSP.so_luong > $scope.slCTSP.so_luong_ton_ctsp){
+            toastr.warning('Số lượng phải nhỏ hơn số lượng tồn', 'OK');
+            return;
+        }
+
+        console.log($scope.slCTSP.id_chi_tiet_san_pham);
+
+    }
+
     /// lấy danh sách khuyến mãi còn hạn
     $scope.getKhuyenMai = function (){
         $http.get("http://localhost:8080/rest/khuyen-mai/con-han").then(function(response) {

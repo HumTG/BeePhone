@@ -371,6 +371,7 @@
                             </td>
                             <td>
                                 <div class="d-flex">
+                                    <button type="button" class="btn btn-info" ng-click="openModalSLSP(x)"><i class="bi bi-pencil-square"></i></button>
                                     <button class="btn btn-warning" ng-click="deleteHDCT(x)">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -465,6 +466,40 @@
                     </div>
 
                     <!-- END modal chi tiết sản phẩm-->
+
+                    <!--  modal thay đổi số lượng sp-->
+                    <div class="modal fade" id="thayDoiSLSP" tabindex="-1" aria-labelledby="slModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="slSPModalLabel">Thay đổi số lượng</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                           <div>{{slCTSP.ten_san_pham}}</div>
+                                            <div>{{slCTSP.ten_mau_sac}} ||| {{slCTSP.ten_kich_co}}</div>
+                                        </div>
+                                        <div class="col">
+                                            <div>SL tồn : {{slCTSP.so_luong_ton_ctsp}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label for="doiSl" class="form-label">Thay đổi số lượng</label>
+                                            <input type="number" class="form-control" id="doiSl" ng-model="slCTSP.so_luong">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" ng-click="thayDoiSlInHDCT()">Đổi số lượng</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  End modal thay đổi số lượng sp-->
 
                  <br> <br> <br> <br>
 
