@@ -292,7 +292,13 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
             toastr.warning('Chọn hóa đơn trước khi thanh toán', 'Cảnh báo');
         } else if ($scope.listHDCT.length == 0){
             toastr.warning('Không có sản phẩm trong hóa đơn', 'Cảnh báo');
-        } else {
+        } else if ( $scope.switchGiaoHang &&  (!($scope.hoaDon_DB.khachHang) || $scope.hoaDon_DB.khachHang.id == 1)) {
+            toastr.warning('Giao hàng phải chọn khách hàng', 'Cảnh báo');
+        }
+        else if ($scope.hoaDon_DB.phi_ship < 0 || !Number.isInteger($scope.hoaDon_DB.phi_ship) ) {
+            toastr.warning('Sai phí ship', 'Cảnh báo');
+        }
+        else {
             var modal = new bootstrap.Modal(document.getElementById('xacNhanTTModal'));
             modal.show();
         }
@@ -302,7 +308,8 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     /// xác nhận đơn tại quầy
     $scope.xacNhanHoaDon = function (){
         let loaiHD =  $scope.switchGiaoHang ? 1 : 0;
-
+        var diaChi = $scope.getFullAddress();
+        $scope.hoaDon_DB.dia_chi_nguoi_nhan = diaChi;
         $http({
             method: 'PUT',
             url : 'http://localhost:8080/rest/hoa-don/xac-nhan-don',
@@ -389,7 +396,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 
     // Hàm để cập nhật danh sách quận/huyện dựa trên tỉnh/thành phố được chọn
     $scope.updateDistricts = function() {
-        console.log("Chọn thành phố :" + $scope.selectedCity)
+        console.log("Chọn thành phố :" + $scope.selectedCity.name)
         if ($scope.selectedCity) {
             $scope.districts = $scope.selectedCity.districts;
         } else {

@@ -88,7 +88,8 @@ public class HoaDonRestController {
                 System.out.println("Loại hóa đơn: " + loaiHD);
                 System.out.println("Phí ship : " + hoaDon.getPhi_ship());
                 System.out.println("Mô tả :" +hoaDon.getMo_ta());
-
+                System.out.println("Địa chỉ : " + hoaDon.getDia_chi_nguoi_nhan());
+                hoaDonService.capNhatHDKhachGoi(idHD,hoaDon);
                 return ResponseEntity.ok(Map.of("message", "Xác nhận hóa đơn thành công"));
             }
             else{
