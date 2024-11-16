@@ -4,9 +4,13 @@ var host = "http://localhost:8080/rest/khach-hang/all";
 app.controller('KhachHangController', function ($scope, $http, $window, $location) {
     var hosts = "http://localhost:8080/rest/khach-hang";
 
+
     $scope.isSubmitting = false;
+
     $scope.isEditing = false;
+
     $scope.danhSachKhachHang = [];
+
     $scope.khachHang = {
         maKhachHang: '',
         taiKhoan: '',
@@ -19,6 +23,21 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         trangThai: 1,
         diaChiChiTiet: [],
         defaultAddress: null
+    };
+
+    // Thêm các biến pagination vào controller
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.totalItems = 0;
+    $scope.totalPages = 0;
+    $scope.Math = window.Math;
+
+    $scope.filters = {
+        search: '',
+        dobFrom: null,
+        dobTo: null,
+        status: '',
+        ageRange: 18
     };
 
     var successMessage = localStorage.getItem('successMessage');
@@ -47,12 +66,17 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
     $scope.getAllData();
 
     $scope.getData = function () {
-        $http.get(host)
+        const url = `${host}?page=${$scope.currentPage}&size=${$scope.pageSize}`;
+        $http.get(url)
             .then(function (response) {
-                $scope.kh = response.data.content;
+                $scope.originalData = response.data.content;
+                $scope.kh = [...$scope.originalData];
+                $scope.totalItems = response.data.totalElements;
+                $scope.totalPages = response.data.totalPages;
             })
             .catch(function (error) {
                 console.error("Lỗi khi tải dữ liệu:", error);
+                toastr.error("Không thể tải dữ liệu khách hàng");
             });
     };
     $scope.getData();
@@ -85,7 +109,6 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         if (!$scope.khachHang.taiKhoan) return toastr.warning("Vui lòng nhập tài khoản!") && false;
         if (!$scope.khachHang.email) return toastr.warning("Vui lòng nhập email!") && false;
         if (!$scope.khachHang.sdt) return toastr.warning("Vui lòng nhập số điện thoại!") && false;
-        if (!$scope.khachHang.matKhau) return toastr.warning("Vui lòng nhập mật khẩu!") && false;
         if (!$scope.khachHang.ngaySinh) return toastr.warning("Vui lòng chọn ngày sinh!") && false;
         if (!$scope.khachHang.diaChiChiTiet.length) return toastr.warning("Vui lòng thêm ít nhất một địa chỉ!") && false;
         return true;
@@ -99,7 +122,6 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
             hoTen: $scope.khachHang.hoTen,
             email: $scope.khachHang.email,
             sdt: $scope.khachHang.sdt,
-            matKhau: $scope.khachHang.matKhau,
             ngaySinh: $scope.khachHang.ngaySinh,
             gioiTinh: parseInt($scope.khachHang.gioiTinh) || 0,
             trangThai: parseInt($scope.khachHang.trangThai) || 1,
@@ -110,8 +132,13 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         };
 
         $http.post(`${hosts}/add`, customerData)
-            .then(function () {
-                toastr.success("Khách hàng mới đã được thêm thành công!");
+            .then(function (response) {
+                // Hiển thị mật khẩu được tạo tự động
+                if (response.data && response.data.matKhau) {
+                    toastr.success(`Khách hàng mới đã được thêm thành công!\nMật khẩu tự động: ${response.data.matKhau}`);
+                } else {
+                    toastr.success("Khách hàng mới đã được thêm thành công!");
+                }
                 $window.location.href = '/admin/khach-hang';
             })
             .catch(function (error) {
@@ -195,7 +222,6 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
             hoTen: $scope.khachHang.hoTen,
             email: $scope.khachHang.email,
             sdt: $scope.khachHang.sdt,
-            matKhau: $scope.khachHang.matKhau,
             ngaySinh: $scope.khachHang.ngaySinh,
             gioiTinh: parseInt($scope.khachHang.gioiTinh) || 0,
             trangThai: parseInt($scope.khachHang.trangThai) || 1,
@@ -216,75 +242,165 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
             });
     };
 
-    $scope.filterCustomers = function () {
-        // Lấy giá trị từ các trường lọc
-        const searchText = document.getElementById('search').value.toLowerCase();
-        const dobFrom = document.getElementById('dob_from').value;
-        const dobTo = document.getElementById('dob_to').value;
-        const status = document.getElementById('status').value;
-        const ageRange = [parseInt(document.getElementById('ageRange').value), 60];
+    // Hàm tính tuổi từ ngày sinh
+    function calculateAge(birthday) {
+        const today = new Date();
+        const birthDate = new Date(birthday);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
 
-        // Lọc dữ liệu khách hàng
-        $scope.filteredCustomers = filterCustomers($scope.danhSachKhachHang, searchText, dobFrom, dobTo, status, ageRange);
-    };
-
-    $scope.filterCustomers = function () {
-        // Lấy giá trị từ các trường lọc
-        const searchText = document.getElementById('search').value.toLowerCase();
-        const dobFrom = document.getElementById('dob_from').value;
-        const dobTo = document.getElementById('dob_to').value;
-        const status = document.getElementById('status').value;
-        const ageRange = [parseInt(document.getElementById('ageRange').value), 60];
-
-        // Lọc dữ liệu khách hàng
-        $scope.filteredCustomers = filterCustomers($scope.danhSachKhachHang, searchText, dobFrom, dobTo, status, ageRange);
-
-        // Hiển thị kết quả lọc trên console
-        console.log('Kết quả lọc:', $scope.filteredCustomers);
-    };
-
-    function filterCustomers(customers, searchText, dobFrom, dobTo, status, ageRange) {
-        return customers.filter(customer => {
-            // Lọc theo tên và số điện thoại
-            if (searchText && !(`${customer.hoTen.toLowerCase()} ${customer.sdt.toLowerCase()}`.includes(searchText.toLowerCase()))) {
-                return false;
-            }
-
-            // Lọc theo ngày sinh
-            const customerDob = new Date(customer.ngaySinh);
-            if (dobFrom && customerDob < new Date(dobFrom)) {
-                return false;
-            }
-            if (dobTo && customerDob > new Date(dobTo)) {
-                return false;
-            }
-
-            // Lọc theo trạng thái
-            if (status && customer.trangThai !== parseInt(status)) {
-                return false;
-            }
-
-            // Lọc theo khoảng tuổi
-            const customerAge = new Date().getFullYear() - customerDob.getFullYear();
-            if (customerAge < ageRange[0] || customerAge > ageRange[1]) {
-                return false;
-            }
-
-            // Nếu vượt qua tất cả các bộ lọc, giữ lại khách hàng này
-            return true;
-        });
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
     }
 
+    $scope.filters = {
+        search: '',
+        dobFrom: null,
+        dobTo: null,
+        status: '',
+        ageRange: 18
+    };
 
-// Hàm làm mới bộ lọc
+    // Hàm tính tuổi
+    function calculateAge(birthday) {
+        if (!birthday) return 0;
+        const today = new Date();
+        const birthDate = new Date(birthday);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    // Hàm lọc khách hàng
+    $scope.filterCustomers = function () {
+        // Bắt đầu với dữ liệu gốc
+        let filteredCustomers = [...$scope.originalData];
+
+        // Lọc theo tên hoặc số điện thoại
+        if ($scope.filters.search) {
+            const searchLower = $scope.filters.search.toLowerCase();
+            filteredCustomers = filteredCustomers.filter(customer =>
+                (customer.hoTen && customer.hoTen.toLowerCase().includes(searchLower)) ||
+                (customer.sdt && customer.sdt.includes($scope.filters.search))
+            );
+        }
+
+        // Lọc theo ngày sinh từ
+        if ($scope.filters.dobFrom) {
+            const dobFrom = new Date($scope.filters.dobFrom);
+            dobFrom.setHours(0, 0, 0, 0);
+            filteredCustomers = filteredCustomers.filter(customer => {
+                if (!customer.ngaySinh) return false;
+                const customerDob = new Date(customer.ngaySinh);
+                return customerDob >= dobFrom;
+            });
+        }
+
+        // Lọc theo ngày sinh đến
+        if ($scope.filters.dobTo) {
+            const dobTo = new Date($scope.filters.dobTo);
+            dobTo.setHours(23, 59, 59, 999);
+            filteredCustomers = filteredCustomers.filter(customer => {
+                if (!customer.ngaySinh) return false;
+                const customerDob = new Date(customer.ngaySinh);
+                return customerDob <= dobTo;
+            });
+        }
+
+        // Lọc theo trạng thái
+        if ($scope.filters.status !== '') {
+            const statusValue = parseInt($scope.filters.status);
+            if (statusValue === 1) {
+                filteredCustomers = filteredCustomers.filter(customer => customer.trangThai === 1);
+            } else if (statusValue === 2) {
+                filteredCustomers = filteredCustomers.filter(customer => customer.trangThai === 0);
+            }
+        }
+
+        // Lọc theo khoảng tuổi
+        if ($scope.filters.ageRange) {
+            filteredCustomers = filteredCustomers.filter(customer => {
+                const age = calculateAge(customer.ngaySinh);
+                return age <= $scope.filters.ageRange;
+            });
+        }
+
+        // Cập nhật dữ liệu hiển thị
+        $scope.kh = filteredCustomers;
+        $scope.totalItems = filteredCustomers.length;
+        $scope.totalPages = Math.ceil($scope.totalItems / $scope.pageSize);
+
+        // Đảm bảo currentPage hợp lệ
+        if ($scope.currentPage >= $scope.totalPages) {
+            $scope.currentPage = Math.max(0, $scope.totalPages - 1);
+        }
+
+        // Phân trang kết quả
+        const start = $scope.currentPage * $scope.pageSize;
+        const end = start + $scope.pageSize;
+        $scope.kh = filteredCustomers.slice(start, end);
+
+        // Áp dụng $scope.$apply() nếu cần thiết
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+    };
+
+    // Hàm reset bộ lọc
     $scope.resetFilters = function () {
-        document.getElementById('search').value = '';
-        document.getElementById('dob_from').value = '';
-        document.getElementById('dob_to').value = '';
-        document.getElementById('status').value = 'Tất cả';
-        document.getElementById('ageRange').value = 18;
+        $scope.filters = {
+            search: '',
+            dobFrom: null,
+            dobTo: null,
+            status: '',
+            ageRange: 18
+        };
+        // Reset lại danh sách hiển thị về dữ liệu gốc
+        $scope.kh = [...$scope.originalData];
+    };
 
-        $scope.filterCustomers(); // Gọi lại hàm lọc để hiển thị tất cả khách hàng
+    // Theo dõi thay đổi của thanh trượt tuổi
+    $scope.$watch('filters.ageRange', function (newValue) {
+        if (document.getElementById('ageRangeValue')) {
+            document.getElementById('ageRangeValue').textContent = newValue;
+        }
+    });
+
+    // Hàm thay đổi trang
+    $scope.changePage = function (page) {
+        if (page < 0 || page >= $scope.totalPages) return;
+        $scope.currentPage = page;
+        $scope.getData();
+    };
+
+    // Hàm thay đổi số lượng item mỗi trang
+    $scope.changePageSize = function () {
+        $scope.currentPage = 0; // Reset về trang đầu tiên
+        $scope.getData();
+    };
+
+    // Hàm tạo mảng số trang để hiển thị
+    $scope.getPages = function () {
+        const pages = [];
+        const maxPages = 5; // Số lượng nút trang tối đa hiển thị
+        let startPage = Math.max(0, $scope.currentPage - Math.floor(maxPages / 2));
+        let endPage = Math.min($scope.totalPages, startPage + maxPages);
+
+        // Điều chỉnh startPage nếu endPage đã đạt giới hạn
+        if (endPage === $scope.totalPages) {
+            startPage = Math.max(0, endPage - maxPages);
+        }
+
+        for (let i = startPage; i < endPage; i++) {
+            pages.push(i);
+        }
+        return pages;
     };
 
 

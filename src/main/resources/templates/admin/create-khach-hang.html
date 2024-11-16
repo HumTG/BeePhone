@@ -51,31 +51,57 @@
     <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
     <style>
-        .avatar-upload {
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 0.625rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .address-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .address-item {
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .address-item.default {
+            border-left-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        .radio-group {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 150px;
-            height: 150px;
-            border: 2px dashed #ddd;
-            border-radius: 50%;
-            overflow: hidden; /* Giới hạn ảnh trong vòng tròn */
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-        }
-
-        .avatar-upload img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Giúp ảnh vừa khít với khu vực upload */
-            border-radius: 50%; /* Giữ hình dạng tròn cho ảnh */
-        }
-
-        input[type="file"] {
-            display: none;
+            gap: 1rem;
         }
     </style>
 </head>
@@ -337,59 +363,57 @@
                 <form id="customerForm" ng-controller="KhachHangController" ng-init="initializeEdit()"
                       ng-submit="isEditing ? updateCustomer() : addCustomer()">
 
-                    <!-- Họ tên và Tài khoản -->
-                    <div class="row mb-3">
+                    <div class="row g-4">
+                        <!-- Họ tên và Tài khoản -->
                         <div class="col-md-6">
-                            <label for="hoTen" class="form-label">Họ và Tên</label>
-                            <input type="text" class="form-control" id="hoTen" ng-model="khachHang.hoTen"
-                                   placeholder="Nhập họ tên" required>
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="hoTen" ng-model="khachHang.hoTen"
+                                       placeholder="Nhập họ tên" required>
+                                <label for="hoTen">Họ và Tên</label>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="taiKhoan" class="form-label">Tài Khoản</label>
-                            <input type="text" class="form-control" id="taiKhoan" ng-model="khachHang.taiKhoan"
-                                   placeholder="Nhập tài khoản" required>
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="taiKhoan" ng-model="khachHang.taiKhoan"
+                                       placeholder="Nhập tài khoản" required>
+                                <label for="taiKhoan">Tài Khoản</label>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Mật khẩu và Ngày sinh -->
-                    <div class="row mb-3">
+                        <!-- Ngày sinh -->
                         <div class="col-md-6">
-                            <label for="matKhau" class="form-label">Mật Khẩu</label>
-                            <input type="password" class="form-control" id="matKhau" ng-model="khachHang.matKhau"
-                                   placeholder="Nhập mật khẩu" ng-required="!isEditing">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="ngaySinh" ng-model="khachHang.ngaySinh" required>
+                                <label for="ngaySinh">Ngày Sinh</label>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="ngaySinh" class="form-label">Ngày Sinh</label>
-                            <input type="date" class="form-control" id="ngaySinh" ng-model="khachHang.ngaySinh"
-                                   required>
-                        </div>
-                    </div>
 
-                    <!-- Email và Số điện thoại -->
-                    <div class="row mb-3">
+                        <!-- Email và Số điện thoại -->
                         <div class="col-md-6">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" ng-model="khachHang.email"
-                                   placeholder="Nhập email hợp lệ" required>
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" ng-model="khachHang.email"
+                                       placeholder="Nhập email" required>
+                                <label for="email">Email</label>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="sdt" class="form-label">Số Điện Thoại</label>
-                            <input type="tel" class="form-control" id="sdt" ng-model="khachHang.sdt"
-                                   placeholder="Nhập số điện thoại" required>
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="sdt" ng-model="khachHang.sdt"
+                                       placeholder="Nhập số điện thoại" required>
+                                <label for="sdt">Số Điện Thoại</label>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Giới tính và Trạng thái -->
-                    <div class="row mb-3">
+                        <!-- Giới tính -->
                         <div class="col-md-6">
-                            <label class="form-label">Giới Tính</label>
-                            <div class="d-flex align-items-center">
-                                <div class="form-check form-check-inline">
+                            <label class="form-label d-block">Giới Tính</label>
+                            <div class="radio-group">
+                                <div class="form-check">
                                     <input class="form-check-input" type="radio" id="gioiTinhNam"
                                            ng-model="khachHang.gioiTinh" value="0" required>
                                     <label class="form-check-label" for="gioiTinhNam">Nam</label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     <input class="form-check-input" type="radio" id="gioiTinhNu"
                                            ng-model="khachHang.gioiTinh" value="1">
                                     <label class="form-check-label" for="gioiTinhNu">Nữ</label>
@@ -397,65 +421,70 @@
                             </div>
                         </div>
 
-                        <!--Trạng thái-->
+                        <!-- Trạng thái -->
                         <div class="col-md-6">
-                            <label for="trangThai" class="form-label">Trạng Thái</label>
-                            <select class="form-select" id="trangThai" ng-model="khachHang.trangThai" required>
-                                <option value="1">Kích Hoạt</option>
-                                <option value="0">Ngừng Kích Hoạt</option>
-                            </select>
-                        </div>
-                    </div>
-
-
-                    <!-- Thêm địa chỉ -->
-                    <div class="mb-3">
-                        <label for="diaChi" class="form-label">Địa Chỉ</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="diaChi" ng-model="address.diaChi"
-                                   placeholder="Nhập địa chỉ">
-                            <button type="button" class="btn btn-outline-primary" ng-click="addAddress()">Thêm Địa Chỉ
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Thay đổi cách hiển thị địa chỉ trong danh sách -->
-                    <ul class="list-group mb-3" ng-if="khachHang.diaChiChiTiet.length">
-                        <li class="list-group-item d-flex justify-content-between align-items-center"
-                            ng-repeat="diaChi in khachHang.diaChiChiTiet">
-                            <div class="d-flex align-items-center">
-            <span ng-class="{'text-primary fw-bold': diaChi.trangThai === 1}">
-                {{ diaChi.diaChiChiTiet }}
-                <span ng-if="diaChi.trangThai === 1" class="badge bg-primary ms-2">Mặc định</span>
-            </span>
+                            <div class="form-floating">
+                                <select class="form-select" id="trangThai" ng-model="khachHang.trangThai" required>
+                                    <option value="1" selected>Kích Hoạt</option>
+                                    <option value="0">Ngừng Kích Hoạt</option>
+                                </select>
+                                <label for="trangThai">Trạng Thái</label>
                             </div>
-                            <div class="d-flex align-items-center">
-                                <div class="form-check me-3">
-                                    <input type="radio"
-                                           class="form-check-input"
-                                           name="defaultAddress"
-                                           ng-checked="diaChi.trangThai === 1"
-                                           ng-click="setDefaultAddress($index)">
-                                    <label class="form-check-label">Mặc định</label>
-                                </div>
-                                <button type="button" class="btn btn-outline-danger btn-sm"
-                                        ng-click="removeAddress($index)">
-                                    Xóa
+                        </div>
+
+                        <!-- Địa chỉ -->
+                        <div class="col-12">
+                            <label class="form-label">Địa Chỉ</label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" ng-model="address.diaChi"
+                                       placeholder="Nhập địa chỉ mới">
+                                <button type="button" class="btn btn-primary" ng-click="addAddress()">
+                                    <i class="fas fa-plus-circle me-1"></i> Thêm
                                 </button>
                             </div>
-                        </li>
-                    </ul>
+                        </div>
+
+                        <!-- Danh sách địa chỉ -->
+                        <div class="col-12">
+                            <div class="address-list">
+                                <div class="list-group">
+                                    <div class="list-group-item address-item d-flex justify-content-between align-items-center"
+                                         ng-repeat="diaChi in khachHang.diaChiChiTiet"
+                                         ng-class="{'default': diaChi.trangThai === 1}">
+                                        <div>
+                                            <p class="mb-0" ng-class="{'fw-bold': diaChi.trangThai === 1}">
+                                                {{ diaChi.diaChiChiTiet }}
+                                                <span class="badge bg-primary ms-2" ng-if="diaChi.trangThai === 1">Mặc định</span>
+                                            </p>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="form-check mb-0">
+                                                <input type="radio" class="form-check-input"
+                                                       name="defaultAddress"
+                                                       ng-checked="diaChi.trangThai === 1"
+                                                       ng-click="setDefaultAddress($index)">
+                                                <label class="form-check-label">Mặc định</label>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                                    ng-click="removeAddress($index)">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Nút hành động -->
-                    <div class="text-end">
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a href="/admin/khach-hang" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i> Hủy
+                        </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi" ng-class="isEditing ? 'bi-save' : 'bi-person-plus-fill'"></i>
+                            <i class="fas" ng-class="isEditing ? 'fa-save' : 'fa-user-plus'"></i>
                             {{ isEditing ? 'Cập Nhật' : 'Thêm Mới' }}
                         </button>
-
-                        <a href="/admin/khach-hang" class="btn btn-outline-secondary ms-2">
-                            <i class="bi bi-x-circle"></i> Hủy
-                        </a>
                     </div>
                 </form>
             </div>
