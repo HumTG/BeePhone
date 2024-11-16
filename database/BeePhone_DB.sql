@@ -377,7 +377,8 @@ VALUES
 
 	-- Thêm dữ liệu vào bảng [khach_hang]
 INSERT INTO [khach_hang] ([ma_khach_hang], [tai_khoan], [ho_ten], [email], [sdt], [mat_khau], [ngay_sinh], [gioi_tinh], [trang_thai])
-VALUES 
+VALUES
+    (N'KH000', 'userNull', N'Khách lẻ',null,null, 'password',null, 1, 1),
     (N'KH001', 'user1', N'Nguyễn Văn A', 'nguyenvana@example.com', '0123456789', 'password1', '1990-01-15', 1, 1),
     (N'KH002', 'user2', N'Trần Thị B', 'tranthib@example.com', '0123456780', 'password2', '1995-05-20', 0, 1),
     (N'KH003', 'user3', N'Lê Văn C', 'levanc@example.com', '0123456781', 'password3', '1992-03-10', 1, 1),

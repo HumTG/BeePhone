@@ -83,12 +83,20 @@ public class HoaDonRestController {
                                                @RequestParam(name = "idHD") Integer idHD,
                                                @RequestParam(name = "loaiHD") Integer loaiHD){
         try{
-            System.out.println("ID hóa đơn : " + idHD);
-            System.out.println("Loại hóa đơn: " + loaiHD);
-            System.out.println("Phí ship : " + hoaDon.getPhi_ship());
+            if(loaiHD == 1){
+                System.out.println("ID hóa đơn : " + idHD);
+                System.out.println("Loại hóa đơn: " + loaiHD);
+                System.out.println("Phí ship : " + hoaDon.getPhi_ship());
+                System.out.println("Mô tả :" +hoaDon.getMo_ta());
+                System.out.println("Địa chỉ : " + hoaDon.getDia_chi_nguoi_nhan());
+                hoaDonService.capNhatHDKhachGoi(idHD,hoaDon);
+                return ResponseEntity.ok(Map.of("message", "Xác nhận hóa đơn thành công"));
+            }
+            else{
+                hoaDonService.capNhatTrangThaiTaiQuay(idHD);
+                return ResponseEntity.ok(Map.of("message", "Xác nhận hóa đơn thành công"));
+            }
 
-            hoaDonService.capNhatTrangThaiTaiQuay(idHD);
-            return ResponseEntity.ok(Map.of("message", "Xác nhận hóa đơn thành công"));
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi xác nhận hóa đơn: " + idHD + e.getMessage());

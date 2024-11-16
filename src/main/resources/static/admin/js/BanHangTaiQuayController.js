@@ -1,7 +1,7 @@
 var app = angular.module('BanHangTaiQuayApp', []);
 var url = "http://localhost:8080/rest/hoa-don"
 
-app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
+app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     $scope.viTriHoaDon = 0;
     $scope.hoa_don = {};
     $scope.currentPage = 0;  /// trang của chi tiết sản phẩm
@@ -270,9 +270,18 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
         });
     }
 
-    $scope.checkDiaChi = function (){
-        // console.log($scope.selectedKhachHang);
-    }
+    $scope.selectedKhachHang = null;
+
+    $scope.checkDiaChi = function () {
+        if ($scope.selectedKhachHang) {
+            console.log($scope.selectedKhachHang.id);  // In ra ID của địa chỉ
+            console.log($scope.selectedKhachHang.dia_chi_chi_tiet);  // In ra chi tiết địa chỉ
+        } else {
+            console.log("Chưa chọn địa chỉ.");
+        }
+    };
+
+
 
     $scope.checkGiaoHang = function (){
         console.log($scope.switchGiaoHang);
@@ -283,7 +292,13 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
             toastr.warning('Chọn hóa đơn trước khi thanh toán', 'Cảnh báo');
         } else if ($scope.listHDCT.length == 0){
             toastr.warning('Không có sản phẩm trong hóa đơn', 'Cảnh báo');
-        } else {
+        } else if ( $scope.switchGiaoHang &&  (!($scope.hoaDon_DB.khachHang) || $scope.hoaDon_DB.khachHang.id == 1)) {
+            toastr.warning('Giao hàng phải chọn khách hàng', 'Cảnh báo');
+        }
+        else if ($scope.hoaDon_DB.phi_ship < 0 || !Number.isInteger($scope.hoaDon_DB.phi_ship) ) {
+            toastr.warning('Sai phí ship', 'Cảnh báo');
+        }
+        else {
             var modal = new bootstrap.Modal(document.getElementById('xacNhanTTModal'));
             modal.show();
         }
@@ -293,7 +308,8 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     /// xác nhận đơn tại quầy
     $scope.xacNhanHoaDon = function (){
         let loaiHD =  $scope.switchGiaoHang ? 1 : 0;
-
+        var diaChi = $scope.getFullAddress();
+        $scope.hoaDon_DB.dia_chi_nguoi_nhan = diaChi;
         $http({
             method: 'PUT',
             url : 'http://localhost:8080/rest/hoa-don/xac-nhan-don',
@@ -363,16 +379,41 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     };
 
 
+    // Khởi tạo các biến lưu trữ danh sách tỉnh/thành phố và quận/huyện
+    $scope.cities = [];
+    $scope.districts = [];
 
-    // $scope.a = function (){
-    //     sessionStorage.setItem('toastrMessage', 'LOAD thành công');
-    //     window.location.reload();
-    // }
-    // angular.element(document).ready(function() {
-    //     var message = sessionStorage.getItem('toastrMessage');
-    //     if (message) {
-    //         toastr.success(message, 'OK');
-    //         sessionStorage.removeItem('toastrMessage');
-    //     }
-    // });
+    // Hàm để lấy danh sách tỉnh/thành phố từ API
+    $scope.loadCities = function() {
+        $http.get('https://provinces.open-api.vn/api/?depth=2')
+            .then(function(response) {
+                $scope.cities = response.data;
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi tải danh sách tỉnh/thành phố:", error);
+            });
+    };
+
+    // Hàm để cập nhật danh sách quận/huyện dựa trên tỉnh/thành phố được chọn
+    $scope.updateDistricts = function() {
+        console.log("Chọn thành phố :" + $scope.selectedCity.name)
+        if ($scope.selectedCity) {
+            $scope.districts = $scope.selectedCity.districts;
+        } else {
+            $scope.districts = [];
+        }
+    };
+
+    // Gọi hàm loadCities để tải danh sách tỉnh/thành phố ngay khi controller được khởi tạo
+    $scope.loadCities();
+
+    // Hàm để lấy địa chỉ đầy đủ từ các trường thông tin địa chỉ
+    $scope.getFullAddress = function() {
+        let addressDetail = $scope.addressDetail || ""; // Địa chỉ chi tiết
+        let city = $scope.selectedCity ? $scope.selectedCity.name : ""; // Tên tỉnh/thành phố
+        let district = $scope.selectedDistrict ? $scope.selectedDistrict.name : ""; // Tên quận/huyện
+
+        // Nối các phần địa chỉ lại với nhau
+        return `${addressDetail}, ${district}, ${city}`;
+    };
 });

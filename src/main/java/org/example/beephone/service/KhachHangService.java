@@ -207,9 +207,10 @@ public class KhachHangService {
         return filteredStream.map(KhachHangDTO::fromEntity).collect(Collectors.toList());
     }
 
+    /// lấy danh sách khách hàng để bán hàng
     public Page<khach_hang> getListKhBanHang(Integer page){
-        Pageable khachHangPage = PageRequest.of(page,6);
-        return khachHangRepository.getKhachHangDESCID(khachHangPage);
+        Pageable khachHangPage = PageRequest.of(page,8);
+        return khachHangRepository.getKhachHangBanHang(khachHangPage);
     }
 
 }
