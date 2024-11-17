@@ -371,6 +371,7 @@
                             </td>
                             <td>
                                 <div class="d-flex">
+                                    <button type="button" class="btn btn-info" ng-click="openModalSLSP(x)"><i class="bi bi-pencil-square"></i></button>
                                     <button class="btn btn-warning" ng-click="deleteHDCT(x)">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -465,6 +466,44 @@
                     </div>
 
                     <!-- END modal chi tiết sản phẩm-->
+
+                    <!--  modal thay đổi số lượng sp-->
+                    <div class="modal fade" id="thayDoiSLSP" tabindex="-1" aria-labelledby="slModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="slSPModalLabel">Thay đổi số lượng</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                           <div>{{slCTSP.ten_san_pham}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <div>{{slCTSP.ten_mau_sac}} ||| {{slCTSP.ten_kich_co}}</div>
+                                        </div>
+                                        <div class="col">
+                                            <div>SL tồn : {{slCTSP.so_luong_ton_ctsp}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label for="doiSl" class="form-label">Thay đổi số lượng</label>
+                                            <input type="number" class="form-control" id="doiSl" ng-model="slCTSP.so_luong">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" ng-click="thayDoiSlInHDCT()">Đổi số lượng</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  End modal thay đổi số lượng sp-->
 
                  <br> <br> <br> <br>
 
@@ -582,12 +621,13 @@
                     <div class="row mb-3">
                         <div class="col-md-1"></div>
                         <div class="col-md-5">
-                            <div ng-if="switchGiaoHang">
+                            <div ng-show="switchGiaoHang">
                             <h3>Thông tin khách đặt online</h3>
                             <br>
                             <div class="row mb-3">
-                             <input type="text" class="form-control" placeholder="Họ và tên khách hàng" ng-model="hoaDon_DB.khachHang.ho_ten">
+                             <input type="text" class="form-control" placeholder="Họ và tên khách hàng" ng-model="hoaDon_DB.khachHang.ho_ten" disabled>
                             </div>
+<<<<<<< HEAD
                             <br>
                             <div class="row mb-3">
                                 <input type="text" class="form-control" placeholder="Email" ng-model="hoaDon_DB.khachHang.email">
@@ -605,13 +645,36 @@
                                     <select class="form-select" ng-model="selectedKhachHang"
                                          ng-value="diaChi.id"   ng-options="diaChi.id as diaChi.dia_chi_chi_tiet for diaChi in hoaDon_DB.khachHang.diaChiKhachHang">
                                         <option value="" disabled selected>Chọn địa chỉ</option>
+=======
+
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" placeholder="Email" ng-model="hoaDon_DB.khachHang.email" disabled>
+                            </div>
+
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" placeholder="Số điện thoại" ng-model="hoaDon_DB.khachHang.sdt" disabled>
+                            </div>
+
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" placeholder="Địa chỉ chi tiết" ng-model="addressDetail">
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label for="city" class="form-label">Tỉnh/Thành phố *</label>
+                                    <select class="form-select" id="city" ng-model="selectedCity" ng-options="city.name for city in cities" ng-change="updateDistricts()" required>
+                                        <option value="">Chọn tỉnh/thành phố</option>
+>>>>>>> 00eb8f676c25dbdecadf4c23fa6b6c02e8dfda4e
                                     </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-outline-secondary" ng-click="checkDiaChi()">Add</button>
+                                <div class="col-6">
+                                    <label for="district" class="form-label">Quận/Huyện *</label>
+                                    <select class="form-select" id="district" ng-model="selectedDistrict" ng-options="district.name for district in districts" required>
+                                        <option value="">Chọn quận/huyện</option>
+                                    </select>
                                 </div>
                             </div>
-                            <br>
+
                             <div class="row mb-3">
                                 <textarea class="form-control" rows="3" placeholder="Mô tả" ng-model="hoaDon_DB.mo_ta"></textarea>
                             </div>

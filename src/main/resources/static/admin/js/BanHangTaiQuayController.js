@@ -1,7 +1,7 @@
 var app = angular.module('BanHangTaiQuayApp', []);
 var url = "http://localhost:8080/rest/hoa-don"
 
-app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
+app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     $scope.viTriHoaDon = 0;
     $scope.hoa_don = {};
     $scope.currentPage = 0;  /// trang của chi tiết sản phẩm
@@ -115,7 +115,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
 
 /// thêm sản phẩm vào hóa đơn chi tiết
     $scope.themSPvaoHDCT = function (ctsp){
-        console.log("Số lương thêm : " + ctsp.soLuongThem);
+        // console.log("Số lương thêm : " + ctsp.soLuongThem);
         if(ctsp.soLuongThem <= 0){
             toastr.warning('Số lượng thêm phải lớn hơn 0', 'Cảnh báo');
             return;
@@ -163,6 +163,51 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
             }
         }).catch(function(error) {
             console.error("Error occurred: ", error);
+        });
+    }
+
+/// mở modal thay đổi số lượng sp
+    $scope.openModalSLSP = function (spct){
+        $scope.slCTSP = angular.copy(spct);
+        $scope.slHienTai = angular.copy(spct.so_luong);
+        console.log($scope.slHienTai);
+
+        var modalSLSP = new bootstrap.Modal(document.getElementById('thayDoiSLSP'));
+        modalSLSP.show();
+    }
+
+    ///thay đổi số lượng sp trong hóa đơn chi tiết
+    $scope.thayDoiSlInHDCT = function (){
+        if (!Number.isInteger($scope.slCTSP.so_luong) || $scope.slCTSP.so_luong <= 0 ){
+            toastr.warning('Số lượng phải là số nguyên dương lớn hơn 0', 'OK');
+            return;
+        }
+        if ($scope.slCTSP.so_luong > $scope.slCTSP.so_luong_ton_ctsp + $scope.slHienTai){
+            toastr.warning('Vượt quá số lượng tồn', 'OK');
+            return;
+        }
+
+        console.log($scope.slCTSP.id_chi_tiet_san_pham);
+
+        $http({
+            method: 'PUT',
+            url : 'http://localhost:8080/rest/hoa-don-chi-tiet/thay-doi-sl-hdct-tai-quay',
+            params: {
+                idHD : $scope.hoa_don.id,
+                idCTSP : $scope.slCTSP.id_chi_tiet_san_pham,
+                slMoi : $scope.slCTSP.so_luong
+            }
+        }).then(function(response) {
+            $scope.getHDCT($scope.hoa_don.id);
+            $scope.getHoaDonDB($scope.hoa_don.id)
+            $scope.changePageCTSP(0);
+
+            var modalElement = document.getElementById('thayDoiSLSP');
+            var Modal = bootstrap.Modal.getInstance(modalElement);
+            Modal.hide(); // đóng modal
+            toastr.success('Thay đổi số lượng thành công', 'OK');
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
         });
     }
 
@@ -292,7 +337,13 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
             toastr.warning('Chọn hóa đơn trước khi thanh toán', 'Cảnh báo');
         } else if ($scope.listHDCT.length == 0){
             toastr.warning('Không có sản phẩm trong hóa đơn', 'Cảnh báo');
-        } else {
+        } else if ( $scope.switchGiaoHang &&  (!($scope.hoaDon_DB.khachHang) || $scope.hoaDon_DB.khachHang.id == 1)) {
+            toastr.warning('Giao hàng phải chọn khách hàng', 'Cảnh báo');
+        }
+        else if ($scope.hoaDon_DB.phi_ship < 0 || !Number.isInteger($scope.hoaDon_DB.phi_ship) ) {
+            toastr.warning('Sai phí ship', 'Cảnh báo');
+        }
+        else {
             var modal = new bootstrap.Modal(document.getElementById('xacNhanTTModal'));
             modal.show();
         }
@@ -302,7 +353,8 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     /// xác nhận đơn tại quầy
     $scope.xacNhanHoaDon = function (){
         let loaiHD =  $scope.switchGiaoHang ? 1 : 0;
-
+        var diaChi = $scope.getFullAddress();
+        $scope.hoaDon_DB.dia_chi_nguoi_nhan = diaChi;
         $http({
             method: 'PUT',
             url : 'http://localhost:8080/rest/hoa-don/xac-nhan-don',
@@ -372,7 +424,11 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     };
 
 
+    // Khởi tạo các biến lưu trữ danh sách tỉnh/thành phố và quận/huyện
+    $scope.cities = [];
+    $scope.districts = [];
 
+<<<<<<< HEAD
     // $scope.a = function (){
     //     sessionStorage.setItem('toastrMessage', 'LOAD thành công');
     //     window.location.reload();
@@ -386,4 +442,39 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     // });
 
 
+=======
+    // Hàm để lấy danh sách tỉnh/thành phố từ API
+    $scope.loadCities = function() {
+        $http.get('https://provinces.open-api.vn/api/?depth=2')
+            .then(function(response) {
+                $scope.cities = response.data;
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi tải danh sách tỉnh/thành phố:", error);
+            });
+    };
+
+    // Hàm để cập nhật danh sách quận/huyện dựa trên tỉnh/thành phố được chọn
+    $scope.updateDistricts = function() {
+        console.log("Chọn thành phố :" + $scope.selectedCity.name)
+        if ($scope.selectedCity) {
+            $scope.districts = $scope.selectedCity.districts;
+        } else {
+            $scope.districts = [];
+        }
+    };
+
+    // Gọi hàm loadCities để tải danh sách tỉnh/thành phố ngay khi controller được khởi tạo
+    $scope.loadCities();
+
+    // Hàm để lấy địa chỉ đầy đủ từ các trường thông tin địa chỉ
+    $scope.getFullAddress = function() {
+        let addressDetail = $scope.addressDetail || ""; // Địa chỉ chi tiết
+        let city = $scope.selectedCity ? $scope.selectedCity.name : ""; // Tên tỉnh/thành phố
+        let district = $scope.selectedDistrict ? $scope.selectedDistrict.name : ""; // Tên quận/huyện
+
+        // Nối các phần địa chỉ lại với nhau
+        return `${addressDetail}, ${district}, ${city}`;
+    };
+>>>>>>> 00eb8f676c25dbdecadf4c23fa6b6c02e8dfda4e
 });

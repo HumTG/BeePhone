@@ -138,6 +138,35 @@ public class HoaDonChiTietService {
         hoaDonService.tinhTongTienHoaDon(idHD);
     }
 
+    /// thay đổi số lượng trong hóa đơn chi tiết
+    public void thayDoiSLcuaHDCT(int idHD,int idCTSP,int slMoi){
+        hoa_don hd = hdRP.findById(idHD)
+                .orElseThrow(() -> new EntityNotFoundException("Không thấy hóa đơn với id: " + idHD));
+
+        chi_tiet_san_pham ctsp = ctspRP.findById(idCTSP)
+                .orElseThrow(() -> new EntityNotFoundException("Không thấy CTSP với id: " + idCTSP));
+
+        hoa_don_chi_tiet hdct = hdctRP.findByHDvaCTSP(hd.getId(),ctsp.getId()).get();
+        int slCu = hdct.getSo_luong();
+
+        if(slMoi > slCu){
+            //tăng sl sp trong hdct
+            hdct.setSo_luong(slMoi);
+            hdctRP.save(hdct);
+            int chenhLechSl = slMoi - slCu;
+            ctspRP.giamSoLuongSPCT(chenhLechSl,ctsp.getId());
+            hoaDonService.tinhTongTienHoaDon(idHD);
+
+        } else if(slMoi < slCu){
+            hdct.setSo_luong(slMoi);
+            hdctRP.save(hdct);
+            int chenhLechSl = slCu - slMoi;
+            ctspRP.tangSoLuongSPCT(chenhLechSl,ctsp.getId());
+            hoaDonService.tinhTongTienHoaDon(idHD);
+        }
+
+    }
+
 
     public Optional<hoa_don_chi_tiet> findById(Integer id){
         Optional<hoa_don_chi_tiet> optional = hdctRP.findById(id);

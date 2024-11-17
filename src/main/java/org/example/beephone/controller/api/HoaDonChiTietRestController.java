@@ -90,6 +90,21 @@ public class HoaDonChiTietRestController {
         }
     }
 
+    /// thay đổi số lượng hóa đơn chi tiết tại quầy
+    @PutMapping("/thay-doi-sl-hdct-tai-quay")
+    public ResponseEntity<?> thayDoiSlHdctTaiQuay(@RequestParam(name = "idHD") Integer idHD,
+                                                  @RequestParam(name = "idCTSP") Integer idCTSP,
+                                                  @RequestParam(name = "slMoi") Integer slMoi ){
+        try{
+            hdctService.thayDoiSLcuaHDCT(idHD,idCTSP,slMoi);
+            return ResponseEntity.ok(Map.of("message", "Thay đổi sl hdct thành công."));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi đổi sl hdct: " + e.getMessage());
+        }
+
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> createHDCT(@RequestParam(name = "idHD") Integer idHD,
                                         @RequestParam(name = "idCTSP") Integer idCTSP

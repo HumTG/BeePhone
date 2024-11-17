@@ -15,11 +15,9 @@ import org.example.beephone.dto.DiaChiDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,16 +52,26 @@ public class KhachHangService {
         return "DC" + System.currentTimeMillis();
     }
 
+    // Hàm tạo mật khẩu ngẫu nhiên
+    private String generateRandomPassword() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[15];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
     // Thêm khách hàng với địa chỉ chi tiết
     public KhachHangDTO addCustomerWithAddress(KhachHangDTO khachHangDTO) {
         khach_hang khachHang = new khach_hang();
+
+        String randomPassword = generateRandomPassword();
 
         khachHang.setMa_khach_hang(generateMaKhachHang());
         khachHang.setTai_khoan(khachHangDTO.getTaiKhoan());
         khachHang.setHo_ten(khachHangDTO.getHoTen());
         khachHang.setEmail(khachHangDTO.getEmail());
         khachHang.setSdt(khachHangDTO.getSdt());
-        khachHang.setMat_khau(khachHangDTO.getMatKhau());
+        khachHang.setMat_khau(randomPassword);
         khachHang.setNgay_sinh(khachHangDTO.getNgaySinh());
         khachHang.setGioi_tinh(khachHangDTO.getGioiTinh());
         khachHang.setTrang_thai(khachHangDTO.getTrangThai());
@@ -81,7 +89,10 @@ public class KhachHangService {
 
         khachHang = khachHangRepository.save(khachHang);
 
-        return KhachHangDTO.fromEntity(khachHang);
+        // Include the generated password in the response
+        KhachHangDTO responseDTO = KhachHangDTO.fromEntity(khachHang);
+        responseDTO.setMatKhau(randomPassword); // So the client knows the generated password
+        return responseDTO;
     }
 
 
@@ -122,6 +133,8 @@ public class KhachHangService {
         Optional<khach_hang> existingCustomerOpt = khachHangRepository.findById(khachHangDTO.getId());
         if (existingCustomerOpt.isPresent()) {
             khach_hang existingCustomer = existingCustomerOpt.get();
+
+            // Update all fields except password
             existingCustomer.setHo_ten(khachHangDTO.getHoTen());
             existingCustomer.setEmail(khachHangDTO.getEmail());
             existingCustomer.setSdt(khachHangDTO.getSdt());
@@ -129,13 +142,14 @@ public class KhachHangService {
             existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh());
             existingCustomer.setTrang_thai(khachHangDTO.getTrangThai());
 
+            // Handle address updates
             if (khachHangDTO.getDiaChiChiTiet() != null) {
                 diaChiRepository.deleteByKhachHang(existingCustomer);
                 for (DiaChiDTO diaChiDTO : khachHangDTO.getDiaChiChiTiet()) {
                     dia_chi_khach_hang newAddress = new dia_chi_khach_hang();
                     newAddress.setMa_dia_chi(generateMaDiaChi());
                     newAddress.setDia_chi_chi_tiet(diaChiDTO.getDiaChiChiTiet());
-                    newAddress.setTrang_thai(diaChiDTO.getTrangThai() != null ? diaChiDTO.getTrangThai() : 0); // Cập nhật giá trị mặc định nếu `trangThai` là null
+                    newAddress.setTrang_thai(diaChiDTO.getTrangThai() != null ? diaChiDTO.getTrangThai() : 0);
                     newAddress.setKhachHang(existingCustomer);
                     diaChiRepository.save(newAddress);
                 }
