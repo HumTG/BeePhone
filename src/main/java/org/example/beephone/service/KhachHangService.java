@@ -199,4 +199,11 @@ public class KhachHangService {
         return khachHangRepository.getKhachHangBanHang(khachHangPage);
     }
 
+    // Tạo khách hàn bên web khi khách hàng không đăng nhập ( lol đức đừng xóa lần nữa )
+    public khach_hang save(khach_hang khachHang) {
+        khachHang.setMa_khach_hang(generateMaKhachHang());
+        return khachHangRepository.save(khachHang);
+    }
+
+
 }

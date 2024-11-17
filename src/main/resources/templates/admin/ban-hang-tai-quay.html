@@ -603,10 +603,9 @@
                                 </div>
                                 <div class="col-md-8">
                                     <select class="form-select" ng-model="selectedKhachHang"
-                                            ng-options="diaChi as diaChi.dia_chi_chi_tiet for diaChi in hoaDon_DB.khachHang.diaChiKhachHang">
+                                         ng-value="diaChi.id"   ng-options="diaChi.id as diaChi.dia_chi_chi_tiet for diaChi in hoaDon_DB.khachHang.diaChiKhachHang">
                                         <option value="" disabled selected>Chọn địa chỉ</option>
                                     </select>
-
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-outline-secondary" ng-click="checkDiaChi()">Add</button>

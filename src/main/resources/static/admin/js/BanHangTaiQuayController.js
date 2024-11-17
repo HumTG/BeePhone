@@ -384,4 +384,6 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http,$timeout){
     //         sessionStorage.removeItem('toastrMessage');
     //     }
     // });
+
+
 });

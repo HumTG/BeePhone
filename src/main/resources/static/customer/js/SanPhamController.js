@@ -208,6 +208,7 @@ app.controller('SanPhamController', function($scope, $http,$window) {
                         thanh_tien : $scope.calculateCartTotal(),
                         phuong_thuc_thanh_toan: $scope.paymentMethod, // 1: COD, 2: Bank Transfer
                         loai_hoa_don: 2,
+                        dia_chi_nguoi_nhan : $scope.getFullAddress(),
                         mo_ta: $scope.note,
                         trang_thai: 1
                     };
@@ -280,6 +281,8 @@ app.controller('SanPhamController', function($scope, $http,$window) {
 
     // Hàm để cập nhật danh sách quận/huyện dựa trên tỉnh/thành phố được chọn
     $scope.updateDistricts = function() {
+        console.log($scope.selectedCity)
+        console.log($scope.selectedCity.name)
         if ($scope.selectedCity) {
             $scope.districts = $scope.selectedCity.districts;
         } else {
