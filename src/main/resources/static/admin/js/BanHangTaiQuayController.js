@@ -428,19 +428,6 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     $scope.cities = [];
     $scope.districts = [];
 
-    // $scope.a = function (){
-    //     sessionStorage.setItem('toastrMessage', 'LOAD thành công');
-    //     window.location.reload();
-    // }
-    // angular.element(document).ready(function() {
-    //     var message = sessionStorage.getItem('toastrMessage');
-    //     if (message) {
-    //         toastr.success(message, 'OK');
-    //         sessionStorage.removeItem('toastrMessage');
-    //     }
-    // });
-
-
     // Hàm để lấy danh sách tỉnh/thành phố từ API
     $scope.loadCities = function() {
         $http.get('https://provinces.open-api.vn/api/?depth=2')
