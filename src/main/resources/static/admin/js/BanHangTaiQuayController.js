@@ -115,7 +115,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 
 /// thêm sản phẩm vào hóa đơn chi tiết
     $scope.themSPvaoHDCT = function (ctsp){
-        console.log("Số lương thêm : " + ctsp.soLuongThem);
+        // console.log("Số lương thêm : " + ctsp.soLuongThem);
         if(ctsp.soLuongThem <= 0){
             toastr.warning('Số lượng thêm phải lớn hơn 0', 'Cảnh báo');
             return;
@@ -169,7 +169,8 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 /// mở modal thay đổi số lượng sp
     $scope.openModalSLSP = function (spct){
         $scope.slCTSP = angular.copy(spct);
-        // console.log($scope.slCTSP);
+        $scope.slHienTai = angular.copy(spct.so_luong);
+        console.log($scope.slHienTai);
 
         var modalSLSP = new bootstrap.Modal(document.getElementById('thayDoiSLSP'));
         modalSLSP.show();
@@ -181,13 +182,33 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
             toastr.warning('Số lượng phải là số nguyên dương lớn hơn 0', 'OK');
             return;
         }
-        if ($scope.slCTSP.so_luong > $scope.slCTSP.so_luong_ton_ctsp){
-            toastr.warning('Số lượng phải nhỏ hơn số lượng tồn', 'OK');
+        if ($scope.slCTSP.so_luong > $scope.slCTSP.so_luong_ton_ctsp + $scope.slHienTai){
+            toastr.warning('Vượt quá số lượng tồn', 'OK');
             return;
         }
 
         console.log($scope.slCTSP.id_chi_tiet_san_pham);
 
+        $http({
+            method: 'PUT',
+            url : 'http://localhost:8080/rest/hoa-don-chi-tiet/thay-doi-sl-hdct-tai-quay',
+            params: {
+                idHD : $scope.hoa_don.id,
+                idCTSP : $scope.slCTSP.id_chi_tiet_san_pham,
+                slMoi : $scope.slCTSP.so_luong
+            }
+        }).then(function(response) {
+            $scope.getHDCT($scope.hoa_don.id);
+            $scope.getHoaDonDB($scope.hoa_don.id)
+            $scope.changePageCTSP(0);
+
+            var modalElement = document.getElementById('thayDoiSLSP');
+            var Modal = bootstrap.Modal.getInstance(modalElement);
+            Modal.hide(); // đóng modal
+            toastr.success('Thay đổi số lượng thành công', 'OK');
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
+        });
     }
 
     /// lấy danh sách khuyến mãi còn hạn
