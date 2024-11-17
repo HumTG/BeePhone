@@ -44,21 +44,33 @@ public interface HoaDonRepository extends JpaRepository<hoa_don,Integer> {
     @Query("UPDATE hoa_don hd SET hd.khachHang = :khachHang WHERE hd.id = :idHD")
     void capNhatKhachHangHD(@Param("khachHang") khach_hang khachHang, @Param("idHD") Integer idHD);
 
-    /// cập nhật trạng thái cho hóa đơn
+    /// cập nhật trạng thái cho hóa đơn tại quầy
     @Modifying
     @Transactional
-    @Query("UPDATE hoa_don hd SET hd.trang_thai = :trangThai WHERE hd.id = :idHD")
-    void capNhatTrangThaiHD(@Param("trangThai") int trangThai, @Param("idHD") Integer idHD);
+    @Query("UPDATE hoa_don hd SET hd.trang_thai = :trangThai,hd.ten_nguoi_nhan = :ten_nguoi_nhan," +
+            "hd.email_nguoi_nhan = :email_nguoi_nhan,hd.sdt_nguoi_nhan = :sdt_nguoi_nhan " +
+            "WHERE hd.id = :idHD")
+    void capNhatTrangThaiHD(@Param("trangThai") int trangThai,
+                            @Param("ten_nguoi_nhan") String ten_nguoi_nhan,
+                            @Param("email_nguoi_nhan") String email_nguoi_nhan,
+                            @Param("sdt_nguoi_nhan") String sdt_nguoi_nhan,
+                            @Param("idHD") Integer idHD);
 
-    /// cập nhật hóa đơn khách gọi đặt online(trạng thái,mô tả,địa chỉ,ship)
+    /// cập nhật hóa đơn khách gọi đặt online(trạng thái,mô tả,địa chỉ,ship,thông tin khách)
     @Modifying
     @Transactional
-    @Query("UPDATE hoa_don hd SET hd.trang_thai = :trangThai, hd.dia_chi_nguoi_nhan = :diaChi, hd.phi_ship = :phiShip,hd.mo_ta = :moTa" +
+    @Query("UPDATE hoa_don hd SET hd.trang_thai = :trangThai,hd.loai_hoa_don = :loai_hoa_don, hd.dia_chi_nguoi_nhan = :diaChi, " +
+            "hd.phi_ship = :phiShip,hd.mo_ta = :moTa,hd.ten_nguoi_nhan = :ten_nguoi_nhan," +
+            "hd.email_nguoi_nhan = :email_nguoi_nhan,hd.sdt_nguoi_nhan = :sdt_nguoi_nhan " +
             " WHERE hd.id = :idHD")
     void capNhatHDGoiOnline(@Param("trangThai") int trangThai,
+                            @Param("loai_hoa_don") int loai_hoa_don,
                             @Param("diaChi") String diaChi,
                             @Param("phiShip") BigDecimal phiShip,
                             @Param("moTa") String moTa,
+                            @Param("ten_nguoi_nhan") String ten_nguoi_nhan,
+                            @Param("email_nguoi_nhan") String email_nguoi_nhan,
+                            @Param("sdt_nguoi_nhan") String sdt_nguoi_nhan,
                             @Param("idHD") Integer idHD);
 
 

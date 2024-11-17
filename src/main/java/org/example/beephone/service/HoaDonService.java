@@ -139,16 +139,19 @@ public class HoaDonService {
     }
 
     ///cập nhật trạng thái cho hóa đơn tại quầy
-    public void capNhatTrangThaiTaiQuay(int idHd){
+    public void capNhatTrangThaiTaiQuay(int idHd,hoa_don hdView){
         hoa_don hoaDon = hdRP.findById(idHd).get();
-        hdRP.capNhatTrangThaiHD(6,idHd);
+        hdRP.capNhatTrangThaiHD(6,hdView.getTen_nguoi_nhan(),hdView.getEmail_nguoi_nhan(),hdView.getSdt_nguoi_nhan(),idHd);
         lsHoaDonService.taoLichSuTaiQuay(hoaDon,6);
 
     }
 
     ///cập nhật hóa đơn khách gọi đặt online
     public void capNhatHDKhachGoi(int idHd,hoa_don hdView){
-        hdRP.capNhatHDGoiOnline(1,hdView.getDia_chi_nguoi_nhan(),hdView.getPhi_ship(),hdView.getMo_ta(),idHd);
+        hdRP.capNhatHDGoiOnline(1,3,hdView.getDia_chi_nguoi_nhan(),hdView.getPhi_ship(),
+                hdView.getMo_ta(),hdView.getTen_nguoi_nhan(),hdView.getEmail_nguoi_nhan(),hdView.getSdt_nguoi_nhan(),
+                idHd);
+
         hoa_don hoaDon = hdRP.findById(idHd).get();
         lsHoaDonService.taoLichSuTaiQuay(hoaDon,1);
 

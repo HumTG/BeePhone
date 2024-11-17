@@ -355,6 +355,9 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
         let loaiHD =  $scope.switchGiaoHang ? 1 : 0;
         var diaChi = $scope.getFullAddress();
         $scope.hoaDon_DB.dia_chi_nguoi_nhan = diaChi;
+        $scope.hoaDon_DB.ten_nguoi_nhan = $scope.hoaDon_DB.khachHang.ho_ten;
+        $scope.hoaDon_DB.email_nguoi_nhan = $scope.hoaDon_DB.khachHang.email;
+        $scope.hoaDon_DB.sdt_nguoi_nhan = $scope.hoaDon_DB.khachHang.sdt;
         $http({
             method: 'PUT',
             url : 'http://localhost:8080/rest/hoa-don/xac-nhan-don',

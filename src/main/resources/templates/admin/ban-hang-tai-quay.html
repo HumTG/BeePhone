@@ -629,11 +629,11 @@
                             </div>
 
                             <div class="row mb-3">
-                                <input type="text" class="form-control" placeholder="Email" ng-model="hoaDon_DB.khachHang.email" disabled>
+                                <input type="text" class="form-control" placeholder="Email" ng-model="hoaDon_DB.khachHang.email" >
                             </div>
 
                             <div class="row mb-3">
-                                <input type="text" class="form-control" placeholder="Số điện thoại" ng-model="hoaDon_DB.khachHang.sdt" disabled>
+                                <input type="text" class="form-control" placeholder="Số điện thoại" ng-model="hoaDon_DB.khachHang.sdt" >
                             </div>
 
                             <div class="row mb-3">
@@ -815,11 +815,9 @@
                         <p>Ngày: {{ hoaDon_DB.ngay_tao }}</p>
 
                         <h3>Thông tin khách hàng</h3>
-                        <p>Tên: {{hoaDon_DB.khachHang.ho_ten}}</p>
-                        <p ng-repeat="diaChi in hoaDon_DB.khachHang.diaChiKhachHang" ng-if="diaChi.trang_thai == 1">
-                            Địa chỉ: {{ diaChi.dia_chi_chi_tiet }}
-                        </p>
-                        <p>Số điện thoại: {{hoaDon_DB.khachHang.sdt}}</p>
+                        <p>Tên: {{hoaDon_DB.ten_nguoi_nhan}}</p>
+                        <p>Số điện thoại: {{hoaDon_DB.sdt_nguoi_nhan}}</p>
+                        <p ng-show="switchGiaoHang">Địa chỉ: {{hoaDon_DB.dia_chi_nguoi_nhan}}</p>
                         <h3>Nội dung đơn hàng</h3>
                         <table class="table">
                             <thead class="table-warning text-white">
@@ -841,10 +839,21 @@
                                     {{inHdct.so_luong}}
                                 </td>
                                 <td>
-                                    {{inHdct.don_gia | currency:"":0}} VNĐ
+                                    <div ng-if="inHdct.gia_ctsp < inHdct.don_gia">
+                                        <span><strong>{{inHdct.gia_ctsp | currency:'':0}} VNĐ</strong></span>
+                                    </div>
+                                    <div ng-if="inHdct.gia_ctsp >= inHdct.don_gia">
+                                        <strong>{{inHdct.don_gia | currency:'':0}} VNĐ</strong>
+                                    </div>
                                 </td>
+
                                 <td>
-                                    {{inHdct.so_luong * inHdct.don_gia | currency:"":0 }} VNĐ
+                                    <div ng-if="inHdct.gia_ctsp < inHdct.don_gia">
+                                        <span><strong>{{inHdct.gia_ctsp * inHdct.so_luong | currency:'':0}} VNĐ</strong></span>
+                                    </div>
+                                    <div ng-if="inHdct.gia_ctsp >= inHdct.don_gia">
+                                        <strong>{{inHdct.don_gia * inHdct.so_luong | currency:'':0}} VNĐ</strong>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>
@@ -852,7 +861,7 @@
                         <h4>Tổng cộng: {{hoaDon_DB.thanh_tien | currency:"":0 }} VNĐ </h4>
                         <h4>Giảm giá: {{ hoaDon_DB.thanh_tien - hoaDon_DB.tien_sau_giam_gia | currency:"":0 }} VNĐ </h4>
                         <h4>Phí ship: {{ hoaDon_DB.phi_ship | currency:"":0 }} VNĐ </h4>
-                        <h3>Tổng tiền phải trả : {{hoaDon_DB.tien_sau_giam_gia | currency:"":0 }} VNĐ </h3> <br>
+                        <h3>Tổng tiền phải trả : {{hoaDon_DB.tien_sau_giam_gia + hoaDon_DB.phi_ship | currency:"":0 }} VNĐ </h3> <br>
                         <p>Chữ ký người nhận:</p>
                         <div style="border: 1px solid #000; width: 300px; height: 100px;"></div>
                     </div>
