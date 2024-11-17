@@ -158,12 +158,21 @@ public class HoaDonRestController {
         }
     }
 
+    // Chỉnh sửa thông tin hóa đơn
+    @PutMapping("/update/info-hoa-don/{id}")
+    public ResponseEntity<hoa_don> updateHoaDonInfo(
+            @PathVariable("id") int id,
+            @RequestBody hoa_don hoaDon) {
+        hoaDonService.updateHoaDonInfo(id,hoaDon);
+        return ResponseEntity.ok(hoaDon);
+    }
+
+
     // Tạo hóa đơn khi đặt hàng bên web người dùng đặt hàng
     @PostMapping("/add")
     public ResponseEntity<hoa_don> createHoaDon(
-            @RequestBody hoa_don hoaDon,
-            @RequestParam Integer idKhachHang ) {
-        hoa_don createdHoaDon = hoaDonService.save(hoaDon,idKhachHang);
+            @RequestBody hoa_don hoaDon ) {
+        hoa_don createdHoaDon = hoaDonService.save(hoaDon);
         return ResponseEntity.ok(createdHoaDon);
     }
 

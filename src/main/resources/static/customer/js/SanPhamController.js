@@ -174,51 +174,19 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     // Hàm xác nhận thanh toán đơn hàng
     $scope.confirmOrder = function() {
         if (document.getElementById('agreeTerms').checked) {
-            // Bước 1: Tạo khách hàng
-            let khachHang = {
-                ho_ten: $scope.name,
-                email: $scope.email,
-                sdt: $scope.phone
+            let hoaDon = {
+                tien_sau_giam_gia : $scope.calculateCartTotal(),
+                thanh_tien : $scope.calculateCartTotal(),
+                phuong_thuc_thanh_toan: $scope.paymentMethod, // 1: COD, 2: Bank Transfer
+                loai_hoa_don: 2,
+                dia_chi_nguoi_nhan : $scope.getFullAddress(),
+                ten_nguoi_nhan : $scope.name ,
+                email_nguoi_nhan : $scope.email ,
+                sdt_nguoi_nhan : $scope.phone ,
+                mo_ta: $scope.note,
+                trang_thai: 1
             };
-            let idKhachHang; // Biến lưu trữ idKhachHang để sử dụng sau
-
-            $http.post('/api/khach-hang', khachHang)
-                .then(function(response) {
-                    if (response.data && response.data.id) {
-
-                        idKhachHang = response.data.id; // Lưu lại idKhachHang
-
-                        // Bước 2: Tạo địa chỉ khách hàng
-                        let diaChiKhachHang = {
-                            dia_chi_chi_tiet: $scope.getFullAddress(),
-                            trang_thai: 1
-                        };
-                        console.log("Khách hàng mơi tại id : ",idKhachHang);
-
-                        // Gửi yêu cầu POST để thêm địa chỉ khách hàng, kèm theo idKhachHang dưới dạng tham số
-                        return $http.post('/api/dia-chi-khach-hang', diaChiKhachHang, {
-                            params: { idKhachHang: idKhachHang }
-                        });
-                    }
-                })
-                .then(function(response) {
-                    console.log("Phản hồi sau khi tạo địa chỉ:", response.data);
-                    let hoaDon = {
-                        tien_sau_giam_gia : $scope.calculateCartTotal(),
-                        thanh_tien : $scope.calculateCartTotal(),
-                        phuong_thuc_thanh_toan: $scope.paymentMethod, // 1: COD, 2: Bank Transfer
-                        loai_hoa_don: 2,
-                        dia_chi_nguoi_nhan : $scope.getFullAddress(),
-                        mo_ta: $scope.note,
-                        trang_thai: 1
-                    };
-                    console.log("Tạo hóa đơn cho Khách Hàng ID:", idKhachHang);
-
-                    // Bước 3: Tạo hóa đơn
-                    return $http.post('/rest/hoa-don/add', hoaDon, {
-                        params: { idKhachHang: idKhachHang }
-                    });
-                })
+            $http.post('/rest/hoa-don/add', hoaDon)
                 .then(function(response) {
                         if (response.data && response.data.id) {
                             let hoaDonId = response.data.id;

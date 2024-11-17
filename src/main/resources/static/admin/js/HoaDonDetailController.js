@@ -54,6 +54,36 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
         }
     };
 
+    // Thay đổi thông tin hóa đơn
+    $scope.openModal = function() {
+        var myModal = new bootstrap.Modal(document.getElementById('changeInfoModal'));
+        myModal.show();
+    };
+
+    // Xác nhận thay đổi thông tin hóa đơn
+    $scope.submitForm = function() {
+        var hoaDonId = id ;
+
+        var updatedData = {
+            ten_nguoi_nhan: $scope.hoaDon.ten_nguoi_nhan,
+            sdt_nguoi_nhan: $scope.hoaDon.sdt_nguoi_nhan,
+            dia_chi_nguoi_nhan: $scope.hoaDon.dia_chi_nguoi_nhan,
+            mo_ta: $scope.hoaDon.mo_ta
+        };
+
+        // Make the PUT request
+        $http.put('/rest/hoa-don/update/info-hoa-don/' + hoaDonId, updatedData)
+            .then(function(response) {
+                toastr.success('Thay đổi thông tin thành công !', 'Success');
+                // Đóng modal sau khi xác nhận thành công
+                $('#changeInfoModal').modal('hide');
+            }, function(error) {
+                console.error("Error occurred: ", error);
+                toastr.error('Xóa sản phẩm thành thất bại !', 'Error');
+            });
+    };
+
+
     // Hàm xóa hóa đơn chi tiết
     $scope.deleteHDCT = function(hdct) {
         // Kiểm tra nếu hdct tồn tại trước khi thực hiện xóa
@@ -351,6 +381,8 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
                 toastr.error('Có lỗi khi lấy lịch sử hóa đơn!');
             });
     };
+
+
 
 
 

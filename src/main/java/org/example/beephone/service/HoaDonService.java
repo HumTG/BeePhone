@@ -190,14 +190,24 @@ public class HoaDonService {
         return hdRP.save(hoaDon);
     }
 
-
-    // Tạo hóa đơn bên người dùng
-    public hoa_don save(hoa_don hoaDon,Integer idKhachHang) {
-        hoaDon.setMa_hoa_don("HD"+generateRandomCode());
-        Optional<khach_hang> khachHang = khRP.findById(idKhachHang);
-        if (khachHang.isPresent()) {
-            hoaDon.setKhachHang(khachHang.get());
+    // Chỉnh sửa thông tin hóa đơn
+    public hoa_don updateHoaDonInfo(int id, hoa_don hoaDonUpdate) {
+        Optional<hoa_don> hoaDon = hdRP.findById(id);
+        if (hoaDon.isPresent()) {
+            hoa_don hoaDonInDb = hoaDon.get();
+            hoaDonInDb.setTen_nguoi_nhan(hoaDonUpdate.getTen_nguoi_nhan());
+            hoaDonInDb.setSdt_nguoi_nhan(hoaDonUpdate.getSdt_nguoi_nhan());
+            hoaDonInDb.setDia_chi_nguoi_nhan(hoaDonUpdate.getDia_chi_nguoi_nhan());
+            hoaDonInDb.setMo_ta(hoaDonUpdate.getMo_ta());
+            return hdRP.save(hoaDonInDb);
         }
+        else return null ;
+    }
+
+
+    // Tạo hóa đơn bên người dùng web
+    public hoa_don save(hoa_don hoaDon) {
+        hoaDon.setMa_hoa_don("HD"+generateRandomCode());
         LocalDate localDate = LocalDate.now();
         Date sqlDate = Date.valueOf(localDate);
         hoaDon.setNgay_tao(sqlDate);
