@@ -134,20 +134,9 @@ public class HoaDonRestController {
             return chiTietMap;
         }).collect(Collectors.toList());
 
-        // Thêm thông tin địa chỉ khách hàng
-        khach_hang khachHang = hoaDon.getKhachHang(); // Giả sử hoa_don có thuộc tính khachHang
-        List<Map<String, Object>> diaChiList = khachHang.getDiaChiKhachHang().stream().map(diaChi -> {
-            Map<String, Object> diaChiMap = new HashMap<>();
-            diaChiMap.put("maDiaChi", diaChi.getMa_dia_chi());
-            diaChiMap.put("diaChiChiTiet", diaChi.getDia_chi_chi_tiet());
-            diaChiMap.put("trangThai", diaChi.getTrang_thai());
-            return diaChiMap;
-        }).collect(Collectors.toList());
-
         Map<String, Object> response = new HashMap<>();
         response.put("hoaDon", hoaDon);
         response.put("chiTietHoaDonList", chiTietHoaDonList);
-        response.put("diaChiKhachHang", diaChiList); // Thêm địa chỉ khách hàng vào response
 
         return ResponseEntity.ok(response);
     }

@@ -12,19 +12,7 @@
         <br>
         <div ng-controller="HomeController" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
 
-            <div class="col" ng-repeat="x in bestSellers">
-                <div class="product-item">
-                    <img src="/images/{{x.anh}}" class="card-img-top" alt="..."
-                         style="width: 150px;height: 150px ; margin: auto">
-                    <div class="card-body">
-                        <h5 class="card-title  text-truncate">{{x.ten}}</h5>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <b class="card-text text-danger me-2">{{ x.gia_ban | currencyVND }}</b>
-                            <p class="mb-0 small">{{ x.tong_san_pham_ban_duoc }} sold</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
     <div class="swiper-pagination position-absolute text-center"></div>

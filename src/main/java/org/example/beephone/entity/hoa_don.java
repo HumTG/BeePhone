@@ -39,6 +39,12 @@ public class hoa_don {
 
     private String dia_chi_nguoi_nhan ;
 
+    private String ten_nguoi_nhan ;
+
+    private String email_nguoi_nhan ;
+
+    private String sdt_nguoi_nhan ;
+
     private Date ngay_tao ;
 
     private BigDecimal tien_sau_giam_gia ;

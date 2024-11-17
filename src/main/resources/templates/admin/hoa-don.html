@@ -337,7 +337,6 @@
           <div class="alert alert-light" role="alert">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h5><i class="bi bi-list"></i> Danh sách hóa đơn</h5>
-              <a href="#"><button class="btn btn-primary add-button"><i class="bi bi-plus"></i> Tạo đơn hàng</button></a>
             </div>
 
             <!-- Thanh tab trạng thái -->
@@ -364,7 +363,6 @@
                 <th scope="col">Tên nhân viên</th>
                 <th scope="col">Loại</th>
                 <th scope="col">Ngày tạo</th>
-                <th scope="col">Tiền giảm</th>
                 <th scope="col">Tổng tiền</th>
                 <th scope="col">Thao tác</th>
               </tr>
@@ -373,12 +371,12 @@
               <tr ng-repeat="hoaDon in hoaDons">
                 <td>{{$index + 1 + (currentPage * pageSize)}}</td>
                 <td>{{hoaDon.ma_hoa_don}}</td>
-                <td>{{hoaDon.khachHang.ho_ten}}</td>
+                <td>{{hoaDon.ten_nguoi_nhan}}</td>
                 <td>{{hoaDon.nhanVien.ho_ten}}</td>
-                <td>{{hoaDon.loai_hoa_don === 1 ? 'Tại quầy' : 'Online'}}</td>
-                <td>{{hoaDon.ngay_tao | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                <td ng-if="hoaDon.khuyenMai">{{ (hoaDon.khuyenMai.gia_tri * hoaDon.thanh_tien) | currency:'':0 }} VNĐ</td>
-                <td ng-if="!hoaDon.khuyenMai">Không áp dụng</td>
+                <td>
+                  {{ hoaDon.loai_hoa_don === 1 ? 'Tại quầy' : (hoaDon.loai_hoa_don === 2 ? 'Online' : 'Giao hàng') }}
+                </td>
+                <td>{{hoaDon.ngay_tao | date:'dd-MM-yyyy'}}</td>
                 <td>{{ hoaDon.thanh_tien | currency:"":0 }} VNĐ</td>
                 <td>
                   <a href="/admin/detail-hoa-don/{{hoaDon.id}}">

@@ -4,9 +4,14 @@ import org.example.beephone.entity.chuc_vu;
 import org.example.beephone.entity.nhan_vien;
 import org.example.beephone.repository.NhanVienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -111,6 +116,9 @@ public class NhanVienService {
         // Gọi repository với các điều kiện tìm kiếm
         return nhanVienRepository.searchNhanVien(tenSdt, dateFrom, dateTo, trangThai, maxTuoi, pageable);
     }
+
+
+
 
 
 

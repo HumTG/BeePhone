@@ -181,6 +181,9 @@ CREATE TABLE [hoa_don] (
   [id_nhan_vien] INT,
   [id_khuyen_mai] INT,
   [dia_chi_nguoi_nhan] Nvarchar(225),
+  [ten_nguoi_nhan] Nvarchar(225),
+  [email_nguoi_nhan] Nvarchar(225),
+  [sdt_nguoi_nhan] Varchar(15),
   [ngay_tao] Date,
   [tien_sau_giam_gia] Decimal,
   [thanh_tien] Decimal,
@@ -477,14 +480,19 @@ VALUES
 
 
 
--- Thêm 5 dữ liệu vào bảng [hoa_don]
-INSERT INTO hoa_don (ma_hoa_don, id_khach_hang, id_nhan_vien, id_khuyen_mai, dia_chi_nguoi_nhan, ngay_tao, tien_sau_giam_gia, thanh_tien, phuong_thuc_thanh_toan, loai_hoa_don, phi_ship, mo_ta, trang_thai)
-VALUES
-('HD001', 1, 1, 1, '123 Đường ABC, Quận 1, TP.HCM', '2024-01-10', 450000.00, 500000.00, 1, 1, 30000.00, 'Mua hàng online', 1),
-('HD002', 2, 2, 2, '456 Đường XYZ, Quận 3, TP.HCM', '2024-01-12', 850000.00, 900000.00, 2, 2, 35000.00, 'Đặt hàng trực tiếp', 1),
-('HD003', 3, 3, 3, '789 Đường LMN, Quận 5, TP.HCM', '2024-01-15', 1200000.00, 1300000.00, 1, 1, 40000.00, 'Mua qua ứng dụng', 1),
-('HD004', 4, 4, 4, '101 Đường OPQ, Quận 10, TP.HCM', '2024-01-18', 300000.00, 350000.00, 1, 1, 25000.00, 'Mua hàng online', 1),
-('HD005', 5, 5, 5, '202 Đường RST, Quận 7, TP.HCM', '2024-01-20', 750000.00, 800000.00, 2, 2, 28000.00, 'Đặt hàng qua website', 1);
+INSERT INTO [hoa_don] (
+  [ma_hoa_don], [id_khach_hang], [id_nhan_vien], [id_khuyen_mai], 
+  [dia_chi_nguoi_nhan], [ten_nguoi_nhan], [email_nguoi_nhan], 
+  [sdt_nguoi_nhan], [ngay_tao], [tien_sau_giam_gia], 
+  [thanh_tien], [phuong_thuc_thanh_toan], [loai_hoa_don], 
+  [phi_ship], [mo_ta], [trang_thai]
+) VALUES 
+('HD001', 1, 1, 1, '123 Đường ABC, Quận 1', 'Nguyễn Văn A', 'nguyenvana@example.com', '0901234567', '2024-11-01', 500000, 600000, 1, 1, 50000, 'Mô tả hóa đơn 1', 1),
+('HD002', 2, 2, 2, '456 Đường XYZ, Quận 2', 'Trần Thị B', 'tranthib@example.com', '0902345678', '2024-11-02', 700000, 750000, 2, 2, 60000, 'Mô tả hóa đơn 2', 2),
+('HD003', 3, 3, 1, '789 Đường DEF, Quận 3', 'Phạm Quang C', 'phamquangc@example.com', '0903456789', '2024-11-03', 450000, 500000, 1, 1, 40000, 'Mô tả hóa đơn 3', 1),
+('HD004', 4, 4, 3, '101 Đường GHI, Quận 4', 'Lê Thị D', 'lethid@example.com', '0904567890', '2024-11-04', 300000, 350000, 3, 3, 30000, 'Mô tả hóa đơn 4', 2),
+('HD005', 5, 5, 2, '202 Đường JKL, Quận 5', 'Vũ Minh E', 'vuminhe@example.com', '0905678901', '2024-11-05', 800000, 850000, 2, 2, 70000, 'Mô tả hóa đơn 5', 1);
+
 
 
 
