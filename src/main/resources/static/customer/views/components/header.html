@@ -92,14 +92,21 @@
                                             </svg>
                                         </a>
                                     </li>
-                                    <li class="pe-3">
-                                        <!--     Đăng nhập       -->
-                                        <a href="/login">
+                                    <li class="account-dropdown pe-3">
+                                        <!-- Biểu tượng tài khoản -->
+                                        <a  class="dropdown-toggle">
                                             <svg class="user">
                                                 <use xlink:href="#user"></use>
                                             </svg>
+                                            <span>Tài khoản</span>
                                         </a>
+                                        <!-- Menu thả xuống -->
+                                        <div class="dropdown-menu">
+                                            <a href="/login">Đăng nhập</a>
+                                            <a href="/register">Đăng ký</a>
+                                        </div>
                                     </li>
+
                                     <li style="position: relative;" ng-controller="SanPhamController">
                                         <a href="#!cart">
                                             <svg class="cart">

@@ -26,4 +26,6 @@ public interface KhachHangRepository extends JpaRepository<khach_hang, Integer> 
     @Query("SELECT kh FROM khach_hang kh WHERE kh.id <> 1 ORDER BY kh.id ASC")
     Page<khach_hang> getKhachHangBanHang(Pageable pageable);
 
+    @Query("SELECT k FROM khach_hang k WHERE k.email = :email AND k.mat_khau = :matKhau")
+    khach_hang findByEmailAndMatKhau(@Param("email") String email, @Param("matKhau") String matKhau);
 }

@@ -219,5 +219,12 @@ public class KhachHangService {
         return khachHangRepository.save(khachHang);
     }
 
+    // Lấy thông tin khách hàng b��ng tài khoản và mật khẩu
+    public khach_hang findByEmailAndMatKhau(String email, String matKhau) {
+        return khachHangRepository.findByEmailAndMatKhau(email, matKhau);
+    }
+
+
+
 
 }

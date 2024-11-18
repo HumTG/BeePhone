@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 
 import java.time.LocalDate;
@@ -27,6 +28,9 @@ public class KhachHangDTO {
     private Integer gioiTinh;
     private Integer trangThai;
     private List<DiaChiDTO> diaChiChiTiet; // Thay vì List<String>
+
+
+
 
     // Chuyển đổi từ Entity KhachHang sang KhachHangDTO
     public static KhachHangDTO fromEntity(khach_hang khachHang) {

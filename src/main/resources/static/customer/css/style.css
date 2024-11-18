@@ -1221,6 +1221,53 @@ figure.instagram-item img.insta-image {
   border: none;
   border-radius: 5px;
 }
+  .account-dropdown {
+    position: relative;
+  }
+
+.account-dropdown .dropdown-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.account-dropdown .dropdown-toggle .user {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  fill: currentColor;
+}
+
+.account-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0; /* Canh menu thả xuống về bên trái của phần tử cha */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  z-index: 1000;
+}
+
+
+.account-dropdown .dropdown-menu a {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  padding: 5px 10px;
+}
+
+.account-dropdown .dropdown-menu a:hover {
+  background: #f5f5f5;
+  color: #000;
+}
+
+.account-dropdown:hover .dropdown-menu {
+  display: block;
+}
 
 
 

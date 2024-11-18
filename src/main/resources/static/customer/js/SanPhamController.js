@@ -1,14 +1,3 @@
-// app.controller('SanPhamController', function($scope,$http) {
-//
-//     $http.get('http://localhost:8080/san-pham')
-//         .then(function(response) {
-//             // Lưu dữ liệu vào scope để hiển thị
-//             $scope.sp = response.data;
-//         })
-//         .catch(function(error) {
-//             console.error('Error fetching data:', error);
-//         });
-// });
 app.controller('SanPhamController', function($scope, $http,$window) {
     // Khởi tạo tham số phân trang
     $scope.currentPage = 0;
@@ -227,9 +216,6 @@ app.controller('SanPhamController', function($scope, $http,$window) {
             toastr.error('Vui lòng đồng ý với các điều khoản chính sách giao hàng');
         }
     };
-
-
-
 
 
     // Khởi tạo các biến lưu trữ danh sách tỉnh/thành phố và quận/huyện

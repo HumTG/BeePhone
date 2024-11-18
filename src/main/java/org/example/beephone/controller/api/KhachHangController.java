@@ -1,6 +1,9 @@
 package org.example.beephone.controller.api;
 
 import org.example.beephone.dto.KhachHangDTO;
+import org.example.beephone.dto.LoginRequest;
+import org.example.beephone.entity.khach_hang;
+import org.example.beephone.repository.KhachHangRepository;
 import org.example.beephone.service.DiaChiService;
 import org.example.beephone.service.KhachHangService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,9 @@ public class KhachHangController {
 
     @Autowired
     private KhachHangService service;
+
+    @Autowired
+    private KhachHangRepository khachHangRepository;
 
     @Autowired
     private DiaChiService  diaChiService;
@@ -139,5 +145,37 @@ public class KhachHangController {
     public ResponseEntity<?> getKhBanHang(@RequestParam(defaultValue = "0") Integer page) {
         return ResponseEntity.ok(service.getListKhBanHang(page));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            khach_hang khachHang = service.findByEmailAndMatKhau(loginRequest.getEmail(), loginRequest.getMatKhau());
+            if (khachHang == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email hoặc mật khẩu không đúng");
+            }
+
+            // Tạo phản hồi chứa thông tin cơ bản
+            khach_hang response = new khach_hang(
+                    khachHang.getId(),
+                    khachHang.getMa_khach_hang(),
+                    khachHang.getTai_khoan(),
+                    khachHang.getHo_ten(),
+                    khachHang.getEmail(),
+                    khachHang.getSdt(),
+                    khachHang.getMat_khau(),
+                    khachHang.getNgay_sinh(),
+                    khachHang.getGioi_tinh(),
+                    khachHang.getTrang_thai(),
+                    khachHang.getDiaChiKhachHang()
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi đăng nhập: " + e.getMessage());
+        }
+    }
+
+
+
 
 }
