@@ -160,6 +160,36 @@ public class HoaDonRestController {
         }
     }
 
+    // Quay lại trang thai hoa đơn
+    @PutMapping("/update-cannel/{id}")
+    public ResponseEntity<hoa_don> updateHoaDonCannel(
+            @PathVariable int id,
+            @RequestParam BigDecimal thanhTien ,
+            @RequestParam BigDecimal tienSauGiamGia
+        ) {
+
+        try {
+            hoa_don updatedHoaDon = hoaDonService.updateHoaDonCannel(id, thanhTien,tienSauGiamGia);
+            return ResponseEntity.ok(updatedHoaDon);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+    // Hủy hóa đơn
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<?> cancelHoaDon(@PathVariable("id") int id) {
+        try {
+            hoaDonService.huyHoaDon(id);
+            return ResponseEntity.ok(Map.of("message", "Hủy hóa đơn thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Có lỗi xảy ra khi hủy hóa đơn: " + e.getMessage());
+        }
+    }
+
+
     // Chỉnh sửa thông tin hóa đơn
     @PutMapping("/update/info-hoa-don/{id}")
     public ResponseEntity<hoa_don> updateHoaDonInfo(

@@ -5,12 +5,6 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
 
     $scope.currentStatus = 1 ; // Trạng thái mặc định là "Chờ xác nhận"
 
-    // Hàm cập nhật trạng thái hóa đơn
-    $scope.updateStatus = function(newStatus) {
-        $scope.currentStatus = newStatus;
-        $scope.getData();
-    };
-
     // Gọi API để lấy chi tiết hóa đơn
     $http.get('/rest/hoa-don/' + id + '/detail')
         .then(function(response) {
@@ -29,8 +23,14 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
             $scope.hoaDon.ngayDuKienNhan = $filter('date')(ngayDuKienNhan, 'dd/MM/yyyy');
 
             // Tiền giảm
-            // $scope.tienVorcher = $scope.hoaDon.khuyenMai.gia_tri * $scope.hoaDon.thanh_tien ;
-
+            $scope.tienVorcher =  ($scope.hoaDon.khuyenMai.gia_tri * $scope.hoaDon.thanh_tien) / 100 ;
+            // Phí ship
+            if ($scope.hoaDon.phi_ship == null){
+                return $scope.phiShip = 0;
+            }
+            else{
+                return $scope.phiShip = $scope.hoaDon.phi_ship;
+            }
 
 
         })
@@ -243,8 +243,9 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
         // Lấy giá trị `thanhTien` và xử lý `tienVorcher` nếu là undefined hoặc null
         let thanhTien = $scope.getTongTienHang();
         let tienVorcher = $scope.tienVorcher || 0;  // Nếu tienVorcher là null hoặc undefined, gán giá trị mặc định là 0
+        let phiShip = $scope.phiShip || 0 ;
 
-        let tienSauGiamGia = thanhTien - tienVorcher;
+        let tienSauGiamGia = thanhTien - tienVorcher + phiShip ;
 
         // Đường dẫn API với tham số id của hóa đơn
         let url = '/rest/hoa-don/update/' + id;
@@ -261,6 +262,36 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
                 $scope.hoaDon = response.data;
                 $scope.currentStatus = $scope.hoaDon.trang_thai;
                 console.log($scope.currentStatus);
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi cập nhật hóa đơn:", error);
+            });
+    };
+
+    // Quay lại hóa đơn ,Cập nhật thành tiền , tiền sau giảm giá , trạng thái - 1
+    $scope.cannelHoaDon = function() {
+        // Lấy giá trị `thanhTien` và xử lý `tienVorcher` nếu là undefined hoặc null
+        let thanhTien = $scope.getTongTienHang();
+        let tienVorcher = $scope.tienVorcher || 0;  // Nếu tienVorcher là null hoặc undefined, gán giá trị mặc định là 0
+
+        let tienSauGiamGia = thanhTien - tienVorcher;
+
+        // Đường dẫn API với tham số id của hóa đơn
+        let url = '/rest/hoa-don/update-cannel/' + id;
+
+        // Gọi API `PUT` để cập nhật hóa đơn với `thanhTien` và `tienSauGiamGia`
+        $http.put(url, null, {
+            params: {
+                thanhTien: thanhTien,
+                tienSauGiamGia: tienSauGiamGia,
+            }
+        })
+            .then(function(response) {
+                // Cập nhật lại thông tin hóa đơn trên giao diện nếu cần
+                $scope.hoaDon = response.data;
+                $scope.currentStatus = $scope.hoaDon.trang_thai;
+                console.log($scope.currentStatus);
+                toastr.success('Quay lại trạng thái thành công!', 'Success');
             })
             .catch(function(error) {
                 console.error("Lỗi khi cập nhật hóa đơn:", error);
@@ -313,6 +344,25 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
             });
     };
 
+    // Hủy hóa đơn
+    $scope.huyHoaDon = function() {
+        let url = '/rest/hoa-don/cancel/' + id;
+
+        $http.put(url)
+            .then(function(response) {
+                toastr.success('Hủy hóa đơn thành công!', 'Success');
+                // Cập nhật trạng thái hóa đơn trên giao diện
+                $scope.hoaDon.trang_thai = 7;
+                console.log("Hóa đơn đã được hủy:", $scope.hoaDon);
+                $scope.currentStatus = $scope.hoaDon.trang_thai;
+            })
+            .catch(function(error) {
+                console.error("Lỗi khi hủy hóa đơn:", error);
+                toastr.error('Có lỗi xảy ra khi hủy hóa đơn!', 'Error');
+            });
+    };
+
+
 
     // In hóa đơn
     $scope.printInvoice = function() {
@@ -364,6 +414,19 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
     $scope.confirmBill = function(){
         $scope.capNhatHoaDon();
         $scope.capNhatSoLuong();
+        $scope.createLichSuHoaDon();
+    }
+
+    // Quay lại trạng thái hóa đơn
+    $scope.cannelBill = function(){
+        $scope.cannelHoaDon();
+        $scope.capNhatSoLuong();
+        $scope.createLichSuHoaDon();
+    }
+
+    // Hủy hóa đơn
+    $scope.cannelBill = function(){
+        $scope.huyHoaDon();
         $scope.createLichSuHoaDon();
     }
 

@@ -2,10 +2,7 @@ package org.example.beephone.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.example.beephone.entity.hoa_don;
-import org.example.beephone.entity.khach_hang;
-import org.example.beephone.entity.khuyen_mai;
-import org.example.beephone.entity.nhan_vien;
+import org.example.beephone.entity.*;
 import org.example.beephone.repository.HoaDonChiTietRepository;
 import org.example.beephone.repository.HoaDonRepository;
 import org.example.beephone.repository.KhachHangRepository;
@@ -192,6 +189,25 @@ public class HoaDonService {
         // Lưu lại hóa đơn đã cập nhật
         return hdRP.save(hoaDon);
     }
+    // Cập nhật lại cột thành tiền , tiền sau giảm giá hóa đơn , Quay lại trạng thái hóa đơn
+    @Transactional
+    public hoa_don updateHoaDonCannel(int hoaDonId, BigDecimal thanhTien , BigDecimal tienSauGiamGia) {
+        hoa_don hoaDon = hdRP.findById(hoaDonId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với ID: " + hoaDonId));
+
+
+        // Cập nhật tổng tiền hàng vào cột `thanh_tien`
+        hoaDon.setThanh_tien(thanhTien);
+
+        // Tính tổng tiền thanh toán sau khi trừ voucher
+        hoaDon.setTien_sau_giam_gia(tienSauGiamGia);
+
+        // Tăng trạng thái lên 1
+        hoaDon.setTrang_thai(hoaDon.getTrang_thai() - 1);
+
+        // Lưu lại hóa đơn đã cập nhật
+        return hdRP.save(hoaDon);
+    }
 
     // Chỉnh sửa thông tin hóa đơn
     public hoa_don updateHoaDonInfo(int id, hoa_don hoaDonUpdate) {
@@ -207,6 +223,26 @@ public class HoaDonService {
         else return null ;
     }
 
+    // Hủy hóa đơn
+    @Transactional
+    public void huyHoaDon(int idHD) {
+        hoa_don hoaDon = hdRP.findById(idHD)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với ID: " + idHD));
+
+        // Cập nhật trạng thái hóa đơn về 7 (đã hủy)
+        hoaDon.setTrang_thai(7);
+        hdRP.save(hoaDon);
+
+        // Lấy danh sách chi tiết hóa đơn
+        List<hoa_don_chi_tiet> chiTietHoaDonList = hoaDon.getHoaDonChiTietList();
+        for (hoa_don_chi_tiet chiTiet : chiTietHoaDonList) {
+            // Tăng số lượng sản phẩm trở lại trong kho
+            chiTiet.getChi_tiet_san_pham().setSo_luong(
+                    chiTiet.getChi_tiet_san_pham().getSo_luong() + chiTiet.getSo_luong()
+            );
+            hdctRP.save(chiTiet);
+        }
+    }
 
     // Tạo hóa đơn bên người dùng web
     public hoa_don save(hoa_don hoaDon) {
