@@ -258,6 +258,17 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     };
 
 
+    // Lấy thông tin người dùng từ localStorage
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser) {
+        // Tự động điền thông tin vào các ng-model
+        $scope.name = savedUser.ho_ten;
+        $scope.phone = savedUser.sdt;
+        $scope.email = savedUser.email;
+        $scope.addressDetail = savedUser.diaChiKhachHang[0]?.dia_chi_chi_tiet || ""; // Lấy địa chỉ chi tiết đầu tiên nếu có
+    }
+
+
 
 
 

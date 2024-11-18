@@ -25,17 +25,39 @@ app.config(function($routeProvider) {
 });
 
 
-app.controller('HomeController', function($scope,$http) {
-    // // Gọi API để lấy dữ liệu top 5 best sellers
-    // $http.get('http://localhost:8080/top-5-best-seller')
-    //     .then(function(response) {
-    //         // Lưu dữ liệu vào scope để hiển thị
-    //         $scope.bestSellers = response.data;
-    //     })
-    //     .catch(function(error) {
-    //         console.error('Error fetching data:', error);
-    //     });
+app.controller('HomeController', function($scope, $http, $window) {
+    // Kiểm tra trạng thái đăng nhập khi khởi chạy controller
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+        $scope.isLoggedIn = true;
+        $scope.user = JSON.parse(savedUser);
+    } else {
+        $scope.isLoggedIn = false;
+        $scope.user = null;
+    }
+
+    // Hàm để thiết lập trạng thái đăng nhập
+    $scope.setLoggedIn = function (user) {
+        $scope.isLoggedIn = true;
+        $scope.user = user;
+
+        // Lưu vào localStorage
+        localStorage.setItem("user", JSON.stringify(user));
+    };
+
+    // Hàm để xử lý đăng xuất
+    $scope.logout = function () {
+        $scope.isLoggedIn = false;
+        $scope.user = null;
+
+        // Xóa thông tin khỏi localStorage
+        localStorage.removeItem("user");
+
+        // Điều hướng về trang chủ hoặc trang đăng nhập
+        toastr.success('Đăng xuất thành công!','Success');
+    };
 });
+
 
 
 // Tạo filter để định dạng giá tiền Việt Nam Đồng

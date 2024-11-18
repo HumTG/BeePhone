@@ -1,32 +1,28 @@
 // Khởi tạo AngularJS module
 const app = angular.module("loginApp", []);
 
-// Tạo LoginController
-app.controller("LoginController", function ($scope, $http) {
+app.controller("LoginController", function ($scope, $http, $window) {
     $scope.loginData = {
         email: "",
-        password: ""
+        matKhau: ""
     };
 
     $scope.errorMessage = "";
 
-    // Xử lý đăng nhập
     $scope.handleLogin = function () {
-        console.log("Dữ liệu gửi đi:", $scope.loginData);
-
         $http.post("http://localhost:8080/rest/khach-hang/login", $scope.loginData)
             .then(function (response) {
-                alert("Đăng nhập thành công!");
-                console.log("Phản hồi từ API:", response.data);
+                // Lưu thông tin người dùng vào localStorage
+                localStorage.setItem("user", JSON.stringify(response.data));
+
+                // Chuyển hướng sang trang index
+                $window.location.href = "http://localhost:8080/index";
             })
             .catch(function (error) {
                 console.error("Lỗi:", error);
-                if (error.status === 401) {
-                    $scope.errorMessage = "Email hoặc mật khẩu không đúng!";
-                } else {
-                    $scope.errorMessage = "Lỗi hệ thống: " + error.statusText;
-                }
+                $scope.errorMessage = error.status === 401 ? "Email hoặc mật khẩu không đúng!" : "Lỗi hệ thống!";
             });
-
     };
+
 });
+
