@@ -94,7 +94,9 @@ public class HoaDonService {
     ////Tính tổng tiền hóa đơn
     public void tinhTongTienHoaDon(Integer idHD){
         BigDecimal tienHoaDon = hdctRP.tinhTongTienHoaDon(idHD);
+        tienHoaDon = tienHoaDon != null ? tienHoaDon : BigDecimal.ZERO;
         System.out.println("Tổng tiền hóa đơn : " + tienHoaDon);
+
         hoa_don hd = hdRP.findById(idHD)
                 .orElseThrow(() -> new EntityNotFoundException("Không thấy hóa đơn với id: " + idHD));
 
@@ -105,16 +107,15 @@ public class HoaDonService {
 //            BigDecimal phanTramGiam = new BigDecimal(giaTriKhuyenMai).setScale(2, RoundingMode.HALF_UP);
             //Số tiền giảm
             BigDecimal giaTriGiam = tienHoaDon.multiply(phanTramGiam);
-            if(giaTriGiam.compareTo(hd.getKhuyenMai().getGia_tri_toi_thieu()) > 0){
-                BigDecimal giaGiam = tienHoaDon.subtract(hd.getKhuyenMai().getGia_tri_toi_thieu());
-                hdRP.capNhatTienHoaDon(tienHoaDon,giaGiam,idHD);
-                System.out.println("Vượt quá ");
-            }else{
-                System.out.println("Không vượt quá ");
-                BigDecimal giaKhiGiam = tienHoaDon.subtract(giaTriGiam);
-                hdRP.capNhatTienHoaDon(tienHoaDon,giaKhiGiam,idHD);
-
-            }
+//            if(giaTriGiam.compareTo(hd.getKhuyenMai().getGia_tri_toi_thieu()) > 0){
+//                BigDecimal giaGiam = tienHoaDon.subtract(hd.getKhuyenMai().getGia_tri_toi_thieu());
+//                hdRP.capNhatTienHoaDon(tienHoaDon,giaGiam,idHD);
+//            }else{
+//                BigDecimal giaKhiGiam = tienHoaDon.subtract(giaTriGiam);
+//                hdRP.capNhatTienHoaDon(tienHoaDon,giaKhiGiam,idHD);
+//            }
+            BigDecimal giaKhiGiam = tienHoaDon.subtract(giaTriGiam);
+            hdRP.capNhatTienHoaDon(tienHoaDon,giaKhiGiam,idHD);
         }else{
             System.out.println("Không giảm ");
             hdRP.capNhatTienHoaDon(tienHoaDon,tienHoaDon,idHD);

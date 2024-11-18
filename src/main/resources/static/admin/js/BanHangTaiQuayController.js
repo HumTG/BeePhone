@@ -242,6 +242,11 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 
     /// ADD khuyến mại cho hóa đơn
     $scope.addKMchoHD = function (km){
+        if ($scope.hoaDon_DB.thanh_tien < km.gia_tri_toi_thieu){
+            toastr.warning('Hóa đơn không đủ điều kiện để áp dùng', 'Cảnh báo');
+            return;
+        }
+
         $http({
             method: 'PUT',
             url : 'http://localhost:8080/rest/hoa-don/update-khuyen-mai',
