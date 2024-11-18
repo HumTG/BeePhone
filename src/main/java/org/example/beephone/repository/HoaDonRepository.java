@@ -74,4 +74,11 @@ public interface HoaDonRepository extends JpaRepository<hoa_don,Integer> {
                             @Param("idHD") Integer idHD);
 
 
+    /// bỏ khuyến mại trong hóa đơn
+    @Modifying
+    @Transactional
+    @Query("UPDATE hoa_don hd SET hd.khuyenMai = NULL,hd.tien_sau_giam_gia = hd.thanh_tien WHERE hd.id = :idHD")
+    void loaiBoKhuyenMaiHD(@Param("idHD") Integer idHD);
+
+
 }

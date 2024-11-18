@@ -155,6 +155,10 @@ public class HoaDonService {
 
     }
 
+    /// xóa khuyến mãi hóa đơn
+     public void xoaKhuyenMaiHD(Integer idHd){
+        hdRP.loaiBoKhuyenMaiHD(idHd);
+     }
 
 
 

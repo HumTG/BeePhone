@@ -65,6 +65,18 @@ public class HoaDonRestController {
 
     }
 
+    @PutMapping("/delete-khuyen-mai-hd")
+    public ResponseEntity<?> xoaKhuyenMaiHD(@RequestParam(name = "idHD") Integer idHD){
+        try{
+           hoaDonService.xoaKhuyenMaiHD(idHD);
+            return ResponseEntity.ok(Map.of("message", "Xóa khuyến mại thành công"));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi khi add xóa: " + e.getMessage());
+        }
+
+    }
+
     //cập nhạt khách hàng cho hóa đơn tại quầy
     @PutMapping("/update-khach-hang-tai-quay")
     public ResponseEntity<?> capNhatKhachHangTaiQuay(@RequestParam(name = "idKH") Integer idKH,@RequestParam(name = "idHD") Integer idHD){

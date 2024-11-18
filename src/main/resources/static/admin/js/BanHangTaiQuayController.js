@@ -151,6 +151,10 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 
 ///xóa sản phẩm khỏi hóa đơn chi tiết
     $scope.deleteHDCT= function (hdct){
+        if ($scope.hoaDon_DB.khuyenMai != null){
+            toastr.warning('Bỏ khuyến mại trước khi thực hiện', 'Warning');
+            return;
+        }
         $http.delete("http://localhost:8080/rest/hoa-don-chi-tiet/" + hdct.id).then(function(response) {
             if (response.status === 200) {
                 $scope.getHDCT($scope.hoa_don.id);
@@ -168,6 +172,10 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 
 /// mở modal thay đổi số lượng sp
     $scope.openModalSLSP = function (spct){
+        if ($scope.hoaDon_DB.khuyenMai != null){
+            toastr.warning('Bỏ khuyến mại trước khi thực hiện', 'Warning');
+            return;
+        }
         $scope.slCTSP = angular.copy(spct);
         $scope.slHienTai = angular.copy(spct.so_luong);
         console.log($scope.slHienTai);
@@ -266,6 +274,25 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
         });
     }
 
+    /// xóa khuyến mại khỏi hóa đơn
+    $scope.xoaKMtrongHD = function (){
+        $http({
+            method: 'PUT',
+            url : 'http://localhost:8080/rest/hoa-don/delete-khuyen-mai-hd',
+            params: {
+                idHD : $scope.hoa_don.id
+            }
+        }).then(function(response) {
+            $scope.getHoaDonDB($scope.hoa_don.id)
+
+            var modalElement = document.getElementById('khuyenMaiModal');
+            var Modal = bootstrap.Modal.getInstance(modalElement);
+            Modal.hide(); // đóng modal
+            toastr.success('Xóa km thành công', 'OK');
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
+        });
+    }
 
     /// lấy danh sách khách hàng
     $scope.getKhachHang = function (viTriTrangKH){
@@ -320,16 +347,16 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
         });
     }
 
-    $scope.selectedKhachHang = null;
-
-    $scope.checkDiaChi = function () {
-        if ($scope.selectedKhachHang) {
-            console.log($scope.selectedKhachHang.id);  // In ra ID của địa chỉ
-            console.log($scope.selectedKhachHang.dia_chi_chi_tiet);  // In ra chi tiết địa chỉ
-        } else {
-            console.log("Chưa chọn địa chỉ.");
-        }
-    };
+    // $scope.selectedKhachHang = null;
+    //
+    // $scope.checkDiaChi = function () {
+    //     if ($scope.selectedKhachHang) {
+    //         console.log($scope.selectedKhachHang.id);  // In ra ID của địa chỉ
+    //         console.log($scope.selectedKhachHang.dia_chi_chi_tiet);  // In ra chi tiết địa chỉ
+    //     } else {
+    //         console.log("Chưa chọn địa chỉ.");
+    //     }
+    // };
 
 
 
