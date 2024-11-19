@@ -215,8 +215,9 @@ public class HoaDonRestController {
     // Tạo hóa đơn khi đặt hàng bên web người dùng đặt hàng
     @PostMapping("/add")
     public ResponseEntity<hoa_don> createHoaDon(
-            @RequestBody hoa_don hoaDon ) {
-        hoa_don createdHoaDon = hoaDonService.save(hoaDon);
+            @RequestBody hoa_don hoaDon ,
+            @RequestParam Integer idKhachHang) {
+        hoa_don createdHoaDon = hoaDonService.save(hoaDon,idKhachHang);
         return ResponseEntity.ok(createdHoaDon);
     }
 

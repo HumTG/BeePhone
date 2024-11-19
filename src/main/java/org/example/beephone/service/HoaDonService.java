@@ -2,6 +2,7 @@ package org.example.beephone.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.ObjectUtils;
 import org.example.beephone.entity.*;
 import org.example.beephone.repository.HoaDonChiTietRepository;
 import org.example.beephone.repository.HoaDonRepository;
@@ -250,7 +251,16 @@ public class HoaDonService {
     }
 
     // Tạo hóa đơn bên người dùng web
-    public hoa_don save(hoa_don hoaDon) {
+    public hoa_don save(hoa_don hoaDon, Integer idKhachHang) {
+        khach_hang khachHang = khRP.findById(idKhachHang)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng với ID: " + idKhachHang));
+
+        // Nếu không tìm thấy khách hàng, đặt khách hàng của hóa đơn thành null
+        if (khachHang == null) {
+            hoaDon.setKhachHang(null);
+        } else {
+            hoaDon.setKhachHang(khachHang); // Nếu tìm thấy, gán khách hàng cho hóa đơn
+        }
         hoaDon.setMa_hoa_don("HD"+generateRandomCode());
         LocalDate localDate = LocalDate.now();
         Date sqlDate = Date.valueOf(localDate);

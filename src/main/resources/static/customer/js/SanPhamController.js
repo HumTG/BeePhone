@@ -160,6 +160,19 @@ app.controller('SanPhamController', function($scope, $http,$window) {
         return $scope.cart.reduce((total, item) => total + $scope.calculateTotalPrice(item), 0);
     };
 
+    // Lấy thông tin người dùng từ localStorage
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser) {
+        // Tự động điền thông tin vào các ng-model
+        console.log()
+        $scope.name = savedUser.ho_ten;
+        $scope.phone = savedUser.sdt;
+        $scope.email = savedUser.email;
+        // Lấy địa chỉ có trang_thai == 1
+        const activeAddress = savedUser.diaChiKhachHang.find(address => address.trang_thai === 1);
+        $scope.addressDetail = activeAddress ? activeAddress.dia_chi_chi_tiet : ""; // Nếu không tìm thấy, để trống
+    }
+
     // Hàm xác nhận thanh toán đơn hàng
     $scope.confirmOrder = function() {
         if (document.getElementById('agreeTerms').checked) {
@@ -175,8 +188,9 @@ app.controller('SanPhamController', function($scope, $http,$window) {
                 mo_ta: $scope.note,
                 trang_thai: 1
             };
-            $http.post('/rest/hoa-don/add', hoaDon)
-                .then(function(response) {
+            $http.post('/rest/hoa-don/add', hoaDon ,{
+              params: { idKhachHang : savedUser.id } //  Thêm params `idKhachHang` từ localStorage
+            }).then(function(response) {
                         if (response.data && response.data.id) {
                             let hoaDonId = response.data.id;
                             console.log("id hóa đơn" ,hoaDonId)
@@ -257,16 +271,6 @@ app.controller('SanPhamController', function($scope, $http,$window) {
         return `${addressDetail}, ${district}, ${city}`;
     };
 
-
-    // Lấy thông tin người dùng từ localStorage
-    const savedUser = JSON.parse(localStorage.getItem("user"));
-    if (savedUser) {
-        // Tự động điền thông tin vào các ng-model
-        $scope.name = savedUser.ho_ten;
-        $scope.phone = savedUser.sdt;
-        $scope.email = savedUser.email;
-        $scope.addressDetail = savedUser.diaChiKhachHang[0]?.dia_chi_chi_tiet || ""; // Lấy địa chỉ chi tiết đầu tiên nếu có
-    }
 
 
 
