@@ -73,8 +73,9 @@ public class KhachHangService {
         khachHang.setSdt(khachHangDTO.getSdt());
         khachHang.setMat_khau(randomPassword);
         khachHang.setNgay_sinh(khachHangDTO.getNgaySinh());
-        khachHang.setGioi_tinh(khachHangDTO.getGioiTinh());
-        khachHang.setTrang_thai(khachHangDTO.getTrangThai());
+        khachHang.setGioi_tinh(khachHangDTO.getGioiTinh() == 1 ? 1 : 0);
+        khachHang.setTrang_thai(khachHangDTO.getTrangThai() == null ? 0 :
+                (khachHangDTO.getTrangThai() == 1 ? 1 : 0));
 
         List<dia_chi_khach_hang> diaChiList = new ArrayList<>();
         for (DiaChiDTO diaChiDTO : khachHangDTO.getDiaChiChiTiet()) {
@@ -139,8 +140,9 @@ public class KhachHangService {
             existingCustomer.setEmail(khachHangDTO.getEmail());
             existingCustomer.setSdt(khachHangDTO.getSdt());
             existingCustomer.setNgay_sinh(khachHangDTO.getNgaySinh());
-            existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh());
-            existingCustomer.setTrang_thai(khachHangDTO.getTrangThai());
+            existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh() == 1 ? 1 : 0);
+            existingCustomer.setTrang_thai(khachHangDTO.getTrangThai() == null ? 0 :
+                    (khachHangDTO.getTrangThai() == 1 ? 1 : 0));
 
             // Handle address updates
             if (khachHangDTO.getDiaChiChiTiet() != null) {
@@ -237,8 +239,4 @@ public class KhachHangService {
 
         return khachHangRepository.save(khachHangNew);
     }
-
-
-
-
 }

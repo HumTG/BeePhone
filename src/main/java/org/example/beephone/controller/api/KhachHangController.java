@@ -187,8 +187,4 @@ public class KhachHangController {
                     .body("Lỗi khi đăng nhập: " + e.getMessage());
         }
     }
-
-
-
-
 }
