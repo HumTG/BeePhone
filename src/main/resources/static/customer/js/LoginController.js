@@ -15,6 +15,9 @@ app.controller("LoginController", function ($scope, $http, $window) {
                 // Lưu thông tin người dùng vào localStorage
                 localStorage.setItem("user", JSON.stringify(response.data));
 
+                // Lưu trạng thái thông báo
+                localStorage.setItem("loginSuccess", "true");
+
                 // Chuyển hướng sang trang index
                 $window.location.href = "http://localhost:8080/index";
             })

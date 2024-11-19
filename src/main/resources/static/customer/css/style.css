@@ -1268,6 +1268,15 @@ figure.instagram-item img.insta-image {
 .account-dropdown:hover .dropdown-menu {
   display: block;
 }
+button.selected {
+  background-color: orange; /* Màu nền khi chọn */
+  color: #fff; /* Màu chữ */
+  border-color: #007bff;
+}
+
+button {
+  transition: background-color 0.3s, color 0.3s; /* Hiệu ứng mượt */
+}
 
 
 

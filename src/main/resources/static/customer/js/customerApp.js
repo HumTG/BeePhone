@@ -26,6 +26,15 @@ app.config(function($routeProvider) {
 
 
 app.controller('HomeController', function($scope, $http, $window) {
+    // Kiểm tra trạng thái thông báo
+    const loginSuccess = localStorage.getItem("loginSuccess");
+    if (loginSuccess === "true") {
+        // Hiển thị thông báo
+        toastr.success('Đăng nhập thành công!', 'Success');
+
+        // Xóa trạng thái để không hiển thị lại khi tải lại trang
+        localStorage.removeItem("loginSuccess");
+    }
     // Kiểm tra trạng thái đăng nhập khi khởi chạy controller
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -52,7 +61,8 @@ app.controller('HomeController', function($scope, $http, $window) {
 
         // Xóa thông tin khỏi localStorage
         localStorage.removeItem("user");
-
+        // Xóa trạng thái để không hiển thị lại khi tải lại trang
+        localStorage.removeItem("loginSuccess");
         // Điều hướng về trang chủ hoặc trang đăng nhập
         toastr.success('Đăng xuất thành công!','Success');
     };

@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-9">
             <table class="table">
-                <thead>
+                <thead class="table-warning">
                 <tr>
                     <th scope="col">Hình ảnh</th>
                     <th scope="col">Sản phẩm</th>
@@ -15,7 +15,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="item in cart">
+                <!-- Hiển thị thông báo khi giỏ hàng trống -->
+                <tr ng-if="cart.length === 0">
+                    <td colspan="6" class="text-center">Không có sản phẩm nào trong giỏ hàng</td>
+                </tr>
+                <!-- Hiển thị danh sách sản phẩm khi có sản phẩm trong giỏ hàng -->
+                <tr ng-repeat="item in cart" ng-if="cart.length > 0">
                     <td><img ng-src="/images/{{ item.variant.anh }}" style="width: 50px; height: 50px;" alt="Hình ảnh sản phẩm"></td>
                     <td>{{ item.product.ten }} ({{ item.variant.mauSac.ten }} - {{ item.variant.kichCo.ten }})</td>
                     <td>
