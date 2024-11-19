@@ -146,6 +146,19 @@ public class KhachHangController {
         return ResponseEntity.ok(service.getListKhBanHang(page));
     }
 
+    // thêm nhanh 1 khách hàng tại quầy
+    @PostMapping("/add-khach-hang-tai-quay")
+    public ResponseEntity<?> themKhachHangTaiQuay(@RequestBody khach_hang khachHang){
+        try {
+            service.themKhachHangTaiQuay(khachHang);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi thêm khách hàng: " + e.getMessage());
+        }
+
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {

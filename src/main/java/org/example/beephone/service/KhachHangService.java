@@ -224,6 +224,20 @@ public class KhachHangService {
         return khachHangRepository.findByEmailAndMatKhau(email, matKhau);
     }
 
+    //thêm nhanh 1 khách hàng tại quầy
+    public khach_hang themKhachHangTaiQuay(khach_hang khachHang){
+        khach_hang khachHangNew = new khach_hang();
+
+        khachHangNew.setMa_khach_hang(generateMaKhachHang());
+        khachHangNew.setHo_ten(khachHang.getHo_ten());
+        khachHangNew.setEmail(khachHang.getEmail());
+        khachHangNew.setSdt(khachHang.getSdt());
+        khachHangNew.setGioi_tinh(khachHang.getGioi_tinh());
+        khachHangNew.setTrang_thai(1);
+
+        return khachHangRepository.save(khachHangNew);
+    }
+
 
 
 

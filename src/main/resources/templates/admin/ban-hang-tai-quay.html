@@ -511,7 +511,14 @@
                     <hr>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5><i class="bi bi-list"></i>Thông tin khách hàng</h5>
-                        <button class="btn btn-outline-success" ng-click="openModalKhachHang()"><i class="bi bi-plus"></i> Chọn khách hàng</button>
+                        <div class="ms-auto">
+                            <button class="btn btn-outline-success" ng-click="openModalKhachHang()">
+                                <i class="bi bi-plus"></i> Chọn khách hàng
+                            </button>
+                            <button class="btn btn-outline-success" ng-click="modalThemMoiKhachHang()">
+                                <i class="bi bi-plus-circle"></i>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <div class="row mb-3">
@@ -556,8 +563,6 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-md-12">
-<!--                                            <input type="text" class="form-control" placeholder="Tìm kiếm" ng-model="searchTextCTSP" style="width: 500px">-->
-<!--                                            <br>-->
                                             <table class="table table-striped">
                                                 <thead class="table-danger">
                                                 <tr class="text-bg-warning text-center text-white">
@@ -606,7 +611,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <!--                                    <button type="button" class="btn btn-primary" ng-click="updateGiamGia()">Cập nhât</button>-->
+                                     <button type="button" class="btn btn-danger" >Remove khách hàng</button>
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                                 </div>
                             </div>
@@ -614,6 +619,66 @@
                     </div>
 
 <!--                    end modal khach hang-->
+
+<!--                    modal thêm khách hàng-->
+                    <div class="modal fade" id="themKhachHangModal" tabindex="-1" aria-labelledby="themKhachHangModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="themKhachHangModalLabel">Tạo khách hàng</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <form>
+                                                <div class="row mb-3">
+                                                    <div class="col">
+                                                        <label for="newTenKH" class="form-label">Họ và tên</label>
+                                                        <input type="text" class="form-control" id="newTenKH" ng-model="khachHang_new.ho_ten">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="newKhSDT" class="form-label">Số điện thoại</label>
+                                                        <input type="text" class="form-control" id="newKhSDT" ng-model="khachHang_new.sdt">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col">
+                                                        <label for="newKhEmail" class="form-label">Email</label>
+                                                        <input type="text" class="form-control" id="newKhEmail" ng-model="khachHang_new.email">
+                                                    </div>
+                                                    <div class="col">
+                                                        Trạng thái
+                                                        <div class="d-flex">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="gioiTinhnewKH" id="radio1" ng-value= "0"
+                                                                       ng-model="khachHang_new.gioi_tinh">
+                                                                <label class="form-check-label">
+                                                                   Nam
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="gioiTinhnewKH" id="radio2"
+                                                                       ng-value="1" ng-model="khachHang_new.gioi_tinh">
+                                                                <label class="form-check-label" >
+                                                                    Nữ
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" ng-click="themKhachHangTaiQuay()">Thêm khách hàng</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<!--                    end modal thêm khách hàng-->
 
 <!--                    thông tin hóa đơn-->
                     <br> <br> <br> <br>
@@ -818,7 +883,7 @@
                         <h3>Thông tin khách hàng</h3>
                         <p>Tên: {{hoaDon_DB.ten_nguoi_nhan}}</p>
                         <p>Số điện thoại: {{hoaDon_DB.sdt_nguoi_nhan}}</p>
-                        <p ng-show="switchGiaoHang">Địa chỉ: {{hoaDon_DB.dia_chi_nguoi_nhan}}</p>
+                        <p ng-if="switchGiaoHang">Địa chỉ: {{hoaDon_DB.dia_chi_nguoi_nhan}}</p>
                         <h3>Nội dung đơn hàng</h3>
                         <table class="table">
                             <thead class="table-warning text-white">
