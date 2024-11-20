@@ -22,8 +22,16 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
             // Định dạng ngày dự kiến nhận
             $scope.hoaDon.ngayDuKienNhan = $filter('date')(ngayDuKienNhan, 'dd/MM/yyyy');
 
-            // Tiền giảm
-            $scope.tienVorcher =  ($scope.hoaDon.khuyenMai.gia_tri * $scope.hoaDon.thanh_tien) / 100 ;
+            // Phí ship
+            if ($scope.hoaDon.khuyenMai == null){
+                $scope.tienVorcher = 0 ;
+            }
+            else{
+                // Tiền giảm
+                $scope.tienVorcher =  ($scope.hoaDon.khuyenMai.gia_tri * $scope.hoaDon.thanh_tien) / 100 ;
+            }
+
+
             // Phí ship
             if ($scope.hoaDon.phi_ship == null){
                 return $scope.phiShip = 0;
