@@ -10,6 +10,10 @@ app.config(function($routeProvider) {
             templateUrl : "/customer/views/san-pham.html",
             controller : "SanPhamController"
         })
+        .when("/san-pham/detail/:idSP", {
+            templateUrl : "/customer/views/san-pham-detail.html",
+             controller : "SanPhamDetailController"
+        })
         .when("/cart", {
             templateUrl : "/customer/views/cart.html",
             controller : "SanPhamController"
