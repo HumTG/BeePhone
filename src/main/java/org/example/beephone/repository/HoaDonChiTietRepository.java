@@ -1,6 +1,7 @@
 package org.example.beephone.repository;
 
 import org.example.beephone.entity.hoa_don_chi_tiet;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,26 @@ public interface HoaDonChiTietRepository extends JpaRepository<hoa_don_chi_tiet,
             "LEFT JOIN ctsp.giamGia gg " +
             "WHERE hd.id = :idHD")
     BigDecimal tinhTongTienHoaDon(@Param("idHD") Integer idHD);
+
+
+    // Tìm số lượng hàng bán được trong khoảng ngày
+    @Query("SELECT SUM(hdct.so_luong) FROM hoa_don_chi_tiet hdct " +
+            "JOIN hdct.hoa_don hd " +
+            "WHERE hd.ngay_tao BETWEEN :startDate AND :endDate AND hd.trang_thai = 6")
+    int findSoldQuantityByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+
+    @Query("SELECT c.gia_ban, c.anh, c.sanPham.ten, SUM(h.so_luong) " +
+            "FROM hoa_don_chi_tiet h " +
+            "JOIN h.chi_tiet_san_pham c " +
+            "JOIN h.hoa_don hd " +
+            "WHERE hd.trang_thai = 6 " +
+            "GROUP BY c.gia_ban, c.anh, c.sanPham.ten " +
+            "ORDER BY SUM(h.so_luong) DESC")
+    List<Object[]> findBestSellingProducts(Pageable pageable);
+
+
+
 
 
 }

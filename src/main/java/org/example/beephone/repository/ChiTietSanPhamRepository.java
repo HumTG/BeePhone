@@ -37,4 +37,9 @@ public interface ChiTietSanPhamRepository extends JpaRepository<chi_tiet_san_pha
     @Query("UPDATE chi_tiet_san_pham  c SET c.so_luong = c.so_luong + :soLuong WHERE c.id = :idCTSP")
     void tangSoLuongSPCT(@Param("soLuong") int soLuong,@Param("idCTSP") Integer idCTSP);
 
+
+    @Query("SELECT c, c.sanPham.ten FROM chi_tiet_san_pham c WHERE c.so_luong <= :soLuong")
+    List<Object[]> findLowStockProducts(@Param("soLuong") int soLuong);
+
+
 }

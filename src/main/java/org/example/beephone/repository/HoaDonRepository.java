@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -79,6 +80,27 @@ public interface HoaDonRepository extends JpaRepository<hoa_don,Integer> {
     @Transactional
     @Query("UPDATE hoa_don hd SET hd.khuyenMai = NULL,hd.tien_sau_giam_gia = hd.thanh_tien WHERE hd.id = :idHD")
     void loaiBoKhuyenMaiHD(@Param("idHD") Integer idHD);
+
+
+    // Tìm hóa đơn trong khoảng ngày với trạng thái hoàn thành
+    @Query("SELECT h FROM hoa_don h WHERE h.ngay_tao BETWEEN :startDate AND :endDate AND h.trang_thai = 6")
+    List<hoa_don> findCompletedOrdersByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    // Tìm hóa đơn trong ngày cụ thể với trạng thái hoàn thành
+    @Query("SELECT h FROM hoa_don h WHERE h.ngay_tao = :date AND h.trang_thai = 6")
+    List<hoa_don> findCompletedOrdersByDate(@Param("date") Date date);
+
+    // Đếm số lượng hóa đơn hoàn thành (trạng thái = 6) trong một ngày cụ thể
+    @Query("SELECT COUNT(h) FROM hoa_don h WHERE h.ngay_tao = :date AND h.trang_thai = 6")
+    Integer countByNgayTaoAndTrangThai(@Param("date") Date date);
+
+    @Query("SELECT SUM(hdct.so_luong) FROM hoa_don_chi_tiet hdct JOIN hdct.hoa_don h WHERE h.ngay_tao = :date AND h.trang_thai = 6")
+    Integer sumSanPhamByNgayTao(@Param("date") Date date);
+
+    // Thống kê trạng thái của đơn hàn
+    @Query("SELECT h.trang_thai, COUNT(h) FROM hoa_don h GROUP BY h.trang_thai")
+    List<Object[]> findOrderStatusStatistics();
+
 
 
 }
