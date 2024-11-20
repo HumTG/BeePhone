@@ -697,6 +697,48 @@
 <!-- Kaiadmin DEMO methods, don't include it in your project! -->
 <script src="assets/js/setting-demo.js"></script>
 <!--  <script src="assets/js/demo.js"></script>-->
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Inter', sans-serif;
+    }
+    .card-filter {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .table-employee {
+        background-color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .table-employee thead {
+        background-color: #6a11cb;
+        color: white;
+    }
+    .employee-avatar {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .btn-custom {
+        transition: all 0.3s ease;
+    }
+    .btn-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .page-link {
+        color: #6a11cb;
+    }
+    .page-item.active .page-link {
+        background-color: #6a11cb;
+        border-color: #6a11cb;
+    }
+</style>
 <script>
     $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
         type: "line",

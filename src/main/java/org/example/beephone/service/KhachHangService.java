@@ -73,8 +73,9 @@ public class KhachHangService {
         khachHang.setSdt(khachHangDTO.getSdt());
         khachHang.setMat_khau(randomPassword);
         khachHang.setNgay_sinh(khachHangDTO.getNgaySinh());
-        khachHang.setGioi_tinh(khachHangDTO.getGioiTinh());
-        khachHang.setTrang_thai(khachHangDTO.getTrangThai());
+        khachHang.setGioi_tinh(khachHangDTO.getGioiTinh() == 1 ? 1 : 0);
+        khachHang.setTrang_thai(khachHangDTO.getTrangThai() == null ? 0 :
+                (khachHangDTO.getTrangThai() == 1 ? 1 : 0));
 
         List<dia_chi_khach_hang> diaChiList = new ArrayList<>();
         for (DiaChiDTO diaChiDTO : khachHangDTO.getDiaChiChiTiet()) {
@@ -139,8 +140,9 @@ public class KhachHangService {
             existingCustomer.setEmail(khachHangDTO.getEmail());
             existingCustomer.setSdt(khachHangDTO.getSdt());
             existingCustomer.setNgay_sinh(khachHangDTO.getNgaySinh());
-            existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh());
-            existingCustomer.setTrang_thai(khachHangDTO.getTrangThai());
+            existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh() == 1 ? 1 : 0);
+            existingCustomer.setTrang_thai(khachHangDTO.getTrangThai() == null ? 0 :
+                    (khachHangDTO.getTrangThai() == 1 ? 1 : 0));
 
             // Handle address updates
             if (khachHangDTO.getDiaChiChiTiet() != null) {
@@ -224,7 +226,17 @@ public class KhachHangService {
         return khachHangRepository.findByEmailAndMatKhau(email, matKhau);
     }
 
+    //thêm nhanh 1 khách hàng tại quầy
+    public khach_hang themKhachHangTaiQuay(khach_hang khachHang){
+        khach_hang khachHangNew = new khach_hang();
 
+        khachHangNew.setMa_khach_hang(generateMaKhachHang());
+        khachHangNew.setHo_ten(khachHang.getHo_ten());
+        khachHangNew.setEmail(khachHang.getEmail());
+        khachHangNew.setSdt(khachHang.getSdt());
+        khachHangNew.setGioi_tinh(khachHang.getGioi_tinh());
+        khachHangNew.setTrang_thai(1);
 
-
+        return khachHangRepository.save(khachHangNew);
+    }
 }

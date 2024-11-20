@@ -19,8 +19,8 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         sdt: '',
         matKhau: '',
         ngaySinh: '',
-        gioiTinh: 0,
-        trangThai: 1,
+        gioiTinh: '',
+        trangThai: '',
         diaChiChiTiet: [],
         defaultAddress: null
     };
@@ -110,6 +110,10 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         if (!$scope.khachHang.email) return toastr.warning("Vui lòng nhập email!") && false;
         if (!$scope.khachHang.sdt) return toastr.warning("Vui lòng nhập số điện thoại!") && false;
         if (!$scope.khachHang.ngaySinh) return toastr.warning("Vui lòng chọn ngày sinh!") && false;
+        if ($scope.khachHang.gioiTinh === undefined || $scope.khachHang.gioiTinh === '') {
+            toastr.warning("Vui lòng chọn giới tính!");
+            return false;
+        }
         if (!$scope.khachHang.diaChiChiTiet.length) return toastr.warning("Vui lòng thêm ít nhất một địa chỉ!") && false;
         return true;
     };
@@ -123,8 +127,8 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
             email: $scope.khachHang.email,
             sdt: $scope.khachHang.sdt,
             ngaySinh: $scope.khachHang.ngaySinh,
-            gioiTinh: parseInt($scope.khachHang.gioiTinh) || 0,
-            trangThai: parseInt($scope.khachHang.trangThai) || 1,
+            gioiTinh: $scope.khachHang.gioiTinh === '1' ? 1 : 0,
+            trangThai: parseInt($scope.khachHang.trangThai) || 0,
             diaChiChiTiet: $scope.khachHang.diaChiChiTiet.map(addr => ({
                 diaChiChiTiet: addr.diaChiChiTiet,
                 trangThai: addr.trangThai
@@ -190,8 +194,8 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
                 $scope.khachHang = response.data;
                 if ($scope.khachHang.ngaySinh) $scope.khachHang.ngaySinh = new Date($scope.khachHang.ngaySinh);
                 // Đảm bảo hiển thị đúng giới tính và trạng thái
-                $scope.khachHang.gioiTinh = String($scope.khachHang.gioiTinh); // chuyển thành chuỗi cho binding radio button
-                $scope.khachHang.trangThai = String($scope.khachHang.trangThai); // chuyển thành chuỗi cho binding select option
+                $scope.khachHang.gioiTinh = $scope.khachHang.gioiTinh === 1 ? '1' : '0'; // chuyển thành chuỗi cho binding radio button
+                $scope.khachHang.trangThai = String($scope.khachHang.trangThai === 0 ? '0' : '1'); // chuyển thành chuỗi cho binding select option
             })
             .catch(function (error) {
                 console.error('Lỗi khi lấy dữ liệu khách hàng:', error);
@@ -201,6 +205,12 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
     $scope.initializeEdit = function () {
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get("id");
+
+        // Mặc định set trạng thái là "Kích Hoạt" (1) khi không ở chế độ chỉnh sửa
+        if (!id) {
+            $scope.khachHang.trangThai = '1';  // Set giá trị mặc định là "Kích Hoạt"
+        }
+
         if (id) {
             $scope.isEditing = true;
             $scope.loadCustomerData(id);
@@ -223,8 +233,8 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
             email: $scope.khachHang.email,
             sdt: $scope.khachHang.sdt,
             ngaySinh: $scope.khachHang.ngaySinh,
-            gioiTinh: parseInt($scope.khachHang.gioiTinh) || 0,
-            trangThai: parseInt($scope.khachHang.trangThai) || 1,
+            gioiTinh: $scope.khachHang.gioiTinh === '1' ? 1 : 0,
+            trangThai: parseInt($scope.khachHang.trangThai) || 0,
             diaChiChiTiet: $scope.khachHang.diaChiChiTiet.map(addr => ({
                 diaChiChiTiet: addr.diaChiChiTiet,
                 trangThai: addr.trangThai
@@ -316,10 +326,10 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         // Lọc theo trạng thái
         if ($scope.filters.status !== '') {
             const statusValue = parseInt($scope.filters.status);
-            if (statusValue === 1) {
-                filteredCustomers = filteredCustomers.filter(customer => customer.trangThai === 1);
-            } else if (statusValue === 2) {
+            if (statusValue === 0) {
                 filteredCustomers = filteredCustomers.filter(customer => customer.trangThai === 0);
+            } else if (statusValue === 1) {
+                filteredCustomers = filteredCustomers.filter(customer => customer.trangThai === 1);
             }
         }
 

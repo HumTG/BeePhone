@@ -7,6 +7,12 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     $scope.currentPage = 0;  /// trang của chi tiết sản phẩm
     $scope.pageKhachHang = 0; /// trang của khách hàng
     $scope.switchGiaoHang = false;
+    $scope.khachHang_new = {
+        ho_ten : null,
+        email : null,
+        sdt : null,
+        gioi_tinh : 0
+    }
 
     ///lấy toàn bộ hóa đơn
     $scope.getAllHoaDon = function (){
@@ -347,6 +353,26 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
         });
     }
 
+    //mở modal thêm mới khách hàng
+    $scope.modalThemMoiKhachHang = function (){
+        var modal = new bootstrap.Modal(document.getElementById('themKhachHangModal'));
+        modal.show();
+    }
+
+    /// thêm mới nhanh khách hàng tại quầy
+    $scope.themKhachHangTaiQuay = function (){
+        $http.post("http://localhost:8080/rest/khach-hang/add-khach-hang-tai-quay",$scope.khachHang_new).then(function (respone) {
+            $scope.getKhachHang(0);
+            toastr.success('Thêm khách hàng thành công', 'OK');
+
+            var modalElement = document.getElementById('themKhachHangModal');
+            var Modal = bootstrap.Modal.getInstance(modalElement);
+            Modal.hide(); // đóng modal
+        })  .catch(function (error) {
+            console.error("Đã có lỗi xảy ra khi thêm khách hàng", error);
+        });
+    }
+
     // $scope.selectedKhachHang = null;
     //
     // $scope.checkDiaChi = function () {
@@ -385,6 +411,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     /// xác nhận đơn tại quầy
     $scope.xacNhanHoaDon = function (){
         let loaiHD =  $scope.switchGiaoHang ? 1 : 0;
+        console.log(loaiHD);
         var diaChi = $scope.getFullAddress();
         $scope.hoaDon_DB.dia_chi_nguoi_nhan = diaChi;
         $scope.hoaDon_DB.ten_nguoi_nhan = $scope.hoaDon_DB.khachHang.ho_ten;
@@ -476,7 +503,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 
     // Hàm để cập nhật danh sách quận/huyện dựa trên tỉnh/thành phố được chọn
     $scope.updateDistricts = function() {
-        console.log("Chọn thành phố :" + $scope.selectedCity.name)
+        // console.log("Chọn thành phố :" + $scope.selectedCity.name)
         if ($scope.selectedCity) {
             $scope.districts = $scope.selectedCity.districts;
         } else {
