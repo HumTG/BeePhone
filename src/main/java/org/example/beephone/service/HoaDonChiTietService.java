@@ -236,6 +236,25 @@ public class HoaDonChiTietService {
         if (hoaDon.isPresent()) {
             hoaDonChiTiet.setHoa_don(hoaDon.get());
         }
+
+        // Trừ số lượng của sản phẩm trong kho
+        Optional<chi_tiet_san_pham> chiTietSanPham = ctspRP.findById(hoaDonChiTiet.getChi_tiet_san_pham().getId());
+        if (chiTietSanPham.isPresent()) {
+            chi_tiet_san_pham productDetail = chiTietSanPham.get();
+            int currentQuantity = productDetail.getSo_luong();
+            int orderQuantity = hoaDonChiTiet.getSo_luong();
+
+            if (currentQuantity >= orderQuantity) {
+                // Cập nhật số lượng tồn kho sau khi trừ
+                productDetail.setSo_luong(currentQuantity - orderQuantity);
+                ctspRP.save(productDetail);  // Lưu lại sự thay đổi số lượng
+            } else {
+                throw new IllegalArgumentException("Số lượng sản phẩm không đủ để hoàn thành đơn hàng.");
+            }
+        } else {
+            throw new IllegalArgumentException("Chi tiết sản phẩm không tồn tại.");
+        }
+
         return hdctRP.save(hoaDonChiTiet);
     }
 }

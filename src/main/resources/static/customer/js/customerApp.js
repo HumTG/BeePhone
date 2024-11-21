@@ -65,6 +65,7 @@ app.controller('HomeController', function($scope, $http, $window) {
 
         // Xóa thông tin khỏi localStorage
         localStorage.removeItem("user");
+        localStorage.removeItem("cart");
         // Xóa trạng thái để không hiển thị lại khi tải lại trang
         localStorage.removeItem("loginSuccess");
         // Điều hướng về trang chủ hoặc trang đăng nhập

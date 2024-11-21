@@ -92,6 +92,7 @@ app.controller('SanPhamController', function($scope, $http,$window) {
         localStorage.setItem('cart', JSON.stringify($scope.cart));
         // console.log($scope.cart)
     };
+
     // Hàm đếm số lượng sản phẩm trong giỏ hàng
     $scope.getCartItemCount = function() {
         return $scope.cart.length; // Đếm số mục trong giỏ hàng
@@ -188,8 +189,12 @@ app.controller('SanPhamController', function($scope, $http,$window) {
                 mo_ta: $scope.note,
                 trang_thai: 1
             };
+
+            // Kiểm tra savedUser và gán idKhachHang
+            let idKhachHang = (savedUser && savedUser.id != null) ? savedUser.id : 1;
+
             $http.post('/rest/hoa-don/add', hoaDon ,{
-              params: { idKhachHang : savedUser.id } //  Thêm params `idKhachHang` từ localStorage
+              params: { idKhachHang : idKhachHang } //  Thêm params `idKhachHang` từ localStorage
             }).then(function(response) {
                         if (response.data && response.data.id) {
                             let hoaDonId = response.data.id;
