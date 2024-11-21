@@ -35,6 +35,12 @@
                         <p><strong>Mã sản phẩm:</strong> {{ selectedProduct.ma_san_pham }}</p>
 
                         <!-- Giá sản phẩm -->
+                       <!-- hiện giá gốc bị gạch nếu có giảm giá-->
+                        <p>
+                            <span ng-if="selectedVariant.giamGia">
+                              Giá gốc :  <del> {{selectedVariant.gia_ban | currency:"":0 }} </del>đ
+                          </span>
+                        </p>
                         <p class="text-danger"><strong>Giá:</strong>
                             <span ng-if="selectedVariant">
                                     <span ng-if="selectedVariant.giamGia">
@@ -50,8 +56,8 @@
                         </p>
 
                         <!-- Màu sắc -->
-                        <p><strong>Màu sắc</strong></p>
                         <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            <p><strong>Màu sắc : </strong></p>
                             <div ng-repeat="variant in getUniqueColors()" ng-click="selectColor(variant.mauSac.ten)">
                                 <button ng-class="{'selected': selectedColor === variant.mauSac.ten}"
                                         style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
@@ -61,8 +67,8 @@
                         </div>
 
                         <!-- Kích thước -->
-                        <p><strong>Kích thước</strong></p>
                         <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            <p><strong>Kích thước : </strong></p>
                             <div ng-repeat="variant in selectedProduct.variants | filter: { mauSac: { ten: selectedColor } }"
                                  ng-click="selectSize(variant.kichCo.ten, variant)">
                                 <button ng-class="{'selected': selectedSize === variant.kichCo.ten}"

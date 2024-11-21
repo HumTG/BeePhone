@@ -30,6 +30,7 @@
             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4">
                 <div class="col" ng-repeat="x in sp">
                     <div class="product-item">
+                        <a ng-href="#!san-pham/detail/{{x.id}}" class="product-link">
                         <!-- Nhãn giảm giá (hiển thị ở góc nếu có giảm giá) -->
                         <div ng-if="x.variants[0].giamGia" class="discount-badge">
                             Giảm {{ x.variants[0].giamGia.gia_tri }}%
@@ -60,7 +61,7 @@
                                 </p>
                             </div>
                         </div>
-
+                        </a>
                         <!-- Nút "Mua Ngay" -->
                         <button class="buy-now-btn" ng-click="openModal(x)">MUA NGAY</button>
                     </div>
