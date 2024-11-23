@@ -68,4 +68,11 @@ public class KhuyenMaiService {
     public List<khuyen_mai> getConHan(){
         return kmSer.getKhuyenMaiConHan();
     }
+
+    public Page<khuyen_mai> filtersKhuyenMai(String ngay_bat_dau,String ngay_ket_thuc,Integer trangThai){
+        Pageable kmPage = PageRequest.of(0,20);
+        Date dateForm = (ngay_bat_dau != null && !ngay_bat_dau.isEmpty()) ? Date.valueOf(ngay_bat_dau) : null;
+        Date dateTo = (ngay_ket_thuc != null && !ngay_ket_thuc.isEmpty()) ? Date.valueOf(ngay_ket_thuc) : null;
+       return kmSer.filtersKhuyenMai(dateForm,dateTo,trangThai,kmPage);
+    }
 }

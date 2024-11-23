@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
 import java.util.Map;
 
 @RestController
@@ -62,5 +63,17 @@ public class KhuyenMaiRestController {
     @GetMapping("/rest/khuyen-mai/con-han")
     public ResponseEntity<?> getKMConHan(){
         return ResponseEntity.ok(kmSer.getConHan());
+    }
+
+    @GetMapping("/rest/khuyen-mai/filters")
+    public ResponseEntity<?> filterKhuyenMai(@RequestParam(name = "ngay_bat_dau", required = false) String ngay_bat_dau,
+                                             @RequestParam(name = "ngay_ket_thuc", required = false) String ngay_ket_thuc,
+                                             @RequestParam(name = "trang_thai", required = false) Integer trang_thai){
+        try {
+            return ResponseEntity.ok(kmSer.filtersKhuyenMai(ngay_bat_dau,ngay_ket_thuc,trang_thai));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi trong lúc lọc dữ liệu : " + e.getMessage());
+        }
     }
 }

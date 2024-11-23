@@ -178,5 +178,51 @@ app.controller('KhuyenMaiController',function ($scope,$http){
 
     }
 
+    ///filter khuyến mại
+    $scope.filterKM = {
+        ngay_bat_dau: null,
+        ngay_ket_thuc: null,
+        trang_thai : null
+    }
+
+    $scope.searchKhuyenMai = function (){
+        var ngayBatDau = null;
+        var ngayKetThuc = null;
+
+        if ($scope.filterKM.ngay_bat_dau != null){
+                  ngayBatDau = new Date($scope.filterKM.ngay_bat_dau).toISOString().split('T')[0];
+        }
+        if ($scope.filterKM.ngay_ket_thuc != null){
+            ngayKetThuc = new Date($scope.filterKM.ngay_ket_thuc).toISOString().split('T')[0];
+        }
+
+        $http({
+            method: 'GET',
+            url : 'http://localhost:8080/rest/khuyen-mai/filters',
+            params: {
+                ngay_bat_dau : ngayBatDau,
+                ngay_ket_thuc : ngayKetThuc,
+                trang_thai : $scope.filterKM.trang_thai
+            }
+        }).then(function(response) {
+            if (response.data.content.length == 0){
+                toastr.warning('Không tìm thấy khuyến mại thỏa mãn', 'OK');
+            }
+            else{
+                $scope.listKM = response.data.content;
+                toastr.success('Lọc thành công', 'OK');
+            }
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
+        });
+
+    }
+
+    $scope.resetFilters = function (){
+        $scope.filterKM.ngay_bat_dau = null;
+        $scope.filterKM.ngay_ket_thuc = null;
+        $scope.filterKM.trang_thai =null;
+        $scope.getData($scope.currentPage);
+    }
 
 })

@@ -292,55 +292,42 @@
             <h5><i class="bi bi-funnel-fill"></i>Bộ lọc</h5>
             <hr>
             <div class="row mb-3">
-              <!-- Tìm kiếm -->
-              <div class="col-md-4">
-                <label for="search" class="form-label">Tìm kiếm:</label>
-                <input type="text" class="form-control" id="search"
-                       placeholder="Tìm kiếm tên và sđt..."
-                       ng-model="filter.ten_sdt" />
-              </div>
 
-              <!-- Ngày sinh từ -->
-              <div class="col-md-3">
-                <label for="dob_from" class="form-label">Ngày sinh từ:</label>
+              <!-- Ngày bắt đầu -->
+              <div class="col-md-5">
+                <label for="dob_from" class="form-label">Ngày bắt đầu:</label>
                 <input type="date" class="form-control" id="dob_from"
-                       ng-model="filter.ngay_sinh_tu" />
+                       ng-model="filterKM.ngay_bat_dau" />
               </div>
 
-              <!-- Ngày sinh đến -->
-              <div class="col-md-3">
-                <label for="dob_to" class="form-label">Ngày sinh đến:</label>
+              <!-- Ngày kết thúc -->
+              <div class="col-md-5">
+                <label for="dob_to" class="form-label">Ngày kết thúc:</label>
                 <input type="date" class="form-control" id="dob_to"
-                       ng-model="filter.ngay_sinh_den" />
+                       ng-model="filterKM.ngay_ket_thuc" />
               </div>
             </div>
 
             <div class="row mb-3">
               <!-- Trạng thái -->
-              <div class="col-md-2">
+              <div class="col-md-4">
                 <label for="status" class="form-label">Trạng thái:</label>
                 <select class="form-select" id="status"
-                        ng-model="filter.trang_thai">
-                  <option value="">Tất cả</option>
-                  <option value="1">Kích hoạt</option>
-                  <option value="0">Không kích hoạt</option>
+                        ng-model="filterKM.trang_thai">
+                  <option ng-value="null">Tất cả</option>
+                  <option ng-value="0">Hết hạn</option>
+                  <option ng-value="1">Còn hạn</option>
+                  <option ng-value="2">Chưa tới hạn</option>
                 </select>
               </div>
 
-              <!-- Khoảng tuổi -->
-              <div class="col-md-8">
-                <label for="ageRange" class="form-label">Khoảng tuổi:</label>
-                <input type="range" class="form-range" id="ageRange"
-                       min="18" max="60" ng-model="filter.khoang_tuoi" />
-                <p>Tuổi: {{filter.khoang_tuoi}}</p>
-              </div>
             </div>
 
             <div class="d-flex justify-content-center">
               <!-- Nút Tìm kiếm và Làm mới -->
               <button type="button" class="btn btn-primary me-2"
-                      ng-click="searchNhanVien()">Tìm kiếm</button>
-              <button type="button" class="btn btn-danger" ng-click="resetFilter()">Làm mới bộ lọc</button>
+                      ng-click="searchKhuyenMai()">Tìm kiếm</button>
+              <button type="button" class="btn btn-danger" ng-click="resetFilters()">Làm mới bộ lọc</button>
             </div>
           </div>
 
