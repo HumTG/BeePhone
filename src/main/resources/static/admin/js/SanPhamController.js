@@ -79,9 +79,16 @@ app.controller('SanPhamController', function($scope, $http) {
     // Gọi API khi khởi tạo controller
     $scope.getNhaSanXuat();
 
+    // Tạo đối tượng nsx mới
+    $scope.new_Nsx = {
+        ma_nha_san_xuat : "",
+        ten : "",
+        trang_thai : 1
+    }
     // Mở modal thêm nhà sản xuất mới
     $scope.openAddNhaSanXuatModal = function() {
-        console.log("Open modal to add new nhà sản xuất");
+        var modal = new bootstrap.Modal(document.getElementById('NsxModal'));
+        modal.show();
     };
 
     // Kiểm tra nhà sản xuất đã chọn
@@ -89,9 +96,27 @@ app.controller('SanPhamController', function($scope, $http) {
         console.log("ID của nhà sản xuất đã chọn:", $scope.selectedNhaSanXuatId);
     };
 
+    // Thêm nhà sản xuất mới
+    $scope.themNhaSanXuat = function (){
+        if ($scope.new_Nsx.ma_nha_san_xuat.trim().length == 0 ||$scope.new_Nsx.ten.trim().length == 0){
+            toastr.warning("Hãy nhập đủ dữ liệu NSX","Warning")
+            return;
+        }
+
+        $http.post("http://localhost:8080/rest/add-nha-san-xuat",$scope.new_Nsx).then(function (respone) {
+            toastr.success('Thêm nsx thành công', 'OK');
+            $scope.getNhaSanXuat();
+            var modalElement = document.getElementById('NsxModal');
+            var addModal = bootstrap.Modal.getInstance(modalElement);
+            addModal.hide();
+        })  .catch(function (error) {
+            console.error("Đã có lỗi xảy ra khi thêm nsx", error);
+        });
+    };
+
     // END nhà sản xuất
 
-    // Nhà chất liệu
+    // Chất liệu
     $scope.chatLieuList = []; // Danh sách chất liệu
     $scope.selectedChatLieuId = null; // ID của chất liệu đã chọn
 
@@ -109,14 +134,40 @@ app.controller('SanPhamController', function($scope, $http) {
     // Gọi API khi khởi tạo controller
     $scope.getChatLieu();
 
+    // Tạo đối tượng chất liệu mới
+    $scope.new_chat_lieu = {
+        ma_chat_lieu : "",
+        ten : "",
+        trang_thai : 1
+    }
+
     // Mở modal thêm chất liệu mới
     $scope.openAddChatLieuModal = function() {
-        console.log("Open modal to add new chất liệu");
+        var modal = new bootstrap.Modal(document.getElementById('CLModal'));
+        modal.show();
     };
 
     // Kiểm tra chất liệu đã chọn
     $scope.printSelectedChatLieuId = function() {
         console.log("ID của chất liệu đã chọn:", $scope.selectedChatLieuId);
+    };
+
+    // Thêm chất liệu mới
+    $scope.themChatLieu = function (){
+        if ($scope.new_chat_lieu.ma_chat_lieu.trim().length == 0 ||$scope.new_chat_lieu.ten.trim().length == 0){
+            toastr.warning("Hãy nhập đủ dữ liệu chất liệu","Warning")
+            return;
+        }
+
+        $http.post("http://localhost:8080/rest/add-chat-lieu",$scope.new_chat_lieu).then(function (respone) {
+            toastr.success('Thêm chất liệu thành công', 'OK');
+            $scope.getChatLieu();
+            var modalElement = document.getElementById('CLModal');
+            var addModal = bootstrap.Modal.getInstance(modalElement);
+            addModal.hide();
+        })  .catch(function (error) {
+            console.error("Đã có lỗi xảy ra khi thêm chất liệu", error);
+        });
     };
     // End chất liệu
 

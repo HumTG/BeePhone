@@ -90,7 +90,7 @@
                               <select class="form-select" ng-model="selectedNhaSanXuatId" ng-options="nsx.id as nsx.ten for nsx in nhaSanXuatList" required>
                                 <option value="" disabled selected>Chọn nhà sản xuất</option>
                               </select>
-                              <button type="button" class="btn btn-primary" ng-click="printSelectedNhaSanXuatId()">+</button>
+                              <button type="button" class="btn btn-primary" ng-click="openAddNhaSanXuatModal()">+</button>
                             </div>
                           </div>
                         </div>
@@ -126,6 +126,45 @@
 
                 </div>
               </div>
+<!--            modal thêm nhà sản xuất-->
+            <div class="modal fade" id="NsxModal" tabindex="-1" aria-labelledby="sizeModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3>Thêm nhà sản xuất</h3>
+                  </div>
+                  <div class="modal-body">
+                    Mã nhà sản xuất : <input type="text" class="form-control" ng-model="new_Nsx.ma_nha_san_xuat"/>
+                    Tên nhà sản xuất : <input type="text" class="form-control" ng-model="new_Nsx.ten" />
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" ng-click="themNhaSanXuat()">Thêm</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+<!--            End modal nhà sản xuất-->
+
+            <!-- modal thêm chất liệu-->
+            <div class="modal fade" id="CLModal" tabindex="-1" aria-labelledby="sizeModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3>Thêm chất liệu</h3>
+                  </div>
+                  <div class="modal-body">
+                    Mã chất liệu : <input type="text" class="form-control" ng-model="new_chat_lieu.ma_chat_lieu"/>
+                    Tên chất liệu : <input type="text" class="form-control" ng-model="new_chat_lieu.ten"/>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" ng-click="themChatLieu()">Thêm</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--            End modal chất liệu-->
           </div>
 
           <!--    Biến thể        -->
