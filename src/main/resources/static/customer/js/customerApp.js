@@ -71,6 +71,8 @@ app.controller('HomeController', function($scope, $http, $window) {
         // Điều hướng về trang chủ hoặc trang đăng nhập
         toastr.success('Đăng xuất thành công!','Success');
     };
+
+    // Các sản phẩm bán chạy
 });
 
 

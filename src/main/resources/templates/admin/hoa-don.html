@@ -297,18 +297,20 @@
                 <!-- Tìm kiếm -->
                 <div class="col-md-3">
                   <label for="search" class="form-label">Tìm kiếm:</label>
-                  <input type="text" class="form-control" id="search" placeholder="Nhập">
+                  <input type="text" class="form-control" id="search" placeholder="Nhập mã hóa đơn, tên khách hàng, tên nhân viên">
                 </div>
 
                 <!-- Loại đơn -->
                 <div class="col-md-3">
                   <label for="orderType" class="form-label">Loại đơn:</label>
                   <select class="form-select" id="orderType">
-                    <option selected>Loại đơn</option>
+                    <option value="">Chọn loại đơn</option> <!-- Thêm giá trị mặc định là rỗng -->
                     <option value="1">Tại quầy</option>
                     <option value="2">Online</option>
+                    <option value="3">Giao hàng</option>
                   </select>
                 </div>
+
 
                 <!-- Ngày bắt đầu -->
                 <div class="col-md-3">
@@ -325,12 +327,13 @@
 
               <!-- Nút Tìm kiếm và Làm mới -->
               <div class="d-flex justify-content-center mt-3">
-                <button type="button" class="btn btn-primary me-2" ng-click="searchSanPham()">Tìm kiếm</button>
+                <button type="button" class="btn btn-primary me-2" ng-click="searchHoaDons()">Tìm kiếm</button>
                 <button type="button" class="btn btn-danger" ng-click="resetFilter()">Làm mới</button>
               </div>
             </form>
           </div>
           <!-- END Bộ lọc -->
+
 
 
           <!--     Danh sách hóa đơn            -->
@@ -341,14 +344,24 @@
 
             <!-- Thanh tab trạng thái -->
             <div class="d-flex flex-wrap mb-3">
-              <button type="button" class="btn btn-outline-secondary me-2 mb-2" ng-class="{'active': selectedStatus === null}" ng-click="filterByStatus(null)">Tất cả</button>
+              <!-- Nút "Tất cả" -->
+              <button type="button" class="btn btn-outline-secondary me-2 mb-2"
+                      ng-class="{'active': selectedStatus === null}"
+                      ng-click="filterByStatus(null)">
+                Tất cả
+              </button>
+
+              <!-- Các nút trạng thái -->
               <button type="button" class="btn btn-outline-secondary me-2 mb-2"
                       ng-repeat="status in statuses"
                       ng-click="filterByStatus(status.value)"
                       ng-class="{'active': selectedStatus === status.value}">
                 {{ status.label }}
+                <!-- Hiển thị số lượng hóa đơn nếu có -->
                 <span class="badge bg-danger" ng-if="status.count > 0">{{ status.count }}</span>
               </button>
+
+
 
             </div>
             <hr>

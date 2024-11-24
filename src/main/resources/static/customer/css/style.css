@@ -1278,6 +1278,120 @@ button {
   transition: background-color 0.3s, color 0.3s; /* Hiệu ứng mượt */
 }
 
+/* CSS sản phẩm bán chạy*/
+
+.product-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-card .product-discount {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ff6f61;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.product-card .product-name {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+}
+
+.product-card .product-rating {
+  margin-top: 5px;
+  color: #f39c12;
+}
+
+.product-card .product-price {
+  margin-top: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: red;
+}
+
+.product-card .star {
+  color: #f39c12;
+  margin-right: 2px;
+}
+
+.product-card .rating-text {
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+/* Section Tuyển dụng */
+#tuyen-dung {
+  background-color: #f9f9f9;
+  padding: 50px 0;
+}
+
+/* Tiêu đề phần tuyển dụng */
+#tuyen-dung .section-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+#tuyen-dung .section-subtitle {
+  font-size: 1.2em;
+  color: #555;
+  margin-bottom: 40px;
+}
+
+/* Thẻ card công việc */
+.job-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.job-card:hover {
+  transform: translateY(-10px);
+}
+
+/* Nội dung thẻ card */
+.job-card .card-body {
+  padding: 20px;
+}
+
+.job-card .card-title {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.job-card .card-text {
+  font-size: 1em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.job-card .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  font-weight: 600;
+}
+
+/* Liên kết gửi hồ sơ */
+#tuyen-dung .text-center a {
+  color: #007bff;
+  font-weight: 600;
+}
+
+
+
 
 
 

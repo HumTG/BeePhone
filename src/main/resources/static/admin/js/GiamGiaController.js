@@ -13,6 +13,52 @@ app.controller('GiamGiaController',function ($scope,$http){
         trang_thai : 1
     }
 
+    $scope.giamGia = {
+        ten: '',
+        gia_tri: '',
+        ngay_bat_dau: '',
+        ngay_ket_thuc: ''
+    };
+
+    $scope.isDateError = false;
+    $scope.isGiaTriError = false;
+
+    // Hàm kiểm tra ngày khi submit form
+    $scope.checkNgay = function() {
+        if ($scope.giamGia.ngay_bat_dau && $scope.giamGia.ngay_ket_thuc) {
+            const ngayBatDau = new Date($scope.giamGia.ngay_bat_dau);
+            const ngayKetThuc = new Date($scope.giamGia.ngay_ket_thuc);
+
+            // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
+            if (ngayBatDau > ngayKetThuc) {
+                $scope.isDateError = true;
+                // Hiển thị thông báo toast
+                $scope.showToast("Ngày bắt đầu không được lớn hơn ngày kết thúc.");
+            } else {
+                $scope.isDateError = false;
+            }
+        }
+    };
+
+    // Hàm kiểm tra giá trị giảm
+    $scope.checkGiaTri = function() {
+        if ($scope.giamGia.gia_tri > 100) {
+            $scope.isGiaTriError = true;
+            // Hiển thị thông báo toast
+            $scope.showToast("Giá trị giảm không được lớn hơn 100.");
+        } else {
+            $scope.isGiaTriError = false;
+        }
+    };
+
+    // Hàm hiển thị thông báo toast
+    $scope.showToast = function(message) {
+        // Bạn có thể sử dụng thư viện toast như toastr hoặc ngToast
+        // Ví dụ sử dụng toastr:
+        toastr.error(message);
+    };
+
+
     // Hàm để lấy dữ liệu từ API
     $scope.getData = function(page) {
         $http.get(host, { params: { page: page } })
@@ -141,19 +187,29 @@ app.controller('GiamGiaController',function ($scope,$http){
 
     // Thêm đợt giảm giá và áp dụng cho biến thể
     $scope.addGiamGia = function () {
-        $http.post('/rest/giam-gia', $scope.giamGia)
-            .then(function (response) {
-                const discount = response.data;
-                // Cập nhật các biến thể đã chọn với id_giam_gia
-                const selectedVariantIds = $scope.selectedVariants
-                    .filter(variant => variant.selected)
-                    .map(variant => variant.id);
 
-                if (selectedVariantIds.length > 0) {
+        // Kiểm tra các ngày khi submit form
+        $scope.checkNgay();
+        $scope.checkGiaTri();
+
+        // Kiểm tra nếu chưa chọn bất kỳ biến thể sản phẩm nào
+        const selectedVariantIds = $scope.selectedVariants
+            .filter(variant => variant.selected)
+            .map(variant => variant.id);
+
+        if (selectedVariantIds.length === 0) {
+            toastr.error("Vui lòng chọn ít nhất một biến thể sản phẩm!");
+            return; // Dừng thực hiện nếu không có biến thể nào được chọn
+        }
+
+        if ($scope.giamGiaForm.$valid && !$scope.isDateError && !$scope.isGiaTriError) {
+            // Logic lưu thông tin
+            $http.post('/rest/giam-gia', $scope.giamGia)
+                .then(function (response) {
+                    const discount = response.data;
+                    // Cập nhật các biến thể đã chọn với id_giam_gia
                     $http.put(`/rest/giam-gia/${discount.id}/apply-to-variants`, selectedVariantIds)
                         .then(function () {
-                            // Lưu thông báo vào localStorage
-                            localStorage.setItem('successMessage', 'Thêm đợt giảm giá thành công!');
                             // Chuyển hướng đến trang quản lý đợt giảm giá
                             window.location.href = "http://localhost:8080/admin/dot-giam-gia";
                         })
@@ -161,17 +217,18 @@ app.controller('GiamGiaController',function ($scope,$http){
                             console.error("Lỗi khi cập nhật biến thể sản phẩm:", error);
                             toastr.error("Cập nhật biến thể sản phẩm thất bại!");
                         });
-                } else {
-                    // Lưu thông báo nếu không có biến thể nào được chọn
-                    localStorage.setItem('successMessage', 'Thêm đợt giảm giá thành công!');
-                    window.location.href = "http://localhost:8080/admin/dot-giam-gia";
-                }
-            })
-            .catch(function (error) {
-                console.error("Lỗi khi thêm đợt giảm giá:", error);
-                toastr.error("Thêm đợt giảm giá thất bại!");
-            });
+                })
+                .catch(function (error) {
+                    console.error("Lỗi khi thêm đợt giảm giá:", error);
+                    toastr.error("Thêm đợt giảm giá thất bại!");
+                });
+            console.log("Dữ liệu hợp lệ và đã được lưu!");
+        } else {
+            console.log("Dữ liệu không hợp lệ, không thể lưu.");
+        }
+
     };
+
 
     // Load danh sách sản phẩm khi trang được tải
         $scope.loadProducts($scope.currentSanPhamPage);

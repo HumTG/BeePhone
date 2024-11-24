@@ -1,6 +1,7 @@
 package org.example.beephone.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.example.beephone.entity.*;
@@ -165,16 +166,51 @@ public class HoaDonService {
 
     // quản lý hóa đơn ( bán hàng online , danh sách các hóa đơn)
 
-    public Page<hoa_don> getHoaDonByStatus(Integer page, Integer size, Integer trangThai) {
+    public Page<hoa_don> getHoaDonByStatus(Integer page, Integer size, String search, Integer orderType, String startDate, String endDate, Integer trangThai) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Specification<hoa_don> spec = (root, query, criteriaBuilder) -> {
-            if (trangThai != null) {
-                return criteriaBuilder.equal(root.get("trang_thai"), trangThai);
+            Predicate predicate = criteriaBuilder.conjunction();
+
+            // Lọc theo mã hóa đơn, tên khách hàng, tên nhân viên
+            if (search != null && !search.isEmpty()) {
+                predicate = criteriaBuilder.and(predicate,
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(root.get("ma_hoa_don"), "%" + search + "%"),
+                                criteriaBuilder.like(root.get("khachHang").get("ho_ten"), "%" + search + "%"),
+                                criteriaBuilder.like(root.get("nhanVien").get("ho_ten"), "%" + search + "%")
+                        )
+                );
             }
-            return criteriaBuilder.conjunction();
+
+            // Lọc theo loại đơn (1: Tại quầy, 2: Online, 3: Giao hàng)
+            if (orderType != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("loai_hoa_don"), orderType));
+            }
+
+            // Lọc theo trạng thái hóa đơn
+            if (trangThai != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("trang_thai"), trangThai));
+            }
+
+            // Lọc theo ngày tạo (từ ngày bắt đầu đến ngày kết thúc)
+            if (startDate != null && !startDate.isEmpty()) {
+                Date start = Date.valueOf(startDate);
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(root.get("ngay_tao"), start));
+            }
+            if (endDate != null && !endDate.isEmpty()) {
+                Date end = Date.valueOf(endDate);
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(root.get("ngay_tao"), end));
+            }
+
+            return predicate;
         };
+
         return hdRP.findAll(spec, pageable);
     }
+
+
+
+
 
     // Cập nhật lại cột thành tiền , tiền sau giảm giá hóa đơn
     @Transactional

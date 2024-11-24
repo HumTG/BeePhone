@@ -1,8 +1,8 @@
 <div ng-include="'/customer/views/components/sidebar.html'"></div>
 <!-- components/home.html -->
 <section id="mobile-products" class="product-store position-relative padding-large no-padding-top">
-    <div class="container">
-        <!-- Sản phẩm bán chạy   -->
+    <div class="container" ng-controller="SanPhamController">
+        <!-- Sản phẩm bán chạy -->
         <div class="display-header d-flex justify-content-between pb-3">
             <h2 class="display-7 text-dark text-uppercase">Sản phẩm bán chạy</h2>
             <div class="btn-right">
@@ -11,9 +11,83 @@
         </div>
         <br>
         <div ng-controller="HomeController" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+            <div class="col" ng-repeat="product in products">
+                <div class="card product-card">
+                    <!-- Hình ảnh sản phẩm -->
+                    <img class="card-img-top" ng-src=" /images/{{ product.anh }}" alt="{{ product.tenSanPham }}" style="width: 150px">
 
+                    <!-- Thông tin sản phẩm -->
+                    <div class="card-body">
 
+                        <!-- Tên sản phẩm -->
+                        <h5 class="card-title product-name">{{ product.tenSanPham }}</h5>
+
+                        <!-- Đánh giá sao -->
+                        <div class="product-rating">
+                            <span ng-repeat="star in [] | range:5" class="star">&#9733;</span>
+                            <span class="rating-text">({{ product.soLuongDaBan }} đã bán)</span>
+                        </div>
+
+                        <!-- Giá sản phẩm -->
+                        <div class="product-price">
+                            <span class="price">{{ product.giaBan | vndCurrency }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="swiper-pagination position-absolute text-center"></div>
 </section>
+
+<!-- Tuyển dụng -->
+<section id="tuyen-dung" class="padding-large">
+    <div class="container">
+        <h2 class="section-title text-center">Gia nhập đội ngũ của chúng tôi</h2>
+        <p class="section-subtitle text-center">Chúng tôi tìm kiếm những người đam mê công nghệ và thiết kế, cùng chúng tôi mang đến những sản phẩm ốp điện thoại chất lượng cho khách hàng!</p>
+
+        <!-- Danh sách công việc -->
+        <div class="row">
+            <!-- Công việc 1 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card job-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Chuyên viên bán hàng online</h5>
+                        <p class="card-text">Bạn yêu thích bán hàng trực tuyến và có khả năng tư vấn sản phẩm ốp điện thoại? Hãy gia nhập đội ngũ của chúng tôi để mang đến những lựa chọn tuyệt vời cho khách hàng.</p>
+                        <a href="#" class="btn btn-primary">Ứng tuyển ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Công việc 2 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card job-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Nhân viên kho và giao nhận</h5>
+                        <p class="card-text">Chúng tôi cần một nhân viên kho có khả năng quản lý và vận chuyển các sản phẩm ốp điện thoại đến khách hàng nhanh chóng và chính xác.</p>
+                        <a href="#" class="btn btn-primary">Ứng tuyển ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Công việc 3 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card job-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Designer ốp điện thoại</h5>
+                        <p class="card-text">Nếu bạn đam mê thiết kế và muốn tạo ra những mẫu ốp điện thoại độc đáo và sáng tạo, hãy gia nhập đội ngũ thiết kế của chúng tôi!</p>
+                        <a href="#" class="btn btn-primary">Ứng tuyển ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mô tả thêm -->
+        <div class="text-center mt-5">
+            <p>Không tìm thấy công việc phù hợp? <a href="#">Gửi hồ sơ của bạn cho chúng tôi</a> để chúng tôi có thể liên lạc khi có cơ hội mới!</p>
+        </div>
+    </div>
+</section>
+
+
+

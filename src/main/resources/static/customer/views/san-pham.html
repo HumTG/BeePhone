@@ -2,7 +2,7 @@
 
 <div class="container" >
     <div class="row">
-        <div class="col-3">Tìm kiểm sản phẩm</div>
+        <div class="col-3">Lọc Sản Phẩm</div>
         <div class="col-9">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -13,16 +13,32 @@
         </div>
     </div>
     <div class="row">
-        <!-- List Group -->
+        <!-- Lọc sản phẩm -->
         <div class="col-3">
-            <ul class="list-group">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-                <li class="list-group-item">A fourth item</li>
-                <li class="list-group-item">And a fifth one</li>
-                <li class="list-group-item">And a fifth one</li>
-            </ul>
+            <div class="col-md-3">
+                <!-- Lọc theo Màu sắc -->
+                <div class="form-group">
+                    <label for="colorFilter">Màu sắc</label>
+                    <select id="colorFilter"  class="form-control">
+                        <option value="">Tất cả</option>
+                        <option ng-repeat="color in colors" value="{{color.id}}">{{color.ten}}</option>
+                    </select>
+                </div>
+
+                <!-- Lọc theo Kích thước -->
+                <div class="form-group">
+                    <label for="sizeFilter">Kích thước</label>
+                    <select id="sizeFilter" class="form-control">
+                        <option value="">Tất cả</option>
+                        <option ng-repeat="size in sizes" value="{{size.id}}">{{size.ten}}</option>
+                    </select>
+                </div>
+
+                <!-- Nút Lọc --><br>
+                <button  class="btn btn-primary">Lọc</button>
+            </div>
+
+
         </div>
 
         <!-- Trưng bày sản phẩm -->
@@ -68,7 +84,7 @@
                 </div>
             </div>
 
-            <!--     Thanh chuyển trang        -->
+            <!-- Thanh chuyển trang -->
             <div class="mx-auto p-2" style="width: 200px;">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
@@ -90,7 +106,8 @@
                     </ul>
                 </nav>
             </div>
-            <!--    End thanh chuyển trang        -->
+            <!-- End thanh chuyển trang -->
+
 
         </div>
     </div>

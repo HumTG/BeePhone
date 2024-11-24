@@ -44,7 +44,7 @@ public class SanPhamService {
 //    }
 //
     public Page<san_pham> getSanPhamWithPagination(int page, int size) {
-        // Sử dụng PageRequest với sắp xếp theo id giảm dần
+        // Lấy dữ liệu phân trang mà không áp dụng bộ lọc
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
         return sanPhamRepository.findAll(pageRequest);
     }

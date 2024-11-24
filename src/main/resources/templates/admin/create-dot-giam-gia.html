@@ -292,25 +292,38 @@
                         <div class="col-md-4">
                             <div class="alert alert-light" role="alert">
                                 <h3 class="text-center">Thêm đợt giảm giá</h3>
-                                <form ng-submit="addGiamGia()">
+                                <form ng-submit="addGiamGia()" name="giamGiaForm" novalidate>
                                     <div class="mb-3">
                                         <label for="tenKhuyenMai" class="form-label">Tên khuyến mại</label>
-                                        <input type="text" class="form-control" id="tenKhuyenMai" ng-model="giamGia.ten" placeholder="Tên khuyến mại">
+                                        <input type="text" class="form-control" id="tenKhuyenMai" ng-model="giamGia.ten" placeholder="Tên khuyến mại" ng-required="true">
+                                        <div ng-show="giamGiaForm.tenKhuyenMai.$touched && giamGiaForm.tenKhuyenMai.$invalid" class="text-danger">
+                                            Tên khuyến mại không được để trống.
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="giaTriGiam" class="form-label">Giá trị giảm</label>
-                                        <input type="number" class="form-control" id="giaTriGiam" ng-model="giamGia.gia_tri" placeholder="Giá trị giảm">
+                                        <input type="number" class="form-control" id="giaTriGiam" ng-model="giamGia.gia_tri" placeholder="Giá trị giảm" ng-required="true" ng-min="0" ng-max="100">
+                                        <div ng-show="giamGiaForm.giaTriGiam.$touched && giamGiaForm.giaTriGiam.$invalid" class="text-danger">
+                                            Giá trị giảm không được để trống và không được âm. Giá trị giảm không được lớn hơn 100.
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="ngayBatDau" class="form-label">Ngày bắt đầu</label>
-                                        <input type="date" class="form-control" id="ngayBatDau" ng-model="giamGia.ngay_bat_dau">
+                                        <input type="date" class="form-control" id="ngayBatDau" ng-model="giamGia.ngay_bat_dau" ng-required="true">
+                                        <div ng-show="giamGiaForm.ngayBatDau.$touched && giamGiaForm.ngayBatDau.$invalid" class="text-danger">
+                                            Ngày bắt đầu không được để trống.
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="ngayKetThuc" class="form-label">Ngày kết thúc</label>
-                                        <input type="date" class="form-control" id="ngayKetThuc" ng-model="giamGia.ngay_ket_thuc">
+                                        <input type="date" class="form-control" id="ngayKetThuc" ng-model="giamGia.ngay_ket_thuc" ng-required="true">
+                                        <div ng-show="giamGiaForm.ngayKetThuc.$touched && giamGiaForm.ngayKetThuc.$invalid" class="text-danger">
+                                            Ngày kết thúc không được để trống.
+                                        </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Lưu</button>
+                                    <button type="submit" class="btn btn-primary" ng-disabled="giamGiaForm.$invalid || isDateError || isGiaTriError">Lưu</button>
                                 </form>
+
                             </div>
                         </div>
 

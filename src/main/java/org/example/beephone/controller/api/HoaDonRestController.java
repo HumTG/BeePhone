@@ -122,10 +122,16 @@ public class HoaDonRestController {
     @GetMapping("/list")
     public ResponseEntity<?> getHoaDon(@RequestParam(defaultValue = "0") Integer page,
                                        @RequestParam(defaultValue = "10") Integer size,
-                                       @RequestParam(required = false) Integer trangThai) {
-        Page<hoa_don> hoaDons = hoaDonService.getHoaDonByStatus(page, size, trangThai);
+                                       @RequestParam(required = false) String search,
+                                       @RequestParam(required = false) Integer orderType,
+                                       @RequestParam(required = false) String startDate,
+                                       @RequestParam(required = false) String endDate,
+                                       @RequestParam(required = false) Integer trangThai) {  // Thêm tham số trangThai
+        Page<hoa_don> hoaDons = hoaDonService.getHoaDonByStatus(page, size, search, orderType, startDate, endDate, trangThai);  // Truyền trangThai vào service
         return ResponseEntity.ok(hoaDons);
     }
+
+
 
     @GetMapping("/{id}/detail")
     public ResponseEntity<?> getHoaDonDetail(@PathVariable int id) {

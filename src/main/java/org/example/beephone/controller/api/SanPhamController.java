@@ -23,19 +23,15 @@ public class SanPhamController {
     @Autowired
     private SanPhamRepository sanPhamRepository;
 
-//    @GetMapping("/top-5-best-seller")
-//    public ResponseEntity<?> getTop5(){
-//        return ResponseEntity.ok(service.getTop5());
-//    }
-//
     @GetMapping("/rest/san-pham")
-    public ResponseEntity<Page<san_pham>> getSanPhamWithPagination(
+    public ResponseEntity<Page<san_pham>> getSanPhamWithPaginationAndFilters(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {
 
         Page<san_pham> sanPhams = service.getSanPhamWithPagination(page, size);
         return ResponseEntity.ok(sanPhams);
     }
+
 
     @GetMapping("/rest/san-pham/list")
     public Page<SanPhamDTO> getSanPhamWithSoLuongTon(

@@ -38,12 +38,12 @@ public interface HoaDonChiTietRepository extends JpaRepository<hoa_don_chi_tiet,
     int findSoldQuantityByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 
-    @Query("SELECT c.gia_ban, c.anh, c.sanPham.ten, SUM(h.so_luong) " +
+    @Query("SELECT c.sanPham.id, c.gia_ban, c.anh, c.sanPham.ten, SUM(h.so_luong) " +
             "FROM hoa_don_chi_tiet h " +
             "JOIN h.chi_tiet_san_pham c " +
             "JOIN h.hoa_don hd " +
             "WHERE hd.trang_thai = 6 " +
-            "GROUP BY c.gia_ban, c.anh, c.sanPham.ten " +
+            "GROUP BY c.sanPham.id, c.gia_ban, c.anh, c.sanPham.ten " +
             "ORDER BY SUM(h.so_luong) DESC")
     List<Object[]> findBestSellingProducts(Pageable pageable);
 

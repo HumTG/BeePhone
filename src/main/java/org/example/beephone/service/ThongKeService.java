@@ -73,7 +73,6 @@ public class ThongKeService {
         return hoaDonChiTietRepository.findSoldQuantityByDateRange(firstDayOfMonth, lastDayOfMonth);
     }
 
-    // Sản phẩm bán chạy
     public List<Map<String, Object>> getBestSellingProducts(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         List<Object[]> rawData = hoaDonChiTietRepository.findBestSellingProducts(pageable);
@@ -81,14 +80,16 @@ public class ThongKeService {
         List<Map<String, Object>> result = new ArrayList<>();
         for (Object[] row : rawData) {
             Map<String, Object> productData = new HashMap<>();
-            productData.put("giaBan", row[0]); // Giá bán
-            productData.put("anh", row[1]);   // Ảnh sản phẩm
-            productData.put("tenSanPham", row[2]); // Tên sản phẩm
-            productData.put("soLuongDaBan", row[3]); // Số lượng đã bán
+            productData.put("id", row[0]);           // ID sản phẩm
+            productData.put("giaBan", row[1]);       // Giá bán
+            productData.put("anh", row[2]);          // Ảnh sản phẩm
+            productData.put("tenSanPham", row[3]);   // Tên sản phẩm
+            productData.put("soLuongDaBan", row[4]); // Số lượng đã bán
             result.add(productData);
         }
         return result;
     }
+
 
     // Sản phẩm sắp hết hàng
     public List<Map<String, Object>> getLowStockProducts(int threshold) {

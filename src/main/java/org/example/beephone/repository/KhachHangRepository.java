@@ -17,7 +17,7 @@ import java.util.List;
 public interface KhachHangRepository extends JpaRepository<khach_hang, Integer> {
 
     // Query để phân trang và sắp xếp giảm dần theo ID
-    @Query("SELECT kh FROM khach_hang kh ORDER BY kh.id DESC")
+    @Query("SELECT kh FROM khach_hang kh WHERE kh.id <> 1 ORDER BY kh.id DESC ")
     Page<khach_hang> getKhachHangDESCID(Pageable pageable);
 
     // Query không phân trang nhưng sắp xếp giảm dần theo ID

@@ -2,18 +2,54 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     // Khởi tạo tham số phân trang
     $scope.currentPage = 0;
 
-    // Hàm để lấy dữ liệu từ API
     $scope.getData = function(page) {
-        $http.get('http://localhost:8080/rest/san-pham', { params: { page: page } })
+        // Kiểm tra xem page có hợp lệ không (giới hạn từ 0 đến totalPages - 1)
+        if (page < 0 || page >= $scope.totalPages) return; // Tránh việc chuyển đến trang không hợp lệ
+
+        // Gọi API lấy danh sách sản phẩm với các tham số lọc
+        $http.get('http://localhost:8080/rest/san-pham', {
+            params: {
+                page: page, // Trang hiện tại
+                size: 12,    // Số sản phẩm trên mỗi trang
+            }
+        })
             .then(function(response) {
-                // Lưu dữ liệu vào scope để hiển thị
-                $scope.sp = response.data.content; // 'content' là nơi chứa danh sách sản phẩm
+                $scope.sp = response.data.content; // 'content' chứa danh sách sản phẩm
                 $scope.totalPages = response.data.totalPages; // Số trang tổng cộng
             })
             .catch(function(error) {
                 console.error('Error fetching data:', error);
             });
     };
+
+
+    // Gọi API lấy danh sách màu sắc
+    $scope.getMauSacList = function() {
+        $http.get('http://localhost:8080/rest/mau-sac')
+            .then(function(response) {
+                $scope.colors = response.data; // Lưu dữ liệu màu sắc vào scope
+            })
+            .catch(function(error) {
+                console.error('Error fetching colors:', error);
+            });
+    };
+
+    // Gọi API lấy danh sách kích cỡ
+    $scope.getKichCoList = function() {
+        $http.get('http://localhost:8080/rest/kich-co/list')
+            .then(function(response) {
+                $scope.sizes = response.data; // Lưu dữ liệu kích cỡ vào scope
+            })
+            .catch(function(error) {
+                console.error('Error fetching sizes:', error);
+            });
+    };
+
+    // Gọi các API này khi trang được tải
+    $scope.getMauSacList();
+    $scope.getKichCoList();
+
+
 
     // Gọi hàm để lấy dữ liệu trang đầu tiên
     $scope.getData($scope.currentPage);
@@ -22,9 +58,10 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     $scope.changePage = function(page) {
         if (page >= 0 && page < $scope.totalPages) {
             $scope.currentPage = page;
-            $scope.getData($scope.currentPage);
+            $scope.getData($scope.currentPage); // Gọi lại dữ liệu cho trang mới
         }
     };
+
 
     $scope.isModalOpen = false;
     $scope.selectedProduct = null;
@@ -276,10 +313,26 @@ app.controller('SanPhamController', function($scope, $http,$window) {
         return `${addressDetail}, ${district}, ${city}`;
     };
 
+    // Gọi API để lấy sản phẩm bán chạy
+    $http.get('http://localhost:8080/api/thong-ke/best-selling-products')
+        .then(function(response) {
+            $scope.products = response.data;
+        }, function(error) {
+            console.error('Có lỗi khi lấy dữ liệu:', error);
+        });
 
 
 
 
 
 
+
+});
+
+// Chuyển sang dạng VNĐ
+app.filter('vndCurrency', function() {
+    return function(amount) {
+        if (!amount) return '0 VNĐ';
+        return parseFloat(amount).toLocaleString('vi-VN') + ' VNĐ';
+    };
 });
