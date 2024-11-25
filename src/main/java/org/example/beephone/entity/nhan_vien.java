@@ -28,7 +28,7 @@ public class nhan_vien {
 //    @Size(max = 100, message = "Họ tên không được vượt quá 100 ký tự")
     private String ho_ten;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_chuc_vu", nullable = false)
     @ToString.Exclude // Tránh vòng lặp khi gọi toString()
 //    @NotNull(message = "Chức vụ không được để trống")

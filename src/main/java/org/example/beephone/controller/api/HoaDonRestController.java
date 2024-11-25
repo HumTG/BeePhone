@@ -165,11 +165,12 @@ public class HoaDonRestController {
     public ResponseEntity<hoa_don> updateHoaDon(
             @PathVariable int id,
             @RequestParam BigDecimal thanhTien ,
-            @RequestParam BigDecimal tienSauGiamGia
+            @RequestParam BigDecimal tienSauGiamGia,
+            @RequestParam Integer idNhanVien
         ) {
 
         try {
-            hoa_don updatedHoaDon = hoaDonService.updateHoaDon(id, thanhTien,tienSauGiamGia);
+            hoa_don updatedHoaDon = hoaDonService.updateHoaDon(id, thanhTien,tienSauGiamGia,idNhanVien);
             return ResponseEntity.ok(updatedHoaDon);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);

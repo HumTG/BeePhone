@@ -8,10 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-//import org.springframework.security.core.userdetails.User;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +22,7 @@ import java.util.Optional;
 import java.sql.Date;
 
 @Service
-public class NhanVienService  implements UserDetailsService {
+public class NhanVienService  {
 
     @Autowired
     private NhanVienRepository nhanVienRepository ;
@@ -34,8 +30,6 @@ public class NhanVienService  implements UserDetailsService {
     @Autowired
     private EmailService emailService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
 
     private static final int PASSWORD_LENGTH = 10;
@@ -129,28 +123,9 @@ public class NhanVienService  implements UserDetailsService {
         return nhanVienRepository.searchNhanVien(tenSdt, dateFrom, dateTo, trangThai, maxTuoi, pageable);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        nhan_vien nhanVien = nhanVienRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy nhân viên với email: " + email));
-
-        // Trả về UserDetails với mật khẩu không mã hóa
-        return User.builder()
-                .username(nhanVien.getEmail())
-                .password(nhanVien.getMat_khau()) // Mật khẩu không mã hóa
-                .build();
-    }
 
 
-    public void rehashPasswords() {
-        List<nhan_vien> nhanViens = nhanVienRepository.findAll();
-        for (nhan_vien nv : nhanViens) {
-            if (!nv.getMat_khau().startsWith("$2a$")) { // Kiểm tra xem mật khẩu đã mã hóa chưa
-                nv.setMat_khau(passwordEncoder.encode(nv.getMat_khau())); // Mã hóa mật khẩu
-                nhanVienRepository.save(nv); // Lưu lại vào cơ sở dữ liệu
-            }
-        }
-    }
+
 
 
 

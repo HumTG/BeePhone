@@ -1,4 +1,4 @@
-package org.example.beephone.controller;
+package org.example.beephone.controller.api;
 
 import org.example.beephone.entity.hoa_don;
 import org.example.beephone.entity.lich_su_hoa_don;

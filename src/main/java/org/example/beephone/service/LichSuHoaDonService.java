@@ -22,7 +22,7 @@ public class LichSuHoaDonService {
         lich_su_hoa_don lichSuHoaDon = new lich_su_hoa_don();
 
         lichSuHoaDon.setNgay_tao_hoa_don(Date.valueOf(LocalDate.now()));
-        lichSuHoaDon.setNguoi_tao_hoa_don("Admin");
+        lichSuHoaDon.setNguoi_tao_hoa_don(nguoiTaoHoaDon);
         lichSuHoaDon.setMo_ta(moTa);
         lichSuHoaDon.setHoaDon(hoaDon);
         lichSuHoaDon.setTrang_thai(trangThai);

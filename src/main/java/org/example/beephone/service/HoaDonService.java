@@ -214,10 +214,15 @@ public class HoaDonService {
 
     // Cập nhật lại cột thành tiền , tiền sau giảm giá hóa đơn
     @Transactional
-    public hoa_don updateHoaDon(int hoaDonId, BigDecimal thanhTien , BigDecimal tienSauGiamGia) {
+    public hoa_don updateHoaDon(int hoaDonId, BigDecimal thanhTien , BigDecimal tienSauGiamGia,Integer idNhanVien) {
         hoa_don hoaDon = hdRP.findById(hoaDonId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với ID: " + hoaDonId));
 
+        nhan_vien nhanVien = nvRP.findById(idNhanVien)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy nhân viên với ID: " + idNhanVien));
+
+        // Cập nhật nhân viên vào cột id nhân viên
+        hoaDon.setNhanVien(nhanVien);
 
         // Cập nhật tổng tiền hàng vào cột `thanh_tien`
         hoaDon.setThanh_tien(thanhTien);
@@ -231,6 +236,7 @@ public class HoaDonService {
         // Lưu lại hóa đơn đã cập nhật
         return hdRP.save(hoaDon);
     }
+
     // Cập nhật lại cột thành tiền , tiền sau giảm giá hóa đơn , Quay lại trạng thái hóa đơn
     @Transactional
     public hoa_don updateHoaDonCannel(int hoaDonId, BigDecimal thanhTien , BigDecimal tienSauGiamGia) {

@@ -263,6 +263,7 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
             params: {
                 thanhTien: thanhTien,
                 tienSauGiamGia: tienSauGiamGia,
+                idNhanVien: idNhanVien
             }
         })
             .then(function(response) {
@@ -315,7 +316,7 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
 
     // Hàm xử lý xác nhận khi người dùng nhấn nút "Xác nhận" trong modal
     $scope.confirmCreateLichSuHoaDon = function() {
-        let nguoiTaoHoaDon = "Tên Người Tạo"; // Thay bằng tên người tạo thực tế
+        // let nguoiTaoHoaDon = nguoiTaoHoaDon; // Thay bằng tên người tạo thực tế
         let moTa = $scope.moTa; // Lấy mô tả từ modal
         let trangThai = $scope.currentStatus  ; // Giữ nguyên trạng thái
         if ($scope.currentStatus == 1){

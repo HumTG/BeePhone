@@ -73,8 +73,49 @@
     <div ng-include="'/admin/components/sidebar.html'"></div>
 
     <div class="main-panel">
-      <!--   NarBar   -->
-      <div ng-include="'/admin/components/narbar.html'"></div>
+      <div class="main-header">
+        <!-- Navbar Header -->
+        <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+          <div class="container-fluid">
+
+            <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+              <li class="nav-item topbar-user dropdown hidden-caret">
+                <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                  <div class="avatar-sm">
+                    <img th:src="@{'/admin/images/' + ${session.nhanVien.hinh_anh}}"  alt="..." class="avatar-img rounded-circle" />
+                  </div>
+                  <span class="profile-username">
+                    <span class="op-7">Hi,</span>
+                    <span class="fw-bold" th:text="${session.nhanVien.ho_ten}"></span>
+                  </span>
+                </a>
+                <ul class="dropdown-menu dropdown-user animated fadeIn">
+                  <div class="dropdown-user-scroll scrollbar-outer">
+                    <li>
+                      <div class="user-box">
+                        <div class="avatar-lg">
+                          <img th:src="@{'/admin/images/' + ${session.nhanVien.hinh_anh}}" alt="image profile" class="avatar-img rounded" />
+                        </div>
+                        <div class="u-text">
+                          <h4 th:text="${session.nhanVien.ho_ten}"></h4>
+                          <p class="text-muted" th:text="${session.nhanVien.email}"></p>
+                          <a class="btn btn-xs btn-secondary btn-sm">Thông Tin Cá Nhân</a>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" >Đổi Mật Khẩu</a>
+                      <a class="dropdown-item" href="/auth/logoff" >Đăng Xuất</a>
+                    </li>
+                  </div>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- End Navbar -->
+      </div>
       <!--   Content          -->
       <div class="container" ng-controller="SanPhamController">
         <div class="page-inner">

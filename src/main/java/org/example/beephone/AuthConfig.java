@@ -1,5 +1,6 @@
 package org.example.beephone;
 
+import org.example.beephone.service.NhanVienAuth;
 import org.example.beephone.service.NhanVienService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,7 +19,7 @@ public class AuthConfig {
 
     @Lazy
     @Autowired
-    private NhanVienService nhanVienService;
+    private NhanVienAuth nhanVienService;
 
 
     @Bean
@@ -56,6 +57,8 @@ public class AuthConfig {
         http.logout(logout -> logout
                 .logoutUrl("/auth/logoff")
                 .logoutSuccessUrl("/auth/logoff/success")
+                .invalidateHttpSession(true) // Xóa session khi đăng xuất
+                .clearAuthentication(true)  // Xóa thông tin xác thực
         );
 
         return http.build();
