@@ -29,19 +29,18 @@
             </form>
         </div>
         <div class="form-container sign-in">
-            <form>
-                <h1>Sign In</h1>
+            <form action="/auth/login/form" method="post"> <!-- Đảm bảo gửi POST đến  -->
+                <h1>Đăng nhập</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
-                <span>or use your email password</span>
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <a href="#">Forget Your Password?</a>
-                <button>Sign In</button>
+                <input type="email" name="username" placeholder="Email" required> <!-- Đặt tên là 'username' -->
+                <input type="password" name="password" placeholder="Password" required>
+                <a href="#">Quyên mật khẩu ?</a>
+                <button type="submit">Đăng nhập</button> <!-- Chắc chắn button là submit -->
             </form>
         </div>
         <div class="toggle-container">
@@ -52,9 +51,8 @@
                     <button class="hidden" id="login">Sign In</button>
                 </div>
                 <div class="toggle-panel toggle-right">
-                    <h1>Hello, Friend!</h1>
-                    <p>Register with your personal details to use all of site features</p>
-                    <button class="hidden" id="register">Sign Up</button>
+                    <h1>Chào bạn !</h1>
+                    <p>Nhập thông tin cá nhân của bạn và bắt đầu hành trình với chúng tôi</p>
                 </div>
             </div>
         </div>

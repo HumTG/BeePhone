@@ -1,10 +1,7 @@
 package org.example.beephone.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 
@@ -31,8 +28,9 @@ public class nhan_vien {
 //    @Size(max = 100, message = "Họ tên không được vượt quá 100 ký tự")
     private String ho_ten;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_chuc_vu", nullable = false)
+    @ToString.Exclude // Tránh vòng lặp khi gọi toString()
 //    @NotNull(message = "Chức vụ không được để trống")
     private chuc_vu chucVu;
 

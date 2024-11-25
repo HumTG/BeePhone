@@ -27,4 +27,5 @@ public class chuc_vu {
 
     @Column(name = "trang_thai")
     private int trang_thai ;
+
 }

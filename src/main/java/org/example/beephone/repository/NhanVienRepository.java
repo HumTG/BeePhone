@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NhanVienRepository extends JpaRepository<nhan_vien,Integer> {
@@ -36,4 +37,7 @@ public interface NhanVienRepository extends JpaRepository<nhan_vien,Integer> {
     @Query("select nv from nhan_vien nv order by nv.id desc ")
     Page<nhan_vien> getNhanVienDESCID(Pageable pageable);
 
+    // Sử dụng SQL native để tìm nhân viên theo email
+    @Query(value = "SELECT * FROM nhan_vien WHERE email = :email", nativeQuery = true)
+    Optional<nhan_vien> findByEmail(@Param("email") String email);
 }

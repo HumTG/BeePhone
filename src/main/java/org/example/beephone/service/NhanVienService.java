@@ -12,21 +12,31 @@ import org.springframework.data.domain.Pageable;
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.sql.Date;
 
 @Service
-public class NhanVienService {
+public class NhanVienService  implements UserDetailsService {
 
     @Autowired
     private NhanVienRepository nhanVienRepository ;
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     private static final int PASSWORD_LENGTH = 10;
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -46,12 +56,14 @@ public class NhanVienService {
         return null;
     }
 
+
     public nhan_vien add(nhan_vien nhanVien){
         chuc_vu chucVu = new chuc_vu(2,"CV002","Nhân viên bán hàng",1);
         // Tạo mã nhân viên ngẫu nhiên và mật khẩu ngẫu nhiên
         nhanVien.setMa_nhan_vien(generateMaKhachHang());
 
         String generatedPassword = generateRandomPassword();
+        // Mã hóa mật khẩu trước khi lưu
         nhanVien.setMat_khau(generatedPassword);
         nhanVien.setChucVu(chucVu);
 
@@ -115,6 +127,29 @@ public class NhanVienService {
 
         // Gọi repository với các điều kiện tìm kiếm
         return nhanVienRepository.searchNhanVien(tenSdt, dateFrom, dateTo, trangThai, maxTuoi, pageable);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        nhan_vien nhanVien = nhanVienRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy nhân viên với email: " + email));
+
+        // Trả về UserDetails với mật khẩu không mã hóa
+        return User.builder()
+                .username(nhanVien.getEmail())
+                .password(nhanVien.getMat_khau()) // Mật khẩu không mã hóa
+                .build();
+    }
+
+
+    public void rehashPasswords() {
+        List<nhan_vien> nhanViens = nhanVienRepository.findAll();
+        for (nhan_vien nv : nhanViens) {
+            if (!nv.getMat_khau().startsWith("$2a$")) { // Kiểm tra xem mật khẩu đã mã hóa chưa
+                nv.setMat_khau(passwordEncoder.encode(nv.getMat_khau())); // Mã hóa mật khẩu
+                nhanVienRepository.save(nv); // Lưu lại vào cơ sở dữ liệu
+            }
+        }
     }
 
 
