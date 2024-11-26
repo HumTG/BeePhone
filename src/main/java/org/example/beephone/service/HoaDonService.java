@@ -2,6 +2,7 @@ package org.example.beephone.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.example.beephone.entity.*;
@@ -40,6 +41,8 @@ public class HoaDonService {
     private HoaDonChiTietRepository hdctRP;
     @Autowired
     private LichSuHoaDonService lsHoaDonService;
+    @Autowired
+    private HttpSession session;
 
 
     public List<hoa_don> getAll(){
@@ -52,12 +55,22 @@ public class HoaDonService {
 
     /// tạo hóa đơn bán hàng tại quầy mới
     public hoa_don createHoaDon(){
-        nhan_vien nhanVien = nvRP.findById(5).get();
+        nhan_vien nhanVienSession = (nhan_vien) session.getAttribute("nhanVien");
+//        nhan_vien nhanVien = nvRP.findById(5).get();
         khach_hang khachHang = khRP.findById(1).get();
 
         hoa_don hd = new hoa_don();
         hd.setMa_hoa_don("HD"+generateRandomCode());
-        hd.setNhanVien(nhanVien);
+        ///set nhân viên
+        if(nhanVienSession != null){
+            nhan_vien nhanVien = nvRP.findById(nhanVienSession.getId()).get();
+            hd.setNhanVien(nhanVien);
+        }
+        else{
+            nhan_vien nhanVien = nvRP.findById(5).get();
+            hd.setNhanVien(nhanVien);
+        }
+
         hd.setKhachHang(khachHang);
         // lấy ngày hiện tại
         LocalDate localDate = LocalDate.now();
