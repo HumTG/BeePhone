@@ -40,7 +40,8 @@ public class LichSuHoaDonService {
 
         lichSuHoaDon.setNgay_tao_hoa_don(Date.valueOf(LocalDate.now()));
         lichSuHoaDon.setNgay_sua_hoa_don(Date.valueOf(LocalDate.now()));
-        lichSuHoaDon.setNguoi_tao_hoa_don("Admin");
+        String tenNguoiTao = hoaDon.getNhanVien() != null ? hoaDon.getNhanVien().getHo_ten() : "Admin";
+        lichSuHoaDon.setNguoi_tao_hoa_don(tenNguoiTao);
         lichSuHoaDon.setMo_ta("đã xác nhận");
         lichSuHoaDon.setHoaDon(hoaDon);
         lichSuHoaDon.setTrang_thai(trangThai);
