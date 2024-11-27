@@ -283,59 +283,64 @@
                     <div class="alert alert-light col-8" role="alert">
                         <h5 class="text-center mb-4">Thông tin nhân viên</h5>
 
-                        <!-- Họ tên -->
-                        <div class="mb-3">
-                            <label for="hoTen" class="form-label">Họ tên</label>
-                            <input type="text" class="form-control" id="hoTen"
-                                   ng-model="nhanVien.ho_ten" name="hoTen"
-                                   ng-class="{'is-invalid': nhanVienForm.hoTen.$touched && nhanVienForm.hoTen.$invalid}"
-                                   placeholder="Nhập họ tên" required />
-                            <div class="invalid-feedback" ng-show="nhanVienForm.hoTen.$touched && nhanVienForm.hoTen.$invalid">
-                                Vui lòng nhập họ tên.
-                            </div>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="hoTen" class="form-label">Họ tên</label>
+                          <input type="text" class="form-control" id="hoTen"
+                                 ng-model="nhanVien.ho_ten" required
+                                 placeholder="Nhập họ tên" />
                         </div>
-
-                        <!-- Ngày sinh -->
-                        <div class="mb-3">
-                            <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                            <input type="date" class="form-control" id="ngaySinh"
-                                   ng-model="nhanVien.ngay_sinh" name="ngaySinh"
-                                   ng-class="{'is-invalid': nhanVienForm.ngaySinh.$touched && nhanVienForm.ngaySinh.$invalid}"
-                                   required />
-                            <div class="invalid-feedback" ng-show="nhanVienForm.ngaySinh.$touched && nhanVienForm.ngaySinh.$invalid">
-                                Vui lòng chọn ngày sinh.
-                            </div>
+                        <div class="col-md-6">
+                          <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                          <input type="date" class="form-control" id="ngaySinh"
+                                 ng-model="nhanVien.ngay_sinh" required />
                         </div>
-
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email"
-                                   ng-model="nhanVien.email" name="email"
-                                   ng-class="{'is-invalid': nhanVienForm.email.$touched && nhanVienForm.email.$invalid}"
-                                   required placeholder="Nhập email" />
-                            <div class="invalid-feedback" ng-show="nhanVienForm.email.$touched && nhanVienForm.email.$error.required">
-                                Vui lòng nhập email.
-                            </div>
-                            <div class="invalid-feedback" ng-show="nhanVienForm.email.$touched && nhanVienForm.email.$error.email">
-                                Định dạng email không hợp lệ.
-                            </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label class="form-label">Giới tính</label><br>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio"
+                                   ng-model="nhanVien.gioi_tinh" value="0" id="gioiTinhNam" checked />
+                            <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio"
+                                   ng-model="nhanVien.gioi_tinh" value="1" id="gioiTinhNu" />
+                            <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                          </div>
                         </div>
-
-                        <!-- Số điện thoại -->
-                        <div class="mb-3">
-                            <label for="sdt" class="form-label">Số điện thoại</label>
-                            <input type="tel" class="form-control" id="sdt"
-                                   ng-model="nhanVien.sdt" name="sdt"
-                                   ng-class="{'is-invalid': nhanVienForm.sdt.$touched && nhanVienForm.sdt.$invalid}"
-                                   required placeholder="Nhập số điện thoại" pattern="^\d{10,11}$" />
-                            <div class="invalid-feedback" ng-show="nhanVienForm.sdt.$touched && nhanVienForm.sdt.$error.required">
-                                Vui lòng nhập số điện thoại.
-                            </div>
-                            <div class="invalid-feedback" ng-show="nhanVienForm.sdt.$touched && nhanVienForm.sdt.$error.pattern">
-                                Số điện thoại phải có 10-11 chữ số.
-                            </div>
+                        <div class="col-md-6">
+                          <label for="email" class="form-label">Email</label>
+                          <input type="email" class="form-control" id="email"
+                                 ng-model="nhanVien.email" required placeholder="Nhập email" />
                         </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="sdt" class="form-label">Số điện thoại</label>
+                          <input type="tel" class="form-control" id="sdt"
+                                 ng-model="nhanVien.sdt" required
+                                 placeholder="Nhập số điện thoại" pattern="^\d{10,11}$"
+                                 title="Số điện thoại phải có 10-11 chữ số" />
+                        </div>
+                        <div class="col-md-6">
+                          <label for="trangThai" class="form-label">Trạng thái</label>
+                          <select class="form-select" id="trangThai"
+                                  ng-model="nhanVien.trang_thai" required>
+                            <option value="" disabled selected>Chọn trạng thái</option>
+                            <option value="1">Kích hoạt</option>
+                            <option value="0">Ngừng kích hoạt</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                          <label for="diaChi" class="form-label">Địa chỉ</label>
+                          <input type="text" class="form-control" id="diaChi"
+                                 ng-model="nhanVien.dia_chi" required placeholder="Nhập địa chỉ" />
+                        </div>
+                      </div>
 
                         <!-- Nút Thêm Nhân Viên -->
                         <div class="text-end">
