@@ -1,5 +1,6 @@
 package org.example.beephone.controller.api;
 
+import org.example.beephone.dto.customer.HoaDonDTO;
 import org.example.beephone.entity.hoa_don;
 import org.example.beephone.entity.hoa_don_chi_tiet;
 import org.example.beephone.entity.khach_hang;
@@ -227,6 +228,24 @@ public class HoaDonRestController {
         hoa_don createdHoaDon = hoaDonService.save(hoaDon,idKhachHang);
         return ResponseEntity.ok(createdHoaDon);
     }
+
+    @GetMapping("/khach-hang/{idKhachHang}")
+    public ResponseEntity<List<HoaDonDTO>> getHoaDonByKhachHangIdAndTrangThai(
+            @PathVariable int idKhachHang,
+            @RequestParam(required = false) Integer trangThai) {
+        List<HoaDonDTO> hoaDons;
+
+        // Lọc hóa đơn theo trạng thái nếu tham số trạng thái không null
+        if (trangThai != null) {
+            hoaDons = hoaDonService.getHoaDonByKhachHangIdAndTrangThai(idKhachHang, trangThai);
+        } else {
+            hoaDons = hoaDonService.getHoaDonByKhachHangId(idKhachHang);
+        }
+
+        return ResponseEntity.ok(hoaDons);
+    }
+
+
 
 
 

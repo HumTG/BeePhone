@@ -1,7 +1,7 @@
 // Khởi tạo AngularJS module
 const app = angular.module("loginApp", []);
 
-app.controller("LoginController", function ($scope, $http, $window) {
+app.controller("LoginController", function ($scope, $http, $window ) {
     $scope.loginData = {
         email: "",
         matKhau: ""
@@ -22,8 +22,7 @@ app.controller("LoginController", function ($scope, $http, $window) {
                 $window.location.href = "http://localhost:8080/index";
             })
             .catch(function (error) {
-                console.error("Lỗi:", error);
-                $scope.errorMessage = error.status === 401 ? "Email hoặc mật khẩu không đúng!" : "Lỗi hệ thống!";
+                toastr.error('Mật khẩu hoặc email không đúng', 'Lỗi đăng nhập'); // Sử dụng toastr để hiển thị lỗi
             });
     };
 

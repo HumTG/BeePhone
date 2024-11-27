@@ -5,6 +5,8 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.ObjectUtils;
+import org.example.beephone.dto.customer.HoaDonChiTietCustomerDTO;
+import org.example.beephone.dto.customer.HoaDonDTO;
 import org.example.beephone.entity.*;
 import org.example.beephone.repository.HoaDonChiTietRepository;
 import org.example.beephone.repository.HoaDonRepository;
@@ -26,6 +28,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class HoaDonService {
@@ -322,4 +325,74 @@ public class HoaDonService {
         hoaDon.setNgay_tao(sqlDate);
         return hdRP.save(hoaDon);
     }
+
+
+    // Danh sách hóa đơn khi người dùng đã đăng nhập
+
+    public List<HoaDonDTO> getHoaDonByKhachHangId(int idKhachHang) {
+        List<hoa_don> hoaDons = hdRP.findHoaDonsByKhachHangId(idKhachHang);
+
+        // Sắp xếp hoaDons theo id giảm dần
+        hoaDons.sort((h1, h2) -> h2.getId() - h1.getId());
+
+        return hoaDons.stream().map(hoaDon -> {
+            // Chuyển đổi từng hóa đơn sang DTO
+            List<HoaDonChiTietCustomerDTO> chiTietDTOs = hoaDon.getHoaDonChiTietList().stream().map(chiTiet -> {
+                return new HoaDonChiTietCustomerDTO(
+                        chiTiet.getChi_tiet_san_pham().getSanPham().getTen(),
+                        chiTiet.getChi_tiet_san_pham().getMauSac().getTen(),
+                        chiTiet.getChi_tiet_san_pham().getKichCo().getTen(),
+                        chiTiet.getSo_luong(),
+                        chiTiet.getDon_gia(),
+                        chiTiet.getChi_tiet_san_pham().getAnh() // Lấy ảnh sản phẩm
+                );
+            }).collect(Collectors.toList());
+
+            return new HoaDonDTO(
+                    hoaDon.getId(),
+                    hoaDon.getMa_hoa_don(),
+                    hoaDon.getTen_nguoi_nhan(),
+                    hoaDon.getDia_chi_nguoi_nhan(),
+                    hoaDon.getSdt_nguoi_nhan(),
+                    hoaDon.getNgay_tao(),
+                    hoaDon.getThanh_tien(),
+                    hoaDon.getTrang_thai(),
+                    chiTietDTOs
+            );
+        }).collect(Collectors.toList());
+    }
+
+    public List<HoaDonDTO> getHoaDonByKhachHangIdAndTrangThai(int idKhachHang, int trangThai) {
+        List<hoa_don> hoaDons = hdRP.findHoaDonsByKhachHangIdAndTrangThai(idKhachHang, trangThai);
+
+        // Sắp xếp hoaDons theo id giảm dần
+        hoaDons.sort((h1, h2) -> h2.getId() - h1.getId());
+
+        return hoaDons.stream().map(hoaDon -> {
+            // Chuyển đổi từng hóa đơn sang DTO
+            List<HoaDonChiTietCustomerDTO> chiTietDTOs = hoaDon.getHoaDonChiTietList().stream().map(chiTiet -> {
+                return new HoaDonChiTietCustomerDTO(
+                        chiTiet.getChi_tiet_san_pham().getSanPham().getTen(),
+                        chiTiet.getChi_tiet_san_pham().getMauSac().getTen(),
+                        chiTiet.getChi_tiet_san_pham().getKichCo().getTen(),
+                        chiTiet.getSo_luong(),
+                        chiTiet.getDon_gia(),
+                        chiTiet.getChi_tiet_san_pham().getAnh() // Lấy ảnh sản phẩm
+                );
+            }).collect(Collectors.toList());
+
+            return new HoaDonDTO(
+                    hoaDon.getId(),
+                    hoaDon.getMa_hoa_don(),
+                    hoaDon.getTen_nguoi_nhan(),
+                    hoaDon.getDia_chi_nguoi_nhan(),
+                    hoaDon.getSdt_nguoi_nhan(),
+                    hoaDon.getNgay_tao(),
+                    hoaDon.getThanh_tien(),
+                    hoaDon.getTrang_thai(),
+                    chiTietDTOs
+            );
+        }).collect(Collectors.toList());
+    }
+
 }

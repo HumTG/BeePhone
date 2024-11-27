@@ -103,4 +103,10 @@ public interface HoaDonRepository extends JpaRepository<hoa_don,Integer> {
 
 
 
+    // Sử dụng JPQL để thực hiện query thay vì phương thức động
+    @Query("SELECT h FROM hoa_don h WHERE h.khachHang.id = :idKhachHang AND h.trang_thai = :trangThai")
+    List<hoa_don> findHoaDonsByKhachHangIdAndTrangThai(@Param("idKhachHang") int idKhachHang, @Param("trangThai") int trangThai);
+
+    @Query("SELECT h FROM hoa_don h WHERE h.khachHang.id = :idKhachHang")
+    List<hoa_don> findHoaDonsByKhachHangId(@Param("idKhachHang") int idKhachHang);
 }

@@ -202,7 +202,6 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     const savedUser = JSON.parse(localStorage.getItem("user"));
     if (savedUser) {
         // Tự động điền thông tin vào các ng-model
-        console.log()
         $scope.name = savedUser.ho_ten;
         $scope.phone = savedUser.sdt;
         $scope.email = savedUser.email;

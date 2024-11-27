@@ -1390,6 +1390,48 @@ button {
   font-weight: 600;
 }
 
+/* Đơn hàng*/
+.user-sidebar {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.user-info img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.user-info h5 {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.user-info a {
+  color: #ff5722;
+  font-size: 0.9rem;
+}
+
+.list-group-item {
+  border: none;
+  font-size: 1rem;
+  color: #444;
+}
+
+.list-group-item:hover,
+.list-group-item.active {
+  background-color: #ff5722;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.list-group-item i {
+  font-size: 1.2rem;
+}
+
+
+
 
 
 

@@ -22,6 +22,10 @@ app.config(function($routeProvider) {
             templateUrl : "/customer/views/thanh-toan.html",
             controller : "SanPhamController"
         })
+        .when("/don-hang", {
+            templateUrl : "/customer/views/don-hang.html",
+            controller : "DonHangController"
+        })
         .otherwise({
             redirectTo: '/'
         });
