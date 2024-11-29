@@ -23,8 +23,8 @@ public class KhuyenMaiService {
     private static final int MA_NV_LENGTH = 8; // Độ dài mã
 
     public Page<khuyen_mai> getPage(Integer pageNum){
-        Pageable kmPage = PageRequest.of(pageNum,6);
-        return kmSer.findAll(kmPage);
+        Pageable kmPage = PageRequest.of(pageNum, 6);
+        return kmSer.findKhuyenMaiExcludingId(kmPage);
     }
 
 ///radom ma

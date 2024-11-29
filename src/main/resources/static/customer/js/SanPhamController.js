@@ -198,6 +198,41 @@ app.controller('SanPhamController', function($scope, $http,$window) {
         return $scope.cart.reduce((total, item) => total + $scope.calculateTotalPrice(item), 0);
     };
 
+    // Lấy ra khuyến mãi
+    $scope.getVouchersByTotal = function () {
+        const tongTienHoaDon = $scope.calculateCartTotal(); // Tính tổng giá trị hóa đơn
+        $http({
+            method: 'GET',
+            url: '/api/vorcher/filter',
+            params: { tongTienHoaDon: tongTienHoaDon }
+        }).then(function (response) {
+            $scope.vouchers = response.data; // Gán dữ liệu trả về vào danh sách vouchers
+        }).catch(function (error) {
+            console.error("Lỗi khi lấy danh sách khuyến mãi:", error);
+        });
+    };
+
+    // Áp dụng voucher
+    $scope.applyVoucher = function (voucher) {
+        $scope.selectedVoucher = voucher; // Lưu voucher được chọn
+        $scope.idSelectedVoucher = voucher.id; // Lưu id voucher được chọn
+        const tongTienHoaDon = $scope.calculateCartTotal();
+
+        // Tính giá trị giảm (giới hạn không giảm quá tổng tiền)
+        $scope.discountValue = Math.min(
+            tongTienHoaDon * (voucher.gia_tri / 100),
+            tongTienHoaDon
+        );
+        toastr.success('Áp dụng voucher thành công !','success');
+
+        // Tự động đóng modal
+        const modalElement = document.getElementById('voucherModal');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        modal.hide();
+    };
+
+
+
     // Lấy thông tin người dùng từ localStorage
     const savedUser = JSON.parse(localStorage.getItem("user"));
     if (savedUser) {
@@ -214,7 +249,7 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     $scope.confirmOrder = function() {
         if (document.getElementById('agreeTerms').checked) {
             let hoaDon = {
-                tien_sau_giam_gia : $scope.calculateCartTotal(),
+                tien_sau_giam_gia : $scope.calculateCartTotal() - $scope.discountValue ,
                 thanh_tien : $scope.calculateCartTotal(),
                 phuong_thuc_thanh_toan: $scope.paymentMethod, // 1: COD, 2: Bank Transfer
                 loai_hoa_don: 2,
@@ -228,9 +263,10 @@ app.controller('SanPhamController', function($scope, $http,$window) {
 
             // Kiểm tra savedUser và gán idKhachHang
             let idKhachHang = (savedUser && savedUser.id != null) ? savedUser.id : 1;
+            let idKhuyenMai = $scope.idSelectedVoucher ? $scope.idSelectedVoucher : 1; // Kiểm tra nếu không có voucher thì gán null
 
             $http.post('/rest/hoa-don/add', hoaDon ,{
-              params: { idKhachHang : idKhachHang } //  Thêm params `idKhachHang` từ localStorage
+              params: { idKhachHang : idKhachHang , idKhuyenMai : idKhuyenMai } //  Thêm params `idKhachHang` từ localStorage
             }).then(function(response) {
                         if (response.data && response.data.id) {
                             let hoaDonId = response.data.id;

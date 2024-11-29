@@ -237,8 +237,9 @@ public class HoaDonRestController {
     @PostMapping("/add")
     public ResponseEntity<hoa_don> createHoaDon(
             @RequestBody hoa_don hoaDon ,
-            @RequestParam Integer idKhachHang) {
-        hoa_don createdHoaDon = hoaDonService.save(hoaDon,idKhachHang);
+            @RequestParam Integer idKhachHang,
+            @RequestParam(value = "idKhuyenMai",required = false) Integer idKhuyenMai) {
+        hoa_don createdHoaDon = hoaDonService.save(hoaDon,idKhachHang,idKhuyenMai);
         return ResponseEntity.ok(createdHoaDon);
     }
 

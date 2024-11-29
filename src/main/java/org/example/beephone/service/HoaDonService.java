@@ -288,6 +288,7 @@ public class HoaDonService {
             hoaDonInDb.setSdt_nguoi_nhan(hoaDonUpdate.getSdt_nguoi_nhan());
             hoaDonInDb.setDia_chi_nguoi_nhan(hoaDonUpdate.getDia_chi_nguoi_nhan());
             hoaDonInDb.setMo_ta(hoaDonUpdate.getMo_ta());
+            hoaDonInDb.setPhi_ship(hoaDonUpdate.getPhi_ship());
             return hdRP.save(hoaDonInDb);
         }
         else return null ;
@@ -315,15 +316,23 @@ public class HoaDonService {
     }
 
     // Tạo hóa đơn bên người dùng web
-    public hoa_don save(hoa_don hoaDon, Integer idKhachHang) {
+    public hoa_don save(hoa_don hoaDon, Integer idKhachHang , Integer idKhuyenMai) {
         khach_hang khachHang = khRP.findById(idKhachHang)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng với ID: " + idKhachHang));
+
+        khuyen_mai khuyenMai = kmRP.findById(idKhuyenMai)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng với ID: " + idKhuyenMai));
 
         // Nếu không tìm thấy khách hàng, đặt khách hàng của hóa đơn thành null
         if (khachHang == null) {
             hoaDon.setKhachHang(null);
         } else {
             hoaDon.setKhachHang(khachHang); // Nếu tìm thấy, gán khách hàng cho hóa đơn
+        }
+        if (khuyenMai == null) {
+            hoaDon.setKhuyenMai(null);
+        } else {
+            hoaDon.setKhuyenMai(khuyenMai); // Nếu tìm thấy, gán khách hàng cho hóa đơn
         }
         hoaDon.setMa_hoa_don("HD"+generateRandomCode());
         LocalDate localDate = LocalDate.now();

@@ -76,7 +76,8 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
             ten_nguoi_nhan: $scope.hoaDon.ten_nguoi_nhan,
             sdt_nguoi_nhan: $scope.hoaDon.sdt_nguoi_nhan,
             dia_chi_nguoi_nhan: $scope.hoaDon.dia_chi_nguoi_nhan,
-            mo_ta: $scope.hoaDon.mo_ta
+            phi_ship: $scope.hoaDon.phi_ship,
+            mo_ta: $scope.hoaDon.mo_ta 
         };
 
         // Make the PUT request
@@ -87,7 +88,7 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
                 $('#changeInfoModal').modal('hide');
             }, function(error) {
                 console.error("Error occurred: ", error);
-                toastr.error('Xóa sản phẩm thành thất bại !', 'Error');
+                toastr.error('cập nhật thông tin  thất bại !', 'Error');
             });
     };
 

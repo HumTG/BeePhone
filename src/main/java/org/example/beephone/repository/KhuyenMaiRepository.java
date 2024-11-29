@@ -10,11 +10,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
 @Repository
 public interface KhuyenMaiRepository extends JpaRepository<khuyen_mai,Integer> {
+
+    @Query("SELECT km FROM khuyen_mai km WHERE km.id != 1 order by km.id desc ")
+    Page<khuyen_mai> findKhuyenMaiExcludingId(Pageable pageable);
 
     @Modifying
     @Transactional
@@ -33,4 +37,7 @@ public interface KhuyenMaiRepository extends JpaRepository<khuyen_mai,Integer> {
             "AND (:trang_thai IS NULL OR km.trang_thai = :trang_thai)")
     Page<khuyen_mai> filtersKhuyenMai(@Param("ngay_bat_dau") Date ngay_bat_dau, @Param("ngay_ket_thuc") Date ngay_ket_thuc,
                                       @Param("trang_thai") Integer trang_thai, Pageable pageable);
-}
+
+    @Query("SELECT km FROM khuyen_mai km WHERE km.gia_tri_toi_thieu <= :giaTriToiThieu AND km.trang_thai = :trangThai")
+    List<khuyen_mai> findByGiaTriToiThieuAndTrangThai(@Param("giaTriToiThieu") BigDecimal giaTriToiThieu,
+                                                      @Param("trangThai") int trangThai);}

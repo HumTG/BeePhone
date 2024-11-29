@@ -2,6 +2,7 @@ package org.example.beephone.controller.api;
 
 import org.example.beephone.entity.giam_gia;
 import org.example.beephone.entity.khuyen_mai;
+import org.example.beephone.repository.KhuyenMaiRepository;
 import org.example.beephone.service.KhuyenMaiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 public class KhuyenMaiRestController {
     @Autowired
     private KhuyenMaiService kmSer;
+
+    @Autowired
+    private KhuyenMaiRepository khuyenMaiRepository;
 
     @GetMapping("/rest/khuyen-mai")
     public ResponseEntity<?> getPage(@RequestParam(defaultValue = "0") Integer page ){
@@ -76,4 +82,13 @@ public class KhuyenMaiRestController {
                     .body("Lỗi trong lúc lọc dữ liệu : " + e.getMessage());
         }
     }
+
+    // Lấy ra khuyến mãi theo tổng tiền hóa đơn ( áp dụng bên người dùng )
+    @GetMapping("/api/vorcher/filter")
+    public List<khuyen_mai> getKhuyenMaiByTotal(@RequestParam BigDecimal tongTienHoaDon) {
+        return khuyenMaiRepository.findByGiaTriToiThieuAndTrangThai(
+                tongTienHoaDon, 1); // Chỉ lấy khuyến mãi đang hoạt động
+    }
+
+
 }

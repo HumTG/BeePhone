@@ -1430,6 +1430,44 @@ button {
   font-size: 1.2rem;
 }
 
+/* Vorcher */
+.voucher-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  transition: box-shadow 0.3s ease;
+}
+
+.voucher-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.voucher-item .voucher-code {
+  font-weight: bold;
+  color: #333;
+}
+
+.voucher-item .voucher-discount {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.voucher-item .voucher-condition {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.voucher-item .btn-apply {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+
+.voucher-item .btn-apply:hover {
+  background-color: #0056b3;
+}
+
 
 
 
