@@ -434,7 +434,7 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
     }
 
     // Hủy hóa đơn
-    $scope.cannelBill = function(){
+    $scope.exitBill = function(){
         $scope.huyHoaDon();
         $scope.createLichSuHoaDon();
     }

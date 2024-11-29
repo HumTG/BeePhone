@@ -14,7 +14,7 @@ public class EmailService {
     public void sendEmail(String to, String subject, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("your-email@gmail.com"); // Email gửi (phải trùng với email trong cấu hình)
+            message.setFrom("humtg24@gmail.com"); // Email gửi (phải trùng với email trong cấu hình)
             message.setTo(to); // Email nhận
             message.setSubject(subject); // Tiêu đề email
             message.setText(text); // Nội dung email

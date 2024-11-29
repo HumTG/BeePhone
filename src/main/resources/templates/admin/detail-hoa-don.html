@@ -389,7 +389,7 @@
                 <button class="btn btn-primary" ng-click="confirmBill()">{{ getTrangThai(hoaDon.trang_thai + 1 )}}</button>
                 <button class="btn btn-warning" ng-click="cannelBill()" ng-if="currentStatus < 6 && currentStatus > 1">Quay lại</button>
 
-                <button ng-click="cannelBill()" class="btn btn-danger">Hủy</button>
+                <button ng-click="exitBill()" class="btn btn-danger">Hủy</button>
               </div>
               <button class="btn btn-danger" ng-click="openLichSuModal()">Lịch sử</button>
             </div>
