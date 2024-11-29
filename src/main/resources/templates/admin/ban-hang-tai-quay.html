@@ -498,6 +498,8 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-md-12">
+                                            <input type="text" class="form-control" placeholder="Tìm kiếm" ng-model="searchTextKhachHang" style="width: 500px">
+                                            <br>
                                             <table class="table table-striped">
                                                 <thead class="table-danger">
                                                 <tr class="text-bg-warning text-center text-white">
@@ -509,7 +511,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat="kh in listKH">
+                                                <tr ng-repeat="kh in listKH | filter:searchTextKhachHang">
                                                     <td>{{$index+1}}</td>
                                                     <td>{{kh.ho_ten}}</td>
                                                     <td>{{kh.email}}</td>
@@ -546,7 +548,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                     <button type="button" class="btn btn-danger" >Remove khách hàng</button>
+                                     <button type="button" class="btn btn-danger" ng-click="setKhachLe()">Remove khách hàng</button>
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                                 </div>
                             </div>

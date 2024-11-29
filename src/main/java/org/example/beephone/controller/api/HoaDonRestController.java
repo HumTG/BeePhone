@@ -91,6 +91,19 @@ public class HoaDonRestController {
 
     }
 
+    //set khách hàng lẻ cho hóa đơn tại quầy
+    @PutMapping("/set-khach-le-tai-quay")
+    public ResponseEntity<?> setKhachLeTaiQuay(@RequestParam(name = "idHD") Integer idHD){
+        try{
+            hoaDonService.setKhachLe(idHD);
+            return ResponseEntity.ok(Map.of("message", "Set khách lẻ thành công"));
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi set khách lẻ: " + e.getMessage());
+        }
+
+    }
+
     @PutMapping("/xac-nhan-don")
     public ResponseEntity<?> xacNhanDonTaiQuay(@RequestBody hoa_don hoaDon,
                                                @RequestParam(name = "idHD") Integer idHD,

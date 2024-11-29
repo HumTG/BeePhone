@@ -112,6 +112,14 @@ app.controller('KhuyenMaiController',function ($scope,$http){
     }
 
     $scope.updateGiamGia = function (){
+        if (isNaN($scope.updateKM.gia_tri) || $scope.updateKM.gia_tri <=0 || $scope.updateKM.gia_tri > 100){
+            toastr.warning('Sai giá trị', 'OK')
+            return;
+        }
+        if (isNaN($scope.updateKM.gia_tri_toi_thieu) || $scope.updateKM.gia_tri_toi_thieu <=0){
+            toastr.warning('Sai giá trị tối thiểu', 'OK')
+            return;
+        }
         var update_khuyen_mai = {
             id : $scope.updateKM.id,
             ma_khuyen_mai : $scope.updateKM.ma_khuyen_mai,

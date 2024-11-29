@@ -373,6 +373,27 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
         });
     }
 
+
+    /// set khách lẻ cho hóa đơn
+    $scope.setKhachLe = function (){
+        $http({
+            method: 'PUT',
+            url : 'http://localhost:8080/rest/hoa-don/set-khach-le-tai-quay',
+            params: {
+                idHD : $scope.hoa_don.id
+            }
+        }).then(function(response) {
+            $scope.getHoaDonDB($scope.hoa_don.id)
+
+            var modalElement = document.getElementById('khachHangModal');
+            var Modal = bootstrap.Modal.getInstance(modalElement);
+            Modal.hide(); // đóng modal
+            toastr.success('Set khách lẻ thành công', 'OK');
+        }).catch(function(error) {
+            console.error('Error fetching data:', error);
+        });
+    }
+
     // $scope.selectedKhachHang = null;
     //
     // $scope.checkDiaChi = function () {

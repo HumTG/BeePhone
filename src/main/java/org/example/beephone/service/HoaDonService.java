@@ -178,6 +178,12 @@ public class HoaDonService {
         hdRP.loaiBoKhuyenMaiHD(idHd);
      }
 
+     ///set khách hàng về khách lẻ
+    public void setKhachLe(Integer idHD){
+        khach_hang khachHang = khRP.findById(1).get();
+        hdRP.capNhatKhachHangHD(khachHang,idHD);
+    }
+
 
 
     // quản lý hóa đơn ( bán hàng online , danh sách các hóa đơn)
