@@ -77,7 +77,7 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
             sdt_nguoi_nhan: $scope.hoaDon.sdt_nguoi_nhan,
             dia_chi_nguoi_nhan: $scope.hoaDon.dia_chi_nguoi_nhan,
             phi_ship: $scope.hoaDon.phi_ship,
-            mo_ta: $scope.hoaDon.mo_ta 
+            mo_ta: $scope.hoaDon.mo_ta
         };
 
         // Make the PUT request

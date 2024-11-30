@@ -287,6 +287,8 @@ app.controller('SanPhamController', function($scope, $http,$window) {
                             });
 
                             return Promise.all(promises);
+
+
                         } else {
                             throw new Error("Không thể tạo hóa đơn");
                         }
