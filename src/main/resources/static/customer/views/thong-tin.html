@@ -1,0 +1,209 @@
+<br><br><br><br><br>
+    <h1>Xin chào </h1>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Header -->
+                    <div class="d-flex flex-column align-items-center mb-4">
+                        <!-- Avatar Circle -->
+                        <div class="avatar-circle mb-3">
+                            <span class="initials">{{name | limitTo:2}}</span>
+                        </div>
+                        <h4 class="card-title mb-0">Thông Tin Cá Nhân</h4>
+                    </div>
+
+                    <!-- Thông tin chi tiết -->
+                    <div class="card border-0 bg-light mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">
+                                <i class="fas fa-info-circle me-2"></i>Thông tin chi tiết
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted d-block">Họ tên</small>
+                                        <span>{{name}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted d-block">Email</small>
+                                        <span>{{email}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted d-block">Số điện thoại</small>
+                                        <span>{{phone}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted d-block">Ngày sinh</small>
+                                        <span>{{ngaySinh | date:'dd/MM/yyyy'}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted d-block">Giới tính</small>
+                                        <span>
+                                            <i class="fas" ng-class="{'fa-mars text-primary': gioiTinh === 1, 'fa-venus text-danger': gioiTinh === 0}"></i>
+                                            {{gioiTinh === 1 ? 'Nam' : 'Nữ'}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Địa chỉ -->
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">
+                                <i class="fas fa-map-marker-alt me-2"></i>Thông tin địa chỉ
+                            </h6>
+
+                            <!-- Địa chỉ mặc định -->
+                            <div class="mb-3">
+                                <label for="addressDefault" class="form-label">Địa chỉ mặc định</label>
+                                <input type="text" id="addressDefault" class="form-control" ng-model="addressDetail" placeholder="Nhập địa chỉ mặc định">
+                                <small class="text-muted">Đây là địa chỉ được đánh dấu mặc định.</small>
+                            </div>
+
+                            <!-- Địa chỉ khác -->
+                            <div class="mb-3">
+                                <label for="addressOther" class="form-label">Địa chỉ khác</label>
+                                <input type="text" id="addressOther" class="form-control" ng-model="otherAddressDetail" placeholder="Nhập địa chỉ khác">
+                                <small class="text-muted">Đây là địa chỉ bổ sung.</small>
+                            </div>
+
+                            <!-- Nút lưu địa chỉ -->
+                            <div class="d-grid">
+                                <button class="btn btn-primary" ng-click="saveAddress()">
+                                    <i class="fas fa-save me-2"></i>Lưu địa chỉ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Edit Button -->
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-outline-primary" ng-click="toggleEditMode()">
+                            <i class="fas fa-pen me-2"></i>Chỉnh sửa thông tin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        background-color: #primary;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    }
+
+    .avatar-circle .initials {
+        font-size: 40px;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .detail-item {
+        padding: 8px 0;
+    }
+
+    .detail-item small {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
+
+    .detail-item span {
+        font-weight: 500;
+    }
+
+    .address-card {
+        position: relative;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+    }
+
+    .primary-address {
+        border: 2px solid #4e73df;
+        background-color: #f8f9fc;
+    }
+
+    .address-badge {
+        position: absolute;
+        top: -10px;
+        right: 10px;
+    }
+
+    .address-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .address-item {
+        padding: 10px;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        margin-bottom: 8px;
+    }
+
+    .no-address {
+        padding: 15px;
+        text-align: center;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .address-item:hover {
+        background-color: #e9ecef;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .address-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .address-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .address-list::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    .address-list::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
+
+
+
