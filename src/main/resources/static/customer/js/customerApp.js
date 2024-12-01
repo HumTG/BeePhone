@@ -26,6 +26,10 @@ app.config(function($routeProvider) {
             templateUrl : "/customer/views/don-hang.html",
             controller : "DonHangController"
         })
+        .when("/chat", {
+            templateUrl : "/customer/views/chat.html",
+            controller : "ChatController"
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -78,6 +82,9 @@ app.controller('HomeController', function($scope, $http, $window) {
 
     // Các sản phẩm bán chạy
 });
+
+
+
 
 
 

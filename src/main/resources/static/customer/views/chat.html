@@ -1,0 +1,19 @@
+<br><br><br><br><br>
+
+<div class="container">
+    Hộ trợ khách hàng
+    <div ng-controller="ChatController">
+        <div>
+            <h3>Chat Room</h3>
+            <div id="chat-box">
+                <div ng-repeat="message in messages">
+                    <p><strong>{{message.senderType}}:</strong> {{message.content}} <span>{{message.timestamp}}</span></p>
+                </div>
+            </div>
+
+            <textarea ng-model="messageContent"></textarea>
+            <button ng-click="sendMessage()">Gửi</button>
+        </div>
+    </div>
+
+</div>

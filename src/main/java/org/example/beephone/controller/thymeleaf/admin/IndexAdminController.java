@@ -9,4 +9,9 @@ public class IndexAdminController {
     public String index(){
         return "admin/index";
     }
+
+    @GetMapping("admin/chat")
+    public String chat(){
+        return "admin/admin-chat";
+    }
 }
