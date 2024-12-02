@@ -9,8 +9,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface DiaChiRepository extends JpaRepository<dia_chi_khach_hang, Integer> {
+
+    /* admin */
 
     // Phương thức để xóa tất cả các địa chỉ của một khách hàng
     @Modifying
@@ -28,4 +32,27 @@ public interface DiaChiRepository extends JpaRepository<dia_chi_khach_hang, Inte
     @Transactional
     @Query("UPDATE dia_chi_khach_hang dc SET dc.trang_thai = 1 WHERE dc.id = :addressId")
     void setAddressAsDefault(@Param("addressId") Integer addressId);
+
+    // Đếm số lượng địa chỉ của một khách hàng
+    @Query("SELECT COUNT(dc) FROM dia_chi_khach_hang dc WHERE dc.khachHang.id = :customerId")
+    int countByKhachHangId(@Param("customerId") Integer customerId);
+
+    /* customer */
+
+    // Cập nhật tất cả địa chỉ của một khách hàng về trạng thái không mặc định (1)
+    @Modifying
+    @Query("UPDATE dia_chi_khach_hang dc SET dc.trang_thai = 1 WHERE dc.khachHang.id = :customerId")
+    void diaChiKhongMacDinh(@Param("customerId") Integer customerId);
+
+    // Cập nhật một địa chỉ cụ thể thành mặc định (0)
+    @Modifying
+    @Query("UPDATE dia_chi_khach_hang dc SET dc.trang_thai = 0 WHERE dc.id = :addressId")
+    void diaChiMacDinh(@Param("addressId") Integer addressId);
+
+    // Xóa tất cả địa chỉ liên quan đến một khách hàng
+    @Modifying
+    @Query("DELETE FROM dia_chi_khach_hang dc WHERE dc.khachHang.id = :customerId")
+    void deleteByKhachHangId(@Param("customerId") Integer customerId);
+
+    List<dia_chi_khach_hang> findByKhachHangId(Integer customerId);
 }

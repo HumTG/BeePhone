@@ -28,9 +28,7 @@ public class KhachHangDTO {
     private Integer gioiTinh;
     private Integer trangThai;
     private List<DiaChiDTO> diaChiChiTiet; // Thay vì List<String>
-
-
-
+    private DiaChiDTO diaChiMacDinh;
 
     // Chuyển đổi từ Entity KhachHang sang KhachHangDTO
     public static KhachHangDTO fromEntity(khach_hang khachHang) {

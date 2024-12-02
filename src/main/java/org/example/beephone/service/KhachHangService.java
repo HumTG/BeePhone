@@ -1,6 +1,7 @@
 package org.example.beephone.service;
 
 
+import org.example.beephone.dto.DoiMatKhauDTO;
 import org.example.beephone.dto.KhachHangDTO;
 import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
@@ -36,6 +37,8 @@ public class KhachHangService {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int MA_KH_LENGTH = 8; // Độ dài mã khách hàng
     private static final Random RANDOM = new Random();
+
+    /* admin */
 
     // Hàm tạo mã khách hàng tự động
     private String generateMaKhachHang() {
@@ -215,7 +218,7 @@ public class KhachHangService {
         return khachHangRepository.getKhachHangBanHang(khachHangPage);
     }
 
-    // Tạo khách hàn bên web khi khách hàng không đăng nhập ( lol đức đừng xóa lần nữa )
+    // Tạo khách hàn bên web khi khách hàng không đăng nhập ( hehe )
     public khach_hang save(khach_hang khachHang) {
         khachHang.setMa_khach_hang(generateMaKhachHang());
         return khachHangRepository.save(khachHang);
@@ -239,4 +242,89 @@ public class KhachHangService {
 
         return khachHangRepository.save(khachHangNew);
     }
+
+    /* customer */
+
+    // Lấy thông tin chi tiết khách hàng để hiển thị profile
+    public KhachHangDTO getCustomerProfile(Integer customerId) {
+        Optional<khach_hang> khachHang = khachHangRepository.findById(customerId);
+        if (khachHang.isPresent()) {
+            KhachHangDTO profileDTO = KhachHangDTO.fromEntity(khachHang.get());
+            // Lấy địa chỉ mặc định
+            Optional<dia_chi_khach_hang> defaultAddress = khachHang.get().getDiaChiKhachHang().stream()
+                    .filter(addr -> addr.getTrang_thai() == 1)
+                    .findFirst();
+            if (defaultAddress.isPresent()) {
+                DiaChiDTO defaultAddressDTO = new DiaChiDTO();
+                defaultAddressDTO.setDiaChiChiTiet(defaultAddress.get().getDia_chi_chi_tiet());
+                profileDTO.setDiaChiMacDinh(defaultAddressDTO);
+            }
+            // Log thêm để kiểm tra
+            System.out.println("Customer Profile: " + profileDTO);
+            System.out.println("Addresses count: " + profileDTO.getDiaChiChiTiet().size());
+            return profileDTO;
+        } else {
+            throw new ResourceNotFoundException("Không tìm thấy khách hàng với ID: " + customerId);
+        }
+    }
+
+    // Cập nhật thông tin khách hàng cho user
+    public KhachHangDTO updateCustomerProfile(KhachHangDTO khachHangDTO) {
+        Optional<khach_hang> existingCustomerOpt = khachHangRepository.findById(khachHangDTO.getId());
+        if (!existingCustomerOpt.isPresent()) {
+            throw new ResourceNotFoundException("Không tìm thấy khách hàng với ID: " + khachHangDTO.getId());
+        }
+        khach_hang existingCustomer = existingCustomerOpt.get();
+        // Thêm log để kiểm tra
+        System.out.println("Đang cập nhật khách hàng với họ tên: " + khachHangDTO.getHoTen());
+        // Cập nhật thông tin cơ bản
+        existingCustomer.setHo_ten(khachHangDTO.getHoTen());
+        existingCustomer.setEmail(khachHangDTO.getEmail());
+        existingCustomer.setSdt(khachHangDTO.getSdt());
+        existingCustomer.setNgay_sinh(khachHangDTO.getNgaySinh());
+        existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh() == 1 ? 1 : 0);
+        // Xử lý cập nhật địa chỉ
+        if (khachHangDTO.getDiaChiChiTiet() != null && !khachHangDTO.getDiaChiChiTiet().isEmpty()) {
+            // Xóa địa chỉ cũ
+            diaChiRepository.deleteByKhachHang(existingCustomer);
+            // Thêm địa chỉ mới
+            List<dia_chi_khach_hang> diaChiList = new ArrayList<>();
+            for (DiaChiDTO diaChiDTO : khachHangDTO.getDiaChiChiTiet()) {
+                dia_chi_khach_hang diaChi = new dia_chi_khach_hang();
+                diaChi.setMa_dia_chi(generateMaDiaChi());
+                diaChi.setDia_chi_chi_tiet(diaChiDTO.getDiaChiChiTiet());
+                diaChi.setTrang_thai(diaChiDTO.getTrangThai() != null ? diaChiDTO.getTrangThai() : 0);
+                diaChi.setKhachHang(existingCustomer);
+                diaChiList.add(diaChi);
+            }
+            existingCustomer.setDiaChiKhachHang(diaChiList);
+        }
+        khachHangRepository.save(existingCustomer);
+        return KhachHangDTO.fromEntity(existingCustomer);
+    }
+
+    // đổi mật khẩu
+    @Transactional
+    public boolean doiMatKhau(DoiMatKhauDTO doiMatKhauDTO) {
+        // Validate đầu vào
+        if (doiMatKhauDTO.getMatKhauMoi() == null ||
+                !doiMatKhauDTO.getMatKhauMoi().equals(doiMatKhauDTO.getXacNhanMatKhauMoi())) {
+            throw new IllegalArgumentException("Mật khẩu mới không khớp");
+        }
+        // Tìm khách hàng
+        Optional<khach_hang> khachHangOpt = khachHangRepository.findById(doiMatKhauDTO.getCustomerId());
+        if (!khachHangOpt.isPresent()) {
+            throw new ResourceNotFoundException("Không tìm thấy khách hàng");
+        }
+        khach_hang khachHang = khachHangOpt.get();
+        // Kiểm tra mật khẩu hiện tại
+        if (!khachHang.getMat_khau().equals(doiMatKhauDTO.getMatKhauHienTai())) {
+            throw new IllegalArgumentException("Mật khẩu hiện tại không đúng");
+        }
+        // Cập nhật mật khẩu
+        khachHang.setMat_khau(doiMatKhauDTO.getMatKhauMoi());
+        khachHangRepository.save(khachHang);
+        return true;
+    }
+
 }

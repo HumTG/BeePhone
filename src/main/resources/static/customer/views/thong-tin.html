@@ -1,0 +1,162 @@
+br><br><br><br><br>
+<h1>Xin chào </h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Header -->
+                    <div class="d-flex flex-column align-items-center mb-4">
+                        <!-- Avatar Circle -->
+                        <div class="avatar-circle mb-3">
+                            <span class="initials">{{name | limitTo:2}}</span>
+                        </div>
+                        <h4 class="card-title mb-0">Thông Tin Cá Nhân</h4>
+                    </div>
+                    <!-- Form khách hàng -->
+                        <div class="row g-4">
+                            <!-- Họ tên và Tài khoản -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="name" ng-model="name" required>
+                                    <label for="name">Họ và Tên</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="tai_khoan" ng-model="taiKhoan"
+                                           placeholder="Nhập tài khoản" required>
+                                    <label for="tai_khoan">Tài Khoản</label>
+                                </div>
+                            </div>
+
+                            <!-- Ngày sinh -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="ngaySinh" ng-model="ngaySinh" required>
+                                    <label for="ngaySinh">Ngày Sinh</label>
+                                </div>
+                            </div>
+
+                            <!-- Email và Số điện thoại -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="email" ng-model="email"
+                                           placeholder="Nhập email" required>
+                                    <label for="email">Email</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="tel" class="form-control" id="sdt" ng-model="phone"
+                                           placeholder="Nhập số điện thoại" required>
+                                    <label for="sdt">Số Điện Thoại</label>
+                                </div>
+                            </div>
+
+                            <!-- Giới tính -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="gioiTinhInput" ng-model="gioiTinhText" required>
+                                    <label for="gioiTinhInput">Giới Tính</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Edit Button -->
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-outline-primary" ng-click="toggleEditMode()">
+                            <i class="fas fa-pen me-2"></i>Chỉnh sửa thông tin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        background-color: #primary;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    }
+    .avatar-circle .initials {
+        font-size: 40px;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .detail-item {
+        padding: 8px 0;
+    }
+    .detail-item small {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
+    .detail-item span {
+        font-weight: 500;
+    }
+    .address-card {
+        position: relative;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+    }
+    .primary-address {
+        border: 2px solid #4e73df;
+        background-color: #f8f9fc;
+    }
+    .address-badge {
+        position: absolute;
+        top: -10px;
+        right: 10px;
+    }
+    .address-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .address-item {
+        padding: 10px;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        margin-bottom: 8px;
+    }
+    .no-address {
+        padding: 15px;
+        text-align: center;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+    }
+    .address-item:hover {
+        background-color: #e9ecef;
+        transition: background-color 0.3s ease;
+    }
+    .btn {
+        transition: all 0.3s ease;
+    }
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .address-list::-webkit-scrollbar {
+        width: 6px;
+    }
+    .address-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    .address-list::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+    .address-list::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>

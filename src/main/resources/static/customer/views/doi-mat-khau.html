@@ -1,0 +1,189 @@
+<br><br><br><br><br>
+<h1>Xin chào </h1>
+<!-- userProfile.template.html -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="card-title mb-0">Thông Tin Cá Nhân</h4>
+                        <button class="btn btn-outline-primary" ng-click="toggleEditMode()">
+                            <i class="fas" ng-class="{'fa-pen': !isEditMode, 'fa-times': isEditMode}"></i>
+                            {{isEditMode ? 'Hủy' : 'Chỉnh sửa'}}
+                        </button>
+                    </div>
+
+                    <!-- Profile Form -->
+                    <form ng-submit="saveProfile()" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label">Họ tên</label>
+                            <input type="text"
+                                   class="form-control"
+                                   ng-model="name"
+                                   ng-disabled="!isEditMode">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email"
+                                   class="form-control"
+                                   ng-model="email"
+                                   disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel"
+                                   class="form-control"
+                                   ng-model="phone"
+                                   ng-disabled="!isEditMode">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày sinh</label>
+                            <input type="date"
+                                   class="form-control"
+                                   ng-model="ngaySinh"
+                                   ng-disabled="!isEditMode">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Giới tính</label>
+                            <select class="form-select"
+                                    ng-model="gioiTinh"
+                                    ng-disabled="!isEditMode">
+                                <option value="1">Nam</option>
+                                <option value="0">Nữ</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ</label>
+                            <textarea class="form-control"
+                                      ng-model="addressDetail"
+                                      ng-disabled="!isEditMode">
+                            </textarea>
+                        </div>
+
+                        <!-- Save Profile Button -->
+                        <div class="d-grid" ng-if="isEditMode">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                Lưu thông tin
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Change Password Toggle Button -->
+                    <div class="d-grid mb-3" ng-if="isEditMode">
+                        <button class="btn btn-outline-secondary"
+                                ng-click="toggleChangePasswordMode()">
+                            <i class="fas" ng-class="{'fa-lock': !isChangePasswordMode, 'fa-times': isChangePasswordMode}"></i>
+                            {{isChangePasswordMode ? 'Hủy đổi mật khẩu' : 'Đổi mật khẩu'}}
+                        </button>
+                    </div>
+
+                    <!-- Change Password Form -->
+                    <form ng-if="isChangePasswordMode"
+                          ng-submit="changePassword()"
+                          class="border-top pt-4">
+                        <h5 class="mb-3">Đổi Mật Khẩu</h5>
+
+                        <!-- Current Password -->
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu hiện tại</label>
+                            <div class="input-group">
+                                <input ng-model="passwordForm.matKhauHienTai"
+                                       ng-type="showCurrentPassword ? 'text' : 'password'"
+                                       class="form-control"
+                                       placeholder="Nhập mật khẩu hiện tại"
+                                       required>
+                                <button class="btn btn-outline-secondary"
+                                        type="button"
+                                        ng-click="togglePasswordVisibility('current')">
+                                    <i class="fas" ng-class="{'fa-eye-slash': showCurrentPassword, 'fa-eye': !showCurrentPassword}"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <div class="input-group">
+                                <input ng-model="passwordForm.matKhauMoi"
+                                       ng-type="showNewPassword ? 'text' : 'password'"
+                                       class="form-control"
+                                       placeholder="Nhập mật khẩu mới"
+                                       required>
+                                <button class="btn btn-outline-secondary"
+                                        type="button"
+                                        ng-click="togglePasswordVisibility('new')">
+                                    <i class="fas" ng-class="{'fa-eye-slash': showNewPassword, 'fa-eye': !showNewPassword}"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số
+                            </div>
+                        </div>
+
+                        <!-- Confirm New Password -->
+                        <div class="mb-4">
+                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                            <div class="input-group">
+                                <input ng-model="passwordForm.xacNhanMatKhauMoi"
+                                       ng-type="showConfirmPassword ? 'text' : 'password'"
+                                       class="form-control"
+                                       placeholder="Xác nhận mật khẩu mới"
+                                       required>
+                                <button class="btn btn-outline-secondary"
+                                        type="button"
+                                        ng-click="togglePasswordVisibility('confirm')">
+                                    <i class="fas" ng-class="{'fa-eye-slash': showConfirmPassword, 'fa-eye': !showConfirmPassword}"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Change Password Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit"
+                                    class="btn btn-primary"
+                                    ng-disabled="isLoading">
+                                <i class="fas fa-key me-2"></i>
+                                {{isLoading ? 'Đang xử lý...' : 'Đổi mật khẩu'}}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Success Alert -->
+            <div class="alert alert-success alert-dismissible fade show mt-3"
+                 role="alert"
+                 ng-if="successMessage">
+                <i class="fas fa-check-circle me-2"></i>
+                {{successMessage}}
+                <button type="button"
+                        class="btn-close"
+                        ng-click="successMessage = ''">
+                </button>
+            </div>
+
+            <!-- Error Alert -->
+            <div class="alert alert-danger alert-dismissible fade show mt-3"
+                 role="alert"
+                 ng-if="errorMessage">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {{errorMessage}}
+                <button type="button"
+                        class="btn-close"
+                        ng-click="errorMessage = ''">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
