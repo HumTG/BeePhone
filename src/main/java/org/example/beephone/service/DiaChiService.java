@@ -1,6 +1,8 @@
 package org.example.beephone.service;
 
 import org.example.beephone.dto.DiaChiDTO;
+import org.example.beephone.dto.DiaChiSyncDTO;
+import org.example.beephone.dto.DiaChiSyncResultDTO;
 import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 import org.example.beephone.repository.DiaChiRepository;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,69 +59,69 @@ public class DiaChiService {
 
     /* customer */
 
-    // Thêm địa chỉ mới
-    public DiaChiDTO addDiaChi(Integer customerId, DiaChiDTO diaChiDTO) {
-        dia_chi_khach_hang diaChi = new dia_chi_khach_hang();
-
-        // Nếu là địa chỉ đầu tiên, đặt trạng thái mặc định
-        boolean isFirstAddress = diaChiRepository.countByKhachHangId(customerId) == 0;
-        diaChi.setTrang_thai(isFirstAddress ? 0 : 1);
-
-        diaChi.setMa_dia_chi("DC" + System.currentTimeMillis());
-        diaChi.setDia_chi_chi_tiet(diaChiDTO.getDiaChiChiTiet());
-
-        // Gán khách hàng
-        khach_hang khachHang = new khach_hang();
-        khachHang.setId(customerId);
-        diaChi.setKhachHang(khachHang);
-
-        diaChi = diaChiRepository.save(diaChi);
-        return DiaChiDTO.fromEntity(diaChi);
-    }
-
-    // Cập nhật trạng thái mặc định của địa chỉ
     @Transactional
-    public void setDefaultAddress(Integer customerId, Integer addressId) {
-        diaChiRepository.diaChiKhongMacDinh(customerId);
-        diaChiRepository.diaChiMacDinh(addressId);
-    }
+    public List<DiaChiSyncResultDTO> syncAddresses(Integer customerId, List<DiaChiSyncDTO> diaChiSyncDTOs) {
+        List<DiaChiSyncResultDTO> results = new ArrayList<>();
 
-    // Xóa địa chỉ
-    @Transactional
-    public void deleteDiaChi(Integer addressId) {
-        if (!diaChiRepository.existsById(addressId)) {
-            throw new ResourceNotFoundException("Không tìm thấy địa chỉ với ID: " + addressId);
+        for (DiaChiSyncDTO dto : diaChiSyncDTOs) {
+            DiaChiSyncResultDTO result = new DiaChiSyncResultDTO();
+            try {
+                switch (dto.getState()) {
+                    case "new": // Thêm địa chỉ mới
+                        dia_chi_khach_hang newAddress = new dia_chi_khach_hang();
+                        newAddress.setDia_chi_chi_tiet(dto.getDiaChiChiTiet());
+                        newAddress.setTrang_thai(dto.getTrangThai());
+                        newAddress.setKhachHang(new khach_hang(customerId));
+                        diaChiRepository.save(newAddress);
+                        result.setId(newAddress.getId());
+                        result.setState("success");
+                        break;
+
+                    case "edited": // Sửa địa chỉ
+                        dia_chi_khach_hang existingAddress = diaChiRepository.findById(dto.getId())
+                                .orElseThrow(() -> new RuntimeException("Không tìm thấy địa chỉ"));
+
+                        // Tính toán phiên bản hiện tại từ entity
+                        DiaChiDTO currentDTO = DiaChiDTO.fromEntity(existingAddress);
+
+                        // Kiểm tra xung đột phiên bản
+                        if (!dto.getVersion().equals(currentDTO.getVersion())) {
+                            result.setState("conflict");
+                            result.setMessage("Dữ liệu đã bị thay đổi bởi nguồn khác.");
+                            result.setUpdatedData(currentDTO); // Trả về dữ liệu mới nhất
+                            break;
+                        }
+
+                        // Không xung đột, cập nhật dữ liệu
+                        existingAddress.setDia_chi_chi_tiet(dto.getDiaChiChiTiet());
+                        existingAddress.setTrang_thai(dto.getTrangThai());
+                        diaChiRepository.save(existingAddress);
+                        result.setId(existingAddress.getId());
+                        result.setState("success");
+                        break;
+
+                    case "deleted": // Xóa địa chỉ
+                        diaChiRepository.deleteById(dto.getId());
+                        result.setId(dto.getId());
+                        result.setState("success");
+                        break;
+
+                    default:
+                        result.setState("unchange");
+                }
+            } catch (Exception e) {
+                result.setState("error");
+                result.setMessage(e.getMessage());
+            }
+            results.add(result);
         }
-        diaChiRepository.deleteById(addressId);
+
+        return results;
     }
 
-    // Lấy địa chỉ theo Id
+    // Lấy danh sách địa chỉ của một khách hàng
     public List<dia_chi_khach_hang> findAddressesByCustomerId(Integer customerId) {
         return diaChiRepository.findByKhachHangId(customerId);
-    }
-
-    // Cập nhật địa chỉ mới
-    @Transactional
-    public void updateAddresses(Integer customerId, List<DiaChiDTO> diaChiDTOs) {
-        // Kiểm tra khách hàng tồn tại
-        Optional<khach_hang> khachHangOpt = khachHangRepository.findById(customerId);
-        if (!khachHangOpt.isPresent()) {
-            throw new ResourceNotFoundException("Không tìm thấy khách hàng với ID: " + customerId);
-        }
-        khach_hang khachHang = khachHangOpt.get();
-
-        // Xóa các địa chỉ hiện tại
-        diaChiRepository.deleteByKhachHang(khachHang);
-
-        // Lưu lại các địa chỉ mới
-        for (DiaChiDTO diaChiDTO : diaChiDTOs) {
-            dia_chi_khach_hang diaChi = new dia_chi_khach_hang();
-            diaChi.setMa_dia_chi("DC" + System.currentTimeMillis());
-            diaChi.setDia_chi_chi_tiet(diaChiDTO.getDiaChiChiTiet());
-            diaChi.setTrang_thai(diaChiDTO.getTrangThai() != null ? diaChiDTO.getTrangThai() : 0);
-            diaChi.setKhachHang(khachHang);
-            diaChiRepository.save(diaChi);
-        }
     }
 
 }

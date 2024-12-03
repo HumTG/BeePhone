@@ -170,118 +170,119 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
 
     /* địa chỉ */
 
-    // Tải danh sách địa chỉ từ API
+// Tải danh sách địa chỉ từ API
+
+    const addressData = $scope.khachHang.diaChiChiTiet.map(address => ({
+        id: address.id,
+        diaChiChiTiet: address.diaChiChiTiet,
+        trangThai: address.trangThai,
+        state: address.state,
+        version: address.version, // Gửi version hiện tại từ backend
+    }));
+
     $scope.loadAddress = function () {
         $http.get(`${API_BASE_URL}/khach-hang/${savedUser.id}/addresses`)
             .then(function (response) {
-                $scope.khachHang.diaChiChiTiet = response.data; // Lấy từ API
-                savedUser.diaChiKhachHang = $scope.khachHang.diaChiChiTiet; // Đồng bộ lại localStorage
-                localStorage.setItem("user", JSON.stringify(savedUser));
+                $scope.khachHang.diaChiChiTiet = response.data.map(address => ({
+                    ...address,
+                    state: "unchange", // Gắn trạng thái mặc định
+                }));
+                localStorage.setItem("user", JSON.stringify($scope.khachHang));
             })
             .catch(function (error) {
-                alert("Lỗi khi tải danh sách địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
+                alert("Lỗi khi tải địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
             });
     };
 
-    $scope.logAddresses = function () {
-        if ($scope.khachHang && $scope.khachHang.diaChiChiTiet.length > 0) {
-            console.log("Danh sách địa chỉ của khách hàng:");
-            $scope.khachHang.diaChiChiTiet.forEach((address, index) => {
-                console.log(`${index + 1}. ${address.dia_chi_chi_tiet} ${address.trang_thai === 1 ? "(Mặc định)" : ""}`);
-            });
-        } else {
-            console.log("Không có địa chỉ nào được lưu.");
-        }
-    };
-
-    // Gọi loadAddress để tải địa chỉ khi trang được tải
+// Gọi loadAddress để tải địa chỉ khi trang được tải
     $scope.loadAddress();
 
-    // Thêm địa chỉ mới
+// Thêm địa chỉ mới
     $scope.addAddress = function () {
         if (!$scope.newAddress) {
             alert("Vui lòng nhập địa chỉ!");
             return;
         }
-        const addressData = { diaChiChiTiet: $scope.newAddress };
-        $http.post(`${API_BASE_URL}/khach-hang/${savedUser.id}/add-address`, addressData)
-            .then(function (response) {
-                $scope.khachHang.diaChiChiTiet.push(response.data); // Thêm địa chỉ mới vào danh sách
-                savedUser.diaChiKhachHang = $scope.khachHang.diaChiChiTiet; // Đồng bộ lại localStorage
-                localStorage.setItem("user", JSON.stringify(savedUser));
-                $scope.newAddress = ""; // Reset input
-                alert("Thêm địa chỉ thành công!");
-            })
-            .catch(function (error) {
-                alert("Lỗi khi thêm địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
-            });
+
+        $scope.khachHang.diaChiChiTiet.push({
+            id: null, // Địa chỉ mới chưa có ID
+            diaChiChiTiet: $scope.newAddress,
+            trangThai: 0, // Không mặc định
+            state: "new", // Trạng thái là "new"
+            version: null // Không có phiên bản cho địa chỉ mới
+        });
+
+        localStorage.setItem("user", JSON.stringify($scope.khachHang));
+        $scope.newAddress = ""; // Reset input
     };
 
-    // Đặt địa chỉ mặc định
-    $scope.setDefaultAddress = function (index) {
-        const addressId = $scope.khachHang.diaChiChiTiet[index].id;
-        const customerId = savedUser.id;
-
-        $http.post(`${API_BASE_URL}/khach-hang/update-default-address?customerId=${customerId}&addressId=${addressId}`)
-            .then(function () {
-                // Cập nhật trạng thái trong danh sách địa chỉ
-                $scope.khachHang.diaChiChiTiet.forEach(addr => addr.trang_thai = 1); // Tất cả là không mặc định
-                $scope.khachHang.diaChiChiTiet[index].trang_thai = 0; // Địa chỉ được chọn là mặc định
-
-                // Đồng bộ lại localStorage
-                savedUser.diaChiKhachHang = $scope.khachHang.diaChiChiTiet;
-                localStorage.setItem("user", JSON.stringify(savedUser));
-
-                alert("Cập nhật địa chỉ mặc định thành công!");
-            })
-            .catch(function (error) {
-                alert("Lỗi khi cập nhật địa chỉ mặc định: " + (error.data?.message || 'Đã xảy ra lỗi'));
-            });
+// Sửa địa chỉ
+    $scope.editAddress = function (index, newDetail) {
+        const address = $scope.khachHang.diaChiChiTiet[index];
+        address.diaChiChiTiet = newDetail;
+        if (address.state !== "new") {
+            address.state = "edited"; // Chỉ thay đổi nếu không phải địa chỉ mới
+        }
+        localStorage.setItem("user", JSON.stringify($scope.khachHang));
     };
 
-    // Xóa địa chỉ
+// Xóa địa chỉ
     $scope.removeAddress = function (index) {
-        const Id = $scope.khachHang.diaChiChiTiet[index].id;
+        const address = $scope.khachHang.diaChiChiTiet[index];
 
-        $http.delete(`${API_BASE_URL}/dia-chi/delete-address/${Id}`)
-            .then(function () {
-                $scope.khachHang.diaChiChiTiet.splice(index, 1); // Xóa địa chỉ khỏi danh sách
-                if ($scope.khachHang.diaChiChiTiet.length > 0 && $scope.khachHang.diaChiChiTiet[0].trang_thai === 1) {
-                    $scope.khachHang.diaChiChiTiet[0].trang_thai = 1; // Đặt địa chỉ đầu tiên làm mặc định nếu cần
-                }
-                alert("Xóa địa chỉ thành công!");
-            })
-            .catch(function (error) {
-                alert("Lỗi khi xóa địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
-            });
+        if (address.state === "new") {
+            // Xóa ngay lập tức nếu là địa chỉ mới
+            $scope.khachHang.diaChiChiTiet.splice(index, 1);
+        } else {
+            // Đánh dấu là "deleted"
+            address.state = "deleted";
+        }
+
+        localStorage.setItem("user", JSON.stringify($scope.khachHang));
     };
 
-    // Cập nhật toàn bộ địa chỉ
+// Gửi thay đổi lên server
     $scope.updateAddresses = function () {
-        if (!$scope.khachHang || !$scope.khachHang.diaChiChiTiet) {
-            alert("Không có dữ liệu địa chỉ để cập nhật.");
+        const changes = $scope.khachHang.diaChiChiTiet.filter(address => address.state !== "unchange");
+
+        if (changes.length === 0) {
+            alert("Không có thay đổi nào để cập nhật.");
             return;
         }
 
-        $scope.isLoading = true; // Hiển thị trạng thái loading
-
-        const addressData = $scope.khachHang.diaChiChiTiet.map(address => ({
-            id: address.id || null, // id nếu có, null nếu là địa chỉ mới
-            diaChiChiTiet: address.dia_chi_chi_tiet,
-            trangThai: address.trang_thai
-        }));
-
-        $http.post(`${API_BASE_URL}/dia-chi/${savedUser.id}/update-addresses`, addressData)
+        $http.post(`${API_BASE_URL}/dia-chi/${savedUser.id}/sync-addresses`, changes)
             .then(function (response) {
-                alert("Cập nhật thông tin thành công!");
-                $scope.loadAddress(); // Tải lại địa chỉ mới
+                const results = response.data;
+
+                results.forEach(result => {
+                    if (result.state === "success") {
+                        // Xóa trạng thái thay đổi cho các bản ghi thành công
+                        const address = $scope.khachHang.diaChiChiTiet.find(addr => addr.id === result.id || addr.state === "new");
+                        if (address) {
+                            address.state = "unchange";
+                            if (result.id) address.id = result.id; // Cập nhật ID cho địa chỉ mới
+                        }
+                    } else if (result.state === "conflict") {
+                        alert(`Xung đột địa chỉ ID ${result.id}: ${result.message}`);
+                        console.log("Dữ liệu mới nhất từ server:", result.updatedData);
+                    } else if (result.state === "error") {
+                        alert(`Lỗi đồng bộ địa chỉ ID ${result.id}: ${result.message}`);
+                    }
+                });
+
+                // Tải lại dữ liệu từ server
+                $scope.loadAddress();
             })
             .catch(function (error) {
-                alert("Lỗi khi cập nhật địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
-            })
-            .finally(function () {
-                $scope.isLoading = false; // Tắt trạng thái loading
+                alert("Lỗi khi đồng bộ địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
             });
+    };
+
+// Cảnh báo khi rời trang nếu có thay đổi chưa lưu
+    window.onbeforeunload = function () {
+        if ($scope.khachHang.diaChiChiTiet.some(address => address.state !== "unchange")) {
+            return "Bạn có thay đổi chưa lưu. Thoát sẽ mất dữ liệu.";
+        }
     };
 
 });

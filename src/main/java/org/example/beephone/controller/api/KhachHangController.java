@@ -261,9 +261,16 @@ public class KhachHangController {
         }
     }
 
+    // Lấy danh sách địa chỉ của một khách hàng theo ID
     @GetMapping("/{id}/addresses")
-    public ResponseEntity<List<dia_chi_khach_hang>> getAddresses(@PathVariable Integer id) {
+    public ResponseEntity<List<dia_chi_khach_hang>> getAddressesByCustomerId(@PathVariable Integer id) {
         List<dia_chi_khach_hang> addresses = diaChiService.findAddressesByCustomerId(id);
-        return ResponseEntity.ok(addresses);
+
+        if (addresses.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null); // Không có địa chỉ nào
+        }
+
+        return ResponseEntity.ok(addresses); // Trả về danh sách địa chỉ
     }
  }

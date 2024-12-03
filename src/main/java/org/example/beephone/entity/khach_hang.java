@@ -56,5 +56,8 @@ public class khach_hang {
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<dia_chi_khach_hang> diaChiKhachHang;
 
+    public khach_hang(Integer id) {
+        this.id = id;
+    }
 
 }

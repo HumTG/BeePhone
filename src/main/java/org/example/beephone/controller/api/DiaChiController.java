@@ -1,6 +1,8 @@
 package org.example.beephone.controller.api;
 
 import org.example.beephone.dto.DiaChiDTO;
+import org.example.beephone.dto.DiaChiSyncDTO;
+import org.example.beephone.dto.DiaChiSyncResultDTO;
 import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.service.DiaChiService;
 import org.example.beephone.service.ResourceNotFoundException;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Repository
 @RequestMapping("/rest/dia-chi")
+@RestController
 public class DiaChiController {
 
     @Autowired
@@ -37,55 +40,15 @@ public class DiaChiController {
 
     /* customer */
 
-    // API thêm địa chỉ
-    @PostMapping("/{customerId}/add-address")
-    public ResponseEntity<?> addAddress(@PathVariable Integer customerId, @RequestBody DiaChiDTO diaChiDTO) {
+    @PostMapping("/{customerId}/sync-addresses")
+    public ResponseEntity<?> syncAddresses(@PathVariable Integer customerId, @RequestBody List<DiaChiSyncDTO> diaChiSyncDTOs) {
         try {
-            DiaChiDTO newAddress = diaChiService.addDiaChi(customerId, diaChiDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newAddress);
+            List<DiaChiSyncResultDTO> results = diaChiService.syncAddresses(customerId, diaChiSyncDTOs);
+            return ResponseEntity.ok(results); // Trả về kết quả từng thao tác
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi khi thêm địa chỉ: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi đồng bộ địa chỉ: " + e.getMessage());
         }
     }
 
-    // API cập nhật địa chỉ mặc định
-    @PostMapping("/{customerId}/set-default-address")
-    public ResponseEntity<?> setDefaultAddress(@PathVariable Integer customerId, @RequestParam Integer addressId) {
-        try {
-            diaChiService.setDefaultAddress(customerId, addressId);
-            return ResponseEntity.ok("Cập nhật địa chỉ mặc định thành công");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi khi cập nhật địa chỉ mặc định: " + e.getMessage());
-        }
-    }
-
-    // API xóa địa chỉ
-    @DeleteMapping("/delete-address/{addressId}")
-    public ResponseEntity<?> deleteAddress(@PathVariable Integer addressId) {
-        try {
-            diaChiService.deleteDiaChi(addressId);
-            return ResponseEntity.ok("Xóa địa chỉ thành công");
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Lỗi: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi khi xóa địa chỉ: " + e.getMessage());
-        }
-    }
-
-    // Cập nhật địa chỉ mới
-    @PostMapping("/{customerId}/update-addresses")
-    public ResponseEntity<?> updateAddresses(@PathVariable Integer customerId, @RequestBody List<DiaChiDTO> diaChiDTOs) {
-        try {
-            diaChiService.updateAddresses(customerId, diaChiDTOs);
-            return ResponseEntity.ok("Cập nhật danh sách địa chỉ thành công!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi khi cập nhật địa chỉ: " + e.getMessage());
-        }
-    }
 
 }
