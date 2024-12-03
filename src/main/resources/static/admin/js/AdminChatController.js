@@ -24,13 +24,15 @@ app.controller('AdminChatController', function ($scope, $http, $window) {
 
     // Danh sách tin nhắn đã chọn theo người gửi
     $scope.selectedMessages = [];
+    $scope.selectedSenderId = null;
+    $scope.selectedSenderType = "";
 
-    // Cập nhật danh sách người gửi duy nhất
+    // Cập nhật danh sách người gửi duy nhất (loại trừ nhân viên hỗ trợ ID = 1)
     function updateUniqueSenders() {
         $scope.uniqueSenders = [];
         var seen = new Set();
-        $scope.messages.forEach(function(message) {
-            if (!seen.has(message.senderId)) {
+        $scope.messages.forEach(function (message) {
+            if (message.senderId !== 1 && !seen.has(message.senderId)) {
                 seen.add(message.senderId);
                 $scope.uniqueSenders.push({
                     id: message.senderId,
@@ -42,7 +44,9 @@ app.controller('AdminChatController', function ($scope, $http, $window) {
 
     // Chọn người gửi và hiển thị tin nhắn của họ (bao gồm phản hồi)
     $scope.selectSender = function (senderId) {
-        // Lọc tin nhắn chỉ của người gửi này và phản hồi từ quản trị viên
+        $scope.selectedSenderId = senderId;
+        var selectedSender = $scope.uniqueSenders.find(sender => sender.id === senderId);
+        $scope.selectedSenderType = selectedSender ? selectedSender.senderType : "Người gửi";
         $scope.selectedMessages = $scope.messages.filter(function (message) {
             return message.senderId === senderId || message.senderId === 1; // 1 là ID của quản trị viên
         });
@@ -50,7 +54,7 @@ app.controller('AdminChatController', function ($scope, $http, $window) {
 
     // Gửi tin nhắn trả lời
     $scope.sendResponse = function () {
-        if ($scope.responseContent.trim() === "") {
+        if (!$scope.responseContent || $scope.responseContent.trim() === "") {
             alert("Bạn cần nhập nội dung tin nhắn.");
             return;
         }
@@ -58,6 +62,7 @@ app.controller('AdminChatController', function ($scope, $http, $window) {
         var responseMessage = {
             senderId: 1, // ID của nhân viên quản trị
             senderType: "Nhân viên hỗ trợ", // Loại người gửi là "nhan_vien"
+            recipientId : $scope.selectedSenderId ,
             content: $scope.responseContent, // Nội dung tin nhắn trả lời
             timestamp: new Date().toISOString() // Thời gian gửi tin nhắn
         };
@@ -66,5 +71,7 @@ app.controller('AdminChatController', function ($scope, $http, $window) {
         $scope.responseContent = ""; // Làm trống ô nhập tin nhắn
     };
 });
+
+
 
 

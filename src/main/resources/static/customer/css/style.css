@@ -1468,6 +1468,20 @@ button {
   background-color: #0056b3;
 }
 
+/* chat */
+
+.chat-box {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+.text-right {
+  text-align: right;
+}
+
+
+
 
 
 

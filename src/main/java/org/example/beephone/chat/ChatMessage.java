@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessage {
     private Integer senderId; // ID của người gửi (nhân viên hoặc khách hàng)
+    private String recipientId;  // ID người nhận (khách hàng hoặc quản trị viên)
     private String senderType; // Loại người gửi ("khach_hang" hoặc "nhan_vien")
     private String content; // Nội dung tin nhắn
     private String timestamp; // Thời gian gửi
