@@ -29,28 +29,13 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
         $scope.taiKhoan = savedUser.tai_khoan;
         $scope.ngaySinh = savedUser.ngay_sinh ? new Date(savedUser.ngay_sinh) : null;
         $scope.gioiTinh = savedUser.gioi_tinh || 0; // 0: Nam, 1: Nữ
-        $scope.gioiTinhText = savedUser.gioi_tinh === 1 ? 'Nữ' : 'Nam';
         $scope.khachHang = savedUser; // Lưu toàn bộ thông tin user vào khachHang
-        $scope.khachHang.diaChiChiTiet = savedUser.diaChiKhachHang || []; // Đảm bảo danh sách địa chỉ tồn tại
+        $scope.khachHang.diaChiChiTiet = savedUser.diaChiKhachHang || [];
     } else {
-        // Nếu không có user, thông báo và chuyển hướng
-        $scope.khachHang = {diaChiChiTiet: []};
+        $scope.khachHang = { diaChiChiTiet: [] };
         alert("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại!");
-        $location.path('/login'); // Điều hướng về trang đăng nhập
+        $location.path("/login");
     }
-
-    // Đồng bộ giá trị giới tính
-    $scope.syncGender = function () {
-        if ($scope.gioiTinhText.toLowerCase() === 'nữ') {
-            $scope.gioiTinh = 1;
-        } else if ($scope.gioiTinhText.toLowerCase() === 'nam') {
-            $scope.gioiTinh = 0;
-        } else {
-            alert('Giới tính không hợp lệ. Vui lòng nhập "Nam" hoặc "Nữ".');
-            return false;
-        }
-        return true;
-    };
 
 
     // Toggle chế độ chỉnh sửa
@@ -138,40 +123,54 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
                 $scope.isLoading = false;
             });
     };
+
     // Lưu profile
     $scope.saveProfile = function () {
-        if (!$scope.name || !$scope.phone || !$scope.ngaySinh || !$scope.addressDetail) {
-            alert("Vui lòng điền đầy đủ thông tin.");
+        // Kiểm tra dữ liệu từ các ô input
+        if (!$scope.name || !$scope.email || !$scope.phone || !$scope.ngaySinh) {
+            alert("Vui lòng điền đầy đủ thông tin bắt buộc.");
             return;
         }
-        if (!$scope.syncGender()) {
-            return; // Dừng lưu nếu giới tính không hợp lệ
-        }
+
         const updatedProfile = {
             id: savedUser.id,
             ho_ten: $scope.name,
+            email: $scope.email,
             sdt: $scope.phone,
-            ngay_sinh: $scope.ngaySinh,
+            ngay_sinh: $scope.ngaySinh ? $scope.ngaySinh.toISOString().split('T')[0] : null,
             gioi_tinh: $scope.gioiTinh,
-            dia_chi_chi_tiet: $scope.addressDetail,
+            diaChiChiTiet: $scope.khachHang.diaChiChiTiet
         };
+
+        // Gửi dữ liệu lên API
         $http.put(`${API_BASE_URL}/khach-hang/update-profile`, updatedProfile)
             .then(function (response) {
-                // Cập nhật localStorage
-                const updatedUser = {...savedUser, ...updatedProfile};
+                // Cập nhật dữ liệu mới vào localStorage và giao diện
+                const updatedUser = { ...savedUser, ...response.data };
                 localStorage.setItem("user", JSON.stringify(updatedUser));
+                $scope.khachHang = updatedUser;
+
+                // Hiển thị dữ liệu mới trên giao diện
+                $scope.name = updatedUser.ho_ten;
+                $scope.email = updatedUser.email;
+                $scope.phone = updatedUser.sdt;
+                $scope.ngaySinh = updatedUser.ngay_sinh ? new Date(updatedUser.ngay_sinh) : null;
+                $scope.gioiTinh = updatedUser.gioi_tinh;
+
+                // Hiển thị thông báo thành công
                 alert("Cập nhật thông tin thành công!");
                 $scope.isEditMode = false;
             })
             .catch(function (error) {
-                alert("Lỗi: " + (error.data?.message || 'Đã xảy ra lỗi khi cập nhật thông tin'));
+                // Hiển thị thông báo lỗi nếu API trả về lỗi
+                console.error("Lỗi khi cập nhật:", error);
+                alert("Lỗi cập nhật: " + (error.data?.message || "Đã xảy ra lỗi trong quá trình cập nhật"));
             });
     };
 
     /* địa chỉ */
 
-// Tải danh sách địa chỉ từ API
-
+    // Tải danh sách địa chỉ từ API
     const addressData = $scope.khachHang.diaChiChiTiet.map(address => ({
         id: address.id,
         diaChiChiTiet: address.diaChiChiTiet,
@@ -180,6 +179,7 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
         version: address.version, // Gửi version hiện tại từ backend
     }));
 
+    // Tải danh sách địa chỉ
     $scope.loadAddress = function () {
         $http.get(`${API_BASE_URL}/khach-hang/${savedUser.id}/addresses`)
             .then(function (response) {
@@ -194,10 +194,10 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
             });
     };
 
-// Gọi loadAddress để tải địa chỉ khi trang được tải
+    // Gọi loadAddress để tải địa chỉ khi trang được tải
     $scope.loadAddress();
 
-// Thêm địa chỉ mới
+    // Thêm địa chỉ mới
     $scope.addAddress = function () {
         if (!$scope.newAddress) {
             alert("Vui lòng nhập địa chỉ!");
@@ -216,7 +216,7 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
         $scope.newAddress = ""; // Reset input
     };
 
-// Sửa địa chỉ
+    // Sửa địa chỉ
     $scope.editAddress = function (index, newDetail) {
         const address = $scope.khachHang.diaChiChiTiet[index];
         address.diaChiChiTiet = newDetail;
@@ -226,7 +226,7 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
         localStorage.setItem("user", JSON.stringify($scope.khachHang));
     };
 
-// Xóa địa chỉ
+    // Xóa địa chỉ
     $scope.removeAddress = function (index) {
         const address = $scope.khachHang.diaChiChiTiet[index];
 
@@ -241,7 +241,7 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
         localStorage.setItem("user", JSON.stringify($scope.khachHang));
     };
 
-// Gửi thay đổi lên server
+    // Gửi thay đổi lên server
     $scope.updateAddresses = function () {
         const changes = $scope.khachHang.diaChiChiTiet.filter(address => address.state !== "unchange");
 
@@ -278,7 +278,7 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
             });
     };
 
-// Cảnh báo khi rời trang nếu có thay đổi chưa lưu
+    // Cảnh báo khi rời trang nếu có thay đổi chưa lưu
     window.onbeforeunload = function () {
         if ($scope.khachHang.diaChiChiTiet.some(address => address.state !== "unchange")) {
             return "Bạn có thay đổi chưa lưu. Thoát sẽ mất dữ liệu.";

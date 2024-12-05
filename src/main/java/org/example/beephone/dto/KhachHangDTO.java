@@ -69,5 +69,12 @@ public class KhachHangDTO {
         return khachHang;
     }
 
+    public Integer getGioiTinh() {
+        return gioiTinh != null ? gioiTinh : 0; // Giá trị mặc định là 0
+    }
+    public void setGioiTinh(Integer gioiTinh) {
+        this.gioiTinh = gioiTinh;
+    }
+
 }
 

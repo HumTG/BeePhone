@@ -210,41 +210,36 @@ public class KhachHangController {
                     .body("Lỗi khi lấy thông tin khách hàng: " + e.getMessage());
         }
     }
+
     // cập nhật thông tin
     @PutMapping("/update-profile")
-    public ResponseEntity<?> updateProfile(@RequestBody KhachHangDTO khachHangDTO,
-                                           @RequestParam Integer currentUserId) {
+    public ResponseEntity<?> updateProfile(@RequestBody KhachHangDTO khachHangDTO) {
         try {
-            // Kiểm tra quyền cập nhật
-            if (!khachHangDTO.getId().equals(currentUserId)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("Bạn không có quyền cập nhật thông tin của người khác");
+            // Lấy dữ liệu hiện tại từ database
+            KhachHangDTO currentData = service.getCustomerProfile(khachHangDTO.getId());
+
+            // So sánh dữ liệu gửi lên với dữ liệu hiện tại
+            if (khachHangDTO.equals(currentData)) {
+                return ResponseEntity.badRequest().body("Không có thay đổi nào để cập nhật.");
             }
-            // Thêm log để debug
-            System.out.println("Họ tên nhận được: " + khachHangDTO.getHoTen());
-            System.out.println("Email nhận được: " + khachHangDTO.getEmail());
-            System.out.println("SĐT nhận được: " + khachHangDTO.getSdt());
-            // Kiểm tra dữ liệu đầu vào
-            if (khachHangDTO.getId() == null) {
-                return ResponseEntity.badRequest().body("ID khách hàng không được để trống");
-            }
-            if (khachHangDTO.getHoTen() == null || khachHangDTO.getHoTen().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("Họ tên không được để trống");
-            }
-            if (khachHangDTO.getEmail() == null || !khachHangDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-                return ResponseEntity.badRequest().body("Email không hợp lệ");
-            }
-            if (khachHangDTO.getSdt() == null || !khachHangDTO.getSdt().matches("^[0-9]{10}$")) {
-                return ResponseEntity.badRequest().body("Số điện thoại không hợp lệ");
-            }
-            // Gọi service để cập nhật
+
+            // Log dữ liệu cập nhật
+            System.out.println("Dữ liệu cần cập nhật: " + khachHangDTO);
+
+            // Cập nhật thông tin
             KhachHangDTO updatedCustomer = service.updateCustomerProfile(khachHangDTO);
             return ResponseEntity.ok(updatedCustomer);
+        } catch (ResourceNotFoundException e) {
+            System.err.println("Không tìm thấy khách hàng: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
+            System.err.println("Lỗi hệ thống khi cập nhật: " + e.getMessage());
+            e.printStackTrace(); // In lỗi chi tiết ra logs
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Lỗi khi cập nhật thông tin: " + e.getMessage());
         }
     }
+
     // Đổi mật khẩu
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody DoiMatKhauDTO doiMatKhauDTO) {

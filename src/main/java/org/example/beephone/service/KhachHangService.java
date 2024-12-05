@@ -270,36 +270,39 @@ public class KhachHangService {
 
     // Cập nhật thông tin khách hàng cho user
     public KhachHangDTO updateCustomerProfile(KhachHangDTO khachHangDTO) {
+        // Kiểm tra các trường bắt buộc
+        if (khachHangDTO.getId() == null) {
+            throw new IllegalArgumentException("ID khách hàng không được để trống");
+        }
+
         Optional<khach_hang> existingCustomerOpt = khachHangRepository.findById(khachHangDTO.getId());
         if (!existingCustomerOpt.isPresent()) {
             throw new ResourceNotFoundException("Không tìm thấy khách hàng với ID: " + khachHangDTO.getId());
         }
+
         khach_hang existingCustomer = existingCustomerOpt.get();
-        // Thêm log để kiểm tra
-        System.out.println("Đang cập nhật khách hàng với họ tên: " + khachHangDTO.getHoTen());
-        // Cập nhật thông tin cơ bản
-        existingCustomer.setHo_ten(khachHangDTO.getHoTen());
-        existingCustomer.setEmail(khachHangDTO.getEmail());
-        existingCustomer.setSdt(khachHangDTO.getSdt());
-        existingCustomer.setNgay_sinh(khachHangDTO.getNgaySinh());
-        existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh() == 1 ? 1 : 0);
-        // Xử lý cập nhật địa chỉ
-        if (khachHangDTO.getDiaChiChiTiet() != null && !khachHangDTO.getDiaChiChiTiet().isEmpty()) {
-            // Xóa địa chỉ cũ
-            diaChiRepository.deleteByKhachHang(existingCustomer);
-            // Thêm địa chỉ mới
-            List<dia_chi_khach_hang> diaChiList = new ArrayList<>();
-            for (DiaChiDTO diaChiDTO : khachHangDTO.getDiaChiChiTiet()) {
-                dia_chi_khach_hang diaChi = new dia_chi_khach_hang();
-                diaChi.setMa_dia_chi(generateMaDiaChi());
-                diaChi.setDia_chi_chi_tiet(diaChiDTO.getDiaChiChiTiet());
-                diaChi.setTrang_thai(diaChiDTO.getTrangThai() != null ? diaChiDTO.getTrangThai() : 0);
-                diaChi.setKhachHang(existingCustomer);
-                diaChiList.add(diaChi);
-            }
-            existingCustomer.setDiaChiKhachHang(diaChiList);
+
+        // Cập nhật thông tin, chỉ cập nhật nếu DTO có giá trị không null
+        if (khachHangDTO.getHoTen() != null && !khachHangDTO.getHoTen().trim().isEmpty()) {
+            existingCustomer.setHo_ten(khachHangDTO.getHoTen());
         }
+        if (khachHangDTO.getEmail() != null && !khachHangDTO.getEmail().trim().isEmpty()) {
+            existingCustomer.setEmail(khachHangDTO.getEmail());
+        }
+        if (khachHangDTO.getSdt() != null && !khachHangDTO.getSdt().trim().isEmpty()) {
+            existingCustomer.setSdt(khachHangDTO.getSdt());
+        }
+        if (khachHangDTO.getNgaySinh() != null) {
+            existingCustomer.setNgay_sinh(khachHangDTO.getNgaySinh());
+        }
+        if (khachHangDTO.getGioiTinh() != null) {
+            existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh());
+        }
+
+        // Lưu thay đổi vào database
         khachHangRepository.save(existingCustomer);
+
+        // Trả về DTO đã được cập nhật
         return KhachHangDTO.fromEntity(existingCustomer);
     }
 
@@ -326,7 +329,5 @@ public class KhachHangService {
         khachHangRepository.save(khachHang);
         return true;
     }
-
-
 
 }
