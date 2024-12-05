@@ -130,7 +130,7 @@ public class SanPhamService {
             chiTietSanPham.setMauSac(mauSac);
             chiTietSanPham.setSo_luong(soLuongs.get(i));
             chiTietSanPham.setGia_ban(giaBans.get(i));
-            chiTietSanPham.setNgay_nhap((java.sql.Date) new Date());
+            chiTietSanPham.setNgay_nhap(new Date());
             chiTietSanPham.setAnh(images.get(i)); // Lưu ảnh vào trường anh
             chiTietSanPham.setTrang_thai(1);
 
