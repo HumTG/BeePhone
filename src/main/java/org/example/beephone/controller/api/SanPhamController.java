@@ -1,6 +1,7 @@
 package org.example.beephone.controller.api;
 
 import org.example.beephone.dto.SanPhamDTO;
+import org.example.beephone.dto.response.SanPhamResponse;
 import org.example.beephone.entity.chi_tiet_san_pham;
 import org.example.beephone.entity.san_pham;
 import org.example.beephone.repository.ChiTietSanPhamRepository;
@@ -101,6 +102,21 @@ public class SanPhamController {
     public ResponseEntity<List<chi_tiet_san_pham>> getVariantsByProductId(@PathVariable int productId) {
         List<chi_tiet_san_pham> variants = chiTietSanPhamRepository.findBySanPhamId(productId);
         return ResponseEntity.ok(variants);
+    }
+
+    @GetMapping("/rest/san-pham/top-selling")
+    public ResponseEntity<List<SanPhamResponse>> getTopSellingProducts(
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        List<SanPhamResponse> topSellingProducts = service.getTopSellingProducts(limit);
+        return ResponseEntity.ok(topSellingProducts);
+    }
+
+    // API lấy sản phẩm mới nhất
+    @GetMapping("/rest/san-pham/latest")
+    public ResponseEntity<List<SanPhamResponse>> getLatestProducts() {
+        List<SanPhamResponse> latestProducts = service.getLatestProducts(5);
+        return ResponseEntity.ok(latestProducts);
     }
 
 

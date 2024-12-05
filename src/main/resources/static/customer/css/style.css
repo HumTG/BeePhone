@@ -1203,6 +1203,12 @@ figure.instagram-item img.insta-image {
   opacity: 1; /* Hiển thị nút */
 }
 
+.product-card:hover .buy-now-btn {
+  bottom: 0px; /* Di chuyển nút lên */
+  opacity: 1; /* Hiển thị nút */
+}
+
+
 /* Định dạng giá gốc gạch ngang */
 .original-price {
   text-decoration: line-through;
@@ -1519,6 +1525,44 @@ button {
   font-size: 14px;
   color: #6c757d;
 }
+
+.new-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #FF5733; /* Màu cam sáng */
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px; /* Tạo hình tròn mềm mại */
+  z-index: 10;
+  text-transform: uppercase; /* Chữ in hoa */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
+
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards; /* Hiệu ứng xuất hiện */
+}
+
+/* Hiệu ứng khi di chuột vào */
+.new-badge:hover {
+  transform: scale(1.1); /* Phóng to khi hover */
+  background-color: #ff6f4e; /* Màu khi hover */
+}
+
+/* Keyframes cho hiệu ứng fade-in */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px); /* Lướt từ trên xuống */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 
 
 

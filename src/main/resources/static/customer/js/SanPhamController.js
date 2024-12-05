@@ -422,10 +422,18 @@ app.controller('SanPhamController', function($scope, $http,$window) {
         return `${addressDetail}, ${district}, ${city}`;
     };
 
-    // Gọi API để lấy sản phẩm bán chạy
-    $http.get('http://localhost:8080/api/thong-ke/best-selling-products')
+    // Gọi API để lấy sản phẩm bán chạy ( sản phẩm bán chạy ở trang chủ )
+    $http.get('http://localhost:8080/rest/san-pham/top-selling')
         .then(function(response) {
             $scope.products = response.data;
+        }, function(error) {
+            console.error('Có lỗi khi lấy dữ liệu:', error);
+        });
+
+    // Gọi API để lấy sản phẩm mới nhất ( sản phẩm new ở trang chủ )
+    $http.get('http://localhost:8080/rest/san-pham/latest')
+        .then(function(response) {
+            $scope.productsNew = response.data;
         }, function(error) {
             console.error('Có lỗi khi lấy dữ liệu:', error);
         });

@@ -1,6 +1,8 @@
 package org.example.beephone.service;
 
 import org.example.beephone.dto.SanPhamDTO;
+import org.example.beephone.dto.response.ChiTietSanPhamResponse;
+import org.example.beephone.dto.response.SanPhamResponse;
 import org.example.beephone.entity.*;
 import org.example.beephone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class SanPhamService {
 
     @Autowired
     private ChiTietSanPhamRepository chiTietSanPhamRepository;
+
+    @Autowired
+    private HoaDonChiTietRepository hoaDonChiTietRepository;
 
     @Autowired
     private KichCoRepository kichCoRepository;
@@ -125,7 +130,7 @@ public class SanPhamService {
             chiTietSanPham.setMauSac(mauSac);
             chiTietSanPham.setSo_luong(soLuongs.get(i));
             chiTietSanPham.setGia_ban(giaBans.get(i));
-            chiTietSanPham.setNgay_nhap(new Date());
+            chiTietSanPham.setNgay_nhap((java.sql.Date) new Date());
             chiTietSanPham.setAnh(images.get(i)); // Lưu ảnh vào trường anh
             chiTietSanPham.setTrang_thai(1);
 
@@ -169,6 +174,68 @@ public class SanPhamService {
             return sanPhamRepository.save(existingSanPham);
         }
         return null;
+    }
+
+    // top 5 sản phẩm bán chạy
+    public List<SanPhamResponse> getTopSellingProducts(int limit) {
+        // Tạo pageable để giới hạn kết quả
+        Pageable pageable = PageRequest.of(0, limit);
+
+        // Lấy danh sách ID sản phẩm và tổng số lượng đã bán
+        List<Object[]> topSellingProducts = hoaDonChiTietRepository.findTopSellingProducts(pageable);
+
+        // Duyệt qua danh sách, lấy sản phẩm và tổng số lượng đã bán
+        List<SanPhamResponse> responses = topSellingProducts.stream()
+                .map(row -> {
+                    int sanPhamId = (Integer) row[0];
+                    int daBan = row[1] != null ? ((Number) row[1]).intValue() : 0;
+
+                    // Lấy sản phẩm từ repository
+                    san_pham sanPham = sanPhamRepository.findById(sanPhamId)
+                            .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
+
+                    // Lấy danh sách biến thể từ repository
+                    List<chi_tiet_san_pham> variants = chiTietSanPhamRepository.findBySanPhamId(sanPhamId);
+
+                    // Chuyển đổi biến thể sang DTO
+                    List<ChiTietSanPhamResponse> variantResponses = variants.stream()
+                            .map(variant -> new ChiTietSanPhamResponse(variant))
+                            .collect(Collectors.toList());
+
+                    // Tạo DTO sản phẩm
+                    SanPhamResponse response = new SanPhamResponse(sanPham, variantResponses);
+                    response.setDaBan(daBan);
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return responses;
+    }
+
+    // Lấy 5 sản phẩm mới nhất từ ngày nhập của chi tiết sản phẩm
+    public List<SanPhamResponse> getLatestProducts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+
+        // Lấy sản phẩm mới nhất từ repository (dựa trên ngày nhập của chi tiết sản phẩm)
+        List<san_pham> latestProducts = sanPhamRepository.findLatestProducts(pageable);
+
+        // Duyệt qua danh sách sản phẩm và lấy thông tin biến thể
+        List<SanPhamResponse> responses = latestProducts.stream()
+                .map(product -> {
+                    // Lấy danh sách biến thể của sản phẩm
+                    List<chi_tiet_san_pham> variants = chiTietSanPhamRepository.findBySanPhamId(product.getId());
+
+                    // Chuyển đổi biến thể sang DTO
+                    List<ChiTietSanPhamResponse> variantResponses = variants.stream()
+                            .map(variant -> new ChiTietSanPhamResponse(variant))
+                            .collect(Collectors.toList());
+
+                    // Tạo DTO sản phẩm
+                    return new SanPhamResponse(product, variantResponses);
+                })
+                .collect(Collectors.toList());
+
+        return responses;
     }
 
 

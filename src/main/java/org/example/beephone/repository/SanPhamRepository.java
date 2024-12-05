@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
 
@@ -36,6 +38,12 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
             @Param("trangThai") Integer trangThai,
             @Param("soLuongTon") Integer soLuongTon,
             Pageable pageable);
+
+    // Sản phẩm mới nhất
+    // Truy vấn lấy 5 sản phẩm mới nhất dựa vào ngày nhập của chi tiết sản phẩm
+    @Query("SELECT sp FROM san_pham sp WHERE sp.id IN (SELECT csp.sanPham.id FROM chi_tiet_san_pham csp ORDER BY csp.ngay_nhap DESC LIMIT 5)")
+    List<san_pham> findLatestProducts(Pageable pageable);
+
 
 
 
