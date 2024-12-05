@@ -42,4 +42,5 @@ public interface ChiTietSanPhamRepository extends JpaRepository<chi_tiet_san_pha
     List<Object[]> findLowStockProducts(@Param("soLuong") int soLuong);
 
 
+    List<chi_tiet_san_pham> findByGiamGiaId(int id);
 }
