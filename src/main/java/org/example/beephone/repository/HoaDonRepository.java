@@ -109,4 +109,11 @@ public interface HoaDonRepository extends JpaRepository<hoa_don,Integer> {
 
     @Query("SELECT h FROM hoa_don h WHERE h.khachHang.id = :idKhachHang")
     List<hoa_don> findHoaDonsByKhachHangId(@Param("idKhachHang") int idKhachHang);
+
+
+    // tra cứu hóa đơn qua mã hóa đơn
+    @Query("SELECT h FROM hoa_don h WHERE h.ma_hoa_don = :maHoaDon")
+    hoa_don findHoaDonByMaHoaDon(@Param("maHoaDon") String maHoaDon);
+
+
 }

@@ -1,0 +1,62 @@
+<br><br><br><br><br>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5><i class="fas fa-search"></i> Tra cứu hóa đơn</h5>
+                </div>
+                <div class="card-body">
+                    <form ng-submit="traCuuHoaDon()">
+                        <div class="mb-3">
+                            <label for="orderId" class="form-label">Mã hóa đơn</label>
+                            <input type="text" id="orderId" class="form-control" ng-model="maHoaDon" placeholder="Nhập mã hóa đơn">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Tra cứu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-3" ng-if="hoaDon">
+                <div class="alert alert-info">
+                    <h5>Thông tin hóa đơn:</h5>
+                    <p><strong>Mã hóa đơn:</strong> {{ hoaDon.ma_hoa_don }}</p>
+                    <p><strong>Người nhận:</strong> {{ hoaDon.ten_nguoi_nhan }}</p>
+                    <p><strong>Địa chỉ:</strong> {{ hoaDon.dia_chi_nguoi_nhan }}</p>
+                    <p><strong>Email:</strong> {{ hoaDon.email_nguoi_nhan }}</p>
+                    <p><strong>Trạng thái:</strong> {{ trangThaiMap[hoaDon.trang_thai] }}</p>
+                </div>
+                <div>
+                    <h5>Chi tiết hóa đơn:</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="chiTiet in hoaDon.hoaDonChiTietList">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>{{ chiTiet.chi_tiet_san_pham.mauSac.ten }} - {{ chiTiet.chi_tiet_san_pham.kichCo.ten }}</strong>
+                                    <p>Đơn giá: {{ chiTiet.don_gia | vndCurrency }}</p>
+                                    <p>Số lượng: {{ chiTiet.so_luong }}</p>
+                                </div>
+                                <img ng-src="/images/{{ chiTiet.chi_tiet_san_pham.anh }}" alt="Ảnh sản phẩm" class="img-thumbnail" style="width: 80px; height: 80px;">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mt-3">
+                    <strong>Tổng tiền:</strong>
+                    <b class="text-danger">{{ hoaDon.tien_sau_giam_gia | vndCurrency }}</b>
+                </div>
+            </div>
+
+            <div class="mt-3" ng-if="errorMessage">
+                <div class="alert alert-danger">
+                    {{ errorMessage }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
