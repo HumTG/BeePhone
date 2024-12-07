@@ -320,6 +320,31 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     // Hàm xác nhận thanh toán đơn hàng
     $scope.confirmOrder = function() {
         if (document.getElementById('agreeTerms').checked) {
+
+            // Validate thông tin người nhận
+            if (!$scope.name || $scope.name.trim() === '') {
+                toastr.error('Vui lòng nhập tên người nhận!');
+                return;
+            }
+            if (!$scope.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($scope.email)) {
+                toastr.error('Vui lòng nhập email hợp lệ!');
+                return;
+            }
+            if (!$scope.phone || !/^\d{10,11}$/.test($scope.phone)) {
+                toastr.error('Vui lòng nhập số điện thoại hợp lệ (10-11 số)!');
+                return;
+            }
+            if (!$scope.addressDetail || $scope.addressDetail === '') {
+                toastr.error('Vui lòng nhập địa chỉ giao hàng!');
+                return;
+            }
+
+            // Kiểm tra phương thức thanh toán
+            if (!$scope.paymentMethod) {
+                toastr.error('Vui lòng chọn phương thức thanh toán!');
+                return;
+            }
+
             let hoaDon = {
                 tien_sau_giam_gia : $scope.calculateCartTotal() - $scope.discountValue ,
                 thanh_tien : $scope.calculateCartTotal(),
@@ -372,6 +397,9 @@ app.controller('SanPhamController', function($scope, $http,$window) {
                         $scope.saveCart();
                         // Chuyển hướng sang trang khác sau khi đặt hàng thành công
                         $window.location.href = 'http://localhost:8080/index#!/san-pham';
+                        setTimeout(function() {
+                            $window.location.reload();
+                        }, 200); // Đợi 1 giây để chuyển hướng trước khi tải lại trang
                     })
                     .catch(function(error) {
                         console.error("Đã xảy ra lỗi:", error);

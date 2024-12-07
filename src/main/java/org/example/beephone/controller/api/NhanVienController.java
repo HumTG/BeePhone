@@ -30,11 +30,16 @@ public class NhanVienController {
 
    @PostMapping("/rest/nhan-vien")
     public ResponseEntity<?> createNhanVien(@Valid @RequestBody nhan_vien nhanVien, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
-        nhan_vien newNhanVien = service.add(nhanVien);
-        return ResponseEntity.ok(newNhanVien);
+       if (result.hasErrors()) {
+           return ResponseEntity.badRequest().body("Dữ liệu không hợp lệ!");
+       }
+
+       try {
+           nhan_vien newNhanVien = service.add(nhanVien);
+           return ResponseEntity.ok(newNhanVien);
+       } catch (IllegalArgumentException e) {
+           return ResponseEntity.badRequest().body(e.getMessage()); // Trả về thông báo lỗi cụ thể
+       }
     }
 
     @PutMapping("/rest/nhan-vien/{id}")

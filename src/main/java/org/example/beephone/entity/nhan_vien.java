@@ -1,6 +1,7 @@
 package org.example.beephone.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.sql.Date;
@@ -24,8 +25,8 @@ public class nhan_vien {
     private String ma_nhan_vien;
 
     @Column(name = "ho_ten", nullable = false)
-//    @NotBlank(message = "Họ tên không được để trống")
-//    @Size(max = 100, message = "Họ tên không được vượt quá 100 ký tự")
+    @NotBlank(message = "Họ tên không được để trống")
+    @Size(max = 100, message = "Họ tên không được vượt quá 100 ký tự")
     private String ho_ten;
 
     @ManyToOne
@@ -35,13 +36,13 @@ public class nhan_vien {
     private chuc_vu chucVu;
 
     @Column(name = "email", nullable = false, unique = true)
-//    @NotBlank(message = "Email không được để trống")
-//    @Email(message = "Email không đúng định dạng")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không đúng định dạng")
     private String email;
 
     @Column(name = "sdt", nullable = false)
-//    @NotBlank(message = "Số điện thoại không được để trống")
-//    @Pattern(regexp = "^\\d{10,11}$", message = "Số điện thoại phải có 10-11 chữ số")
+    @NotBlank(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^\\d{10,11}$", message = "Số điện thoại phải có 10-11 chữ số")
     private String sdt;
 
     @Column(name = "mat_khau", nullable = false)
@@ -50,7 +51,7 @@ public class nhan_vien {
     private String mat_khau;
 
     @Column(name = "ngay_sinh", nullable = false)
-//    @NotNull(message = "Ngày sinh không được để trống")
+    @NotNull(message = "Ngày sinh không được để trống")
     private Date ngay_sinh;
 
     @Column(name = "gioi_tinh", nullable = false)
@@ -63,11 +64,11 @@ public class nhan_vien {
     private String hinh_anh;
 
     @Column(name = "dia_chi", nullable = false)
-//    @NotBlank(message = "Địa chỉ không được để trống")
+    @NotBlank(message = "Địa chỉ không được để trống")
     private String dia_chi;
 
     @Column(name = "trang_thai", nullable = false)
-//    @Min(value = 0, message = "Trạng thái không hợp lệ")
-//    @Max(value = 1, message = "Trạng thái không hợp lệ")
+    @Min(value = 0, message = "Trạng thái không hợp lệ")
+    @Max(value = 1, message = "Trạng thái không hợp lệ")
     private int trang_thai;
 }

@@ -116,12 +116,20 @@ app.controller('NhanVienController', function($scope, $http ) {
                 window.location.href = 'http://localhost:8080/admin/nhan-vien';
             })
             .catch(function(error) {
-                console.error('Lỗi khi thêm nhân viên:', error);
-                toastr.error('Có lỗi xảy ra!', 'Error', {
-                    closeButton: true,
-                    progressBar: true,
-                    timeOut: 3000
-                });
+                console.error('L��i khi thêm nhân viên:', error);
+                if (error.data) {
+                    toastr.error(error.data, 'Lỗi', {
+                        closeButton: true,
+                        progressBar: true,
+                        timeOut: 3000
+                    });
+                } else {
+                    toastr.error('Có lỗi xảy ra!', 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        timeOut: 3000
+                    });
+                }
             });
 
         // Ẩn modal sau khi xác nhận
