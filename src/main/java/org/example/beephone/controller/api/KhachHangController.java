@@ -18,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rest/khach-hang")
@@ -146,7 +148,7 @@ public class KhachHangController {
         return ResponseEntity.ok(filteredCustomers);
     }
 
-    /// lấy danh sách khách hàng để bán hàng tại quầy
+    // lấy danh sách khách hàng để bán hàng tại quầy
     @GetMapping("/ban-hang")
     public ResponseEntity<?> getKhBanHang(@RequestParam(defaultValue = "0") Integer page) {
         return ResponseEntity.ok(service.getListKhBanHang(page));
@@ -192,6 +194,15 @@ public class KhachHangController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Lỗi khi đăng nhập: " + e.getMessage());
         }
+    }
+
+    // API kiểm tra email trùng
+    @GetMapping("/check-email")
+    public ResponseEntity<Map<String, Boolean>> checkEmailDuplicate(@RequestParam String email) {
+        boolean exists = khachHangRepository.existsByEmail(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
     }
 
     /* customer */
