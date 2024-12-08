@@ -1,32 +1,43 @@
-
 <br><br><br><br><br>
 
 <div class="container my-5">
-    <form>
+    <form name="addressForm" novalidate>
         <!-- Tiêu đề -->
         <h2 class="mb-4 text-center text-primary">Địa chỉ</h2>
 
         <!-- Nhập địa chỉ mới -->
         <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <label class="form-label fw-bold">Thêm địa chỉ mới</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" ng-model="newAddress" placeholder="Nhập địa chỉ mới">
-                    <button type="button" class="btn btn-primary" ng-click="addAddress()">
-                        <i class="fas fa-plus-circle me-1"></i> Thêm
-                    </button>
+                <label for="newAddress" class="form-label fw-bold">Thêm địa chỉ mới</label>
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="newAddress"
+                           name="newAddress"
+                           ng-model="newAddress"
+                           ng-required="true"
+                           ng-pattern="/^[a-zA-Z0-9À-ỹ\s,.-]+$/"
+                           placeholder="Nhập địa chỉ mới">
+                    <label for="newAddress">Nhập địa chỉ mới</label>
                 </div>
-                <small class="text-muted">Hãy nhập đầy đủ thông tin địa chỉ để thêm mới.</small>
+                <div class="text-danger mt-1" ng-show="addressForm.newAddress.$touched && addressForm.newAddress.$invalid">
+                    <small ng-show="addressForm.newAddress.$error.pattern">Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.</small>
+                </div>
+                <button type="button" class="btn btn-primary mt-2" ng-click="addAddress()">
+                    <i class="fas fa-plus-circle me-1"></i> Thêm
+                </button>
+                <small class="text-muted d-block mt-2">Hãy nhập đầy đủ thông tin địa chỉ để thêm mới.</small>
             </div>
         </div>
 
         <!-- Danh sách địa chỉ -->
         <div class="list-group">
-        <div class="text-end mt-4">
-            <button type="button" class="btn btn-success" ng-click="updateAddresses()">
-                <i class="fas fa-sync-alt me-1"></i> Cập nhật
-            </button>
-        </div>
+            <!-- Nút cập nhật -->
+            <div class="text-end mt-4">
+                <button type="button" class="btn btn-success" ng-click="updateAddresses()">
+                    <i class="fas fa-sync-alt me-1"></i> Cập nhật
+                </button>
+            </div>
             <!-- Hiển thị danh sách địa chỉ -->
             <div class="list-group-item d-flex justify-content-between align-items-center"
                  ng-repeat="diaChi in khachHang.diaChiChiTiet">
@@ -42,7 +53,7 @@
                     <div class="form-check me-3">
                         <input type="radio" class="form-check-input" name="defaultAddress"
                                ng-checked="diaChi.trang_thai === 1"
-                        ng-click="setDefaultAddress($index)"><!-- Đúng trạng thái mặc định -->
+                               ng-click="setDefaultAddress($index)">
                         <label class="form-check-label text-muted">Mặc định</label>
                     </div>
                     <!-- Xóa địa chỉ -->
@@ -57,7 +68,6 @@
                 <i class="fas fa-info-circle me-2"></i>Không có địa chỉ nào được lưu trong hệ thống.
             </div>
         </div>
-
     </form>
 </div>
 
@@ -105,5 +115,9 @@
 
     .badge {
         font-size: 0.85rem;
+    }
+
+    .form-floating .form-control {
+        border-radius: 5px;
     }
 </style>

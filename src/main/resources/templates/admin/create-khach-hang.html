@@ -286,51 +286,84 @@
         <!--content-->
         <div class="container d-flex justify-content-center align-items-center vh-100">
             <div class="bg-white p-5 rounded shadow" style="width: 700px; max-width: 100%;">
-                <h2 class="text-center mb-4 fw-bold">{{ isEditing ? "Cập Nhật Khách Hàng" : "Thêm Mới Khách Hàng"
-                    }}</h2>
+                <h2 class="text-center mb-4 fw-bold">{{ isEditing ? "Cập Nhật Khách Hàng" : "Thêm Mới Khách Hàng" }}</h2>
 
                 <!-- Form khách hàng -->
-                <form id="customerForm" ng-controller="KhachHangController" ng-init="initializeEdit()"
+                <form id="customerForm" name="customerForm" novalidate
+                      ng-controller="KhachHangController"
+                      ng-init="initializeEdit()"
                       ng-submit="isEditing ? updateCustomer() : addCustomer()">
 
                     <div class="row g-4">
-                        <!-- Họ tên và Tài khoản -->
+                        <!-- Họ tên -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="hoTen" ng-model="khachHang.hoTen"
-                                       placeholder="Nhập họ tên" required>
+                                       placeholder="Nhập họ tên" required
+                                       ng-class="{'is-invalid': customerForm.hoTen.$touched && customerForm.hoTen.$invalid}">
                                 <label for="hoTen">Họ và Tên</label>
+                                <div class="invalid-feedback">
+                                    Họ tên không được để trống.
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Tài khoản -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="taiKhoan" ng-model="khachHang.taiKhoan"
-                                       placeholder="Nhập tài khoản" required>
+                                       placeholder="Nhập tài khoản" required
+                                       ng-class="{'is-invalid': customerForm.taiKhoan.$touched && customerForm.taiKhoan.$invalid}">
                                 <label for="taiKhoan">Tài Khoản</label>
+                                <div class="invalid-feedback">
+                                    Tài khoản không được để trống.
+                                </div>
                             </div>
                         </div>
 
                         <!-- Ngày sinh -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="date" class="form-control" id="ngaySinh" ng-model="khachHang.ngaySinh" required>
+                                <input type="date" class="form-control" id="ngaySinh" ng-model="khachHang.ngaySinh" required
+                                       ng-class="{'is-invalid': customerForm.ngaySinh.$touched && customerForm.ngaySinh.$invalid}">
                                 <label for="ngaySinh">Ngày Sinh</label>
+                                <div class="invalid-feedback">
+                                    Ngày sinh không được để trống.
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Email và Số điện thoại -->
+                        <!-- Email -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="email" class="form-control" id="email" ng-model="khachHang.email"
-                                       placeholder="Nhập email" required>
+                                       placeholder="Nhập email" required ng-blur="checkEmailDuplicate()"
+                                       ng-class="{
+                                   'is-invalid': customerForm.email.$touched && customerForm.email.$invalid || emailDuplicate
+                               }">
                                 <label for="email">Email</label>
+                                <div class="invalid-feedback" ng-if="emailDuplicate">
+                                    Email đã tồn tại.
+                                </div>
+                                <div class="invalid-feedback" ng-if="customerForm.email.$error.required">
+                                    Email không được để trống.
+                                </div>
+                                <div class="invalid-feedback" ng-if="customerForm.email.$error.email">
+                                    Email không hợp lệ.
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Số điện thoại -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="tel" class="form-control" id="sdt" ng-model="khachHang.sdt"
-                                       placeholder="Nhập số điện thoại" required>
+                                       placeholder="Nhập số điện thoại" required
+                                       ng-class="{'is-invalid': customerForm.sdt.$touched && customerForm.sdt.$invalid}">
                                 <label for="sdt">Số Điện Thoại</label>
+                                <div class="invalid-feedback">
+                                    Số điện thoại không được để trống.
+                                </div>
                             </div>
                         </div>
 
@@ -366,11 +399,15 @@
                         <div class="col-12">
                             <label class="form-label">Địa Chỉ</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" ng-model="address.diaChi"
-                                       placeholder="Nhập địa chỉ mới">
+                                <input type="text" class="form-control" ng-model="address.diaChi" placeholder="Nhập địa chỉ mới"
+                                       required
+                                       ng-class="{'is-invalid': addressError}">
                                 <button type="button" class="btn btn-primary" ng-click="addAddress()">
                                     <i class="fas fa-plus-circle me-1"></i> Thêm
                                 </button>
+                                <div class="invalid-feedback">
+                                    Địa chỉ không được để trống.
+                                </div>
                             </div>
                         </div>
 
@@ -404,6 +441,13 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Thông báo lỗi tổng quát -->
+                    <div class="alert alert-danger mt-3" role="alert" ng-show="formErrors.length > 0">
+                        <ul>
+                            <li ng-repeat="error in formErrors">{{ error }}</li>
+                        </ul>
                     </div>
 
                     <!-- Nút hành động -->

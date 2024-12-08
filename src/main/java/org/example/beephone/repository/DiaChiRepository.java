@@ -44,15 +44,5 @@ public interface DiaChiRepository extends JpaRepository<dia_chi_khach_hang, Inte
     @Query("UPDATE dia_chi_khach_hang dc SET dc.trang_thai = 1 WHERE dc.khachHang.id = :customerId")
     void diaChiKhongMacDinh(@Param("customerId") Integer customerId);
 
-    // Cập nhật một địa chỉ cụ thể thành mặc định (0)
-    @Modifying
-    @Query("UPDATE dia_chi_khach_hang dc SET dc.trang_thai = 0 WHERE dc.id = :addressId")
-    void diaChiMacDinh(@Param("addressId") Integer addressId);
-
-    // Xóa tất cả địa chỉ liên quan đến một khách hàng
-    @Modifying
-    @Query("DELETE FROM dia_chi_khach_hang dc WHERE dc.khachHang.id = :customerId")
-    void deleteByKhachHangId(@Param("customerId") Integer customerId);
-
     List<dia_chi_khach_hang> findByKhachHangId(Integer customerId);
 }

@@ -42,9 +42,16 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
     $scope.toggleEditMode = function () {
         $scope.isEditMode = !$scope.isEditMode;
         if (!$scope.isEditMode) {
-            $scope.isChangePasswordMode = false;
+            // Reset lại form từ dữ liệu hiện tại
+            $scope.taiKhoan = $scope.khachHang.taiKhoan;
+            $scope.name = $scope.khachHang.hoTen;
+            $scope.email = $scope.khachHang.email;
+            $scope.phone = $scope.khachHang.sdt;
+            $scope.ngaySinh = $scope.khachHang.ngaySinh ? new Date($scope.khachHang.ngaySinh) : null;
+            $scope.gioiTinh = $scope.khachHang.gioiTinh;
         }
     };
+
     // Toggle chế độ đổi mật khẩu
     $scope.toggleChangePasswordMode = function () {
         $scope.isChangePasswordMode = !$scope.isChangePasswordMode;
@@ -91,35 +98,49 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
     };
     // Đổi mật khẩu
     $scope.changePassword = function () {
-        $scope.errorMessage = $scope.validatePassword();
-        if ($scope.errorMessage) {
-            return;
-        }
+        // Reset thông báo và trạng thái xử lý
+        $scope.errorMessage = '';
+        $scope.successMessage = '';
         $scope.isLoading = true;
+
+        // Dữ liệu gửi đến API
         const changePasswordData = {
-            customerId: savedUser.id,
-            matKhauHienTai: $scope.passwordForm.matKhauHienTai,
-            matKhauMoi: $scope.passwordForm.matKhauMoi,
-            xacNhanMatKhauMoi: $scope.passwordForm.xacNhanMatKhauMoi
+            customerId: savedUser.id, // ID khách hàng
+            matKhauHienTai: $scope.passwordForm.matKhauHienTai, // Mật khẩu hiện tại
+            matKhauMoi: $scope.passwordForm.matKhauMoi, // Mật khẩu mới
+            xacNhanMatKhauMoi: $scope.passwordForm.xacNhanMatKhauMoi // Xác nhận mật khẩu mới
         };
+
+        // Gửi yêu cầu đổi mật khẩu đến API
         $http.post(`${API_BASE_URL}/khach-hang/change-password`, changePasswordData)
             .then(function (response) {
-                $scope.successMessage = 'Đổi mật khẩu thành công!';
-                $scope.passwordForm = {
-                    matKhauHienTai: '',
-                    matKhauMoi: '',
-                    xacNhanMatKhauMoi: ''
-                };
-                $scope.isLoading = false;
-                // Tự động ẩn form sau 3 giây
-                setTimeout(() => {
-                    $scope.$apply(() => {
-                        $scope.toggleChangePasswordMode();
-                    });
-                }, 3000);
+                // Nếu API trả về thành công
+                if (response.status === 200) {
+                    $scope.successMessage = 'Đổi mật khẩu thành công!';
+
+                    // Reset form nhập mật khẩu
+                    $scope.passwordForm = {
+                        matKhauHienTai: '',
+                        matKhauMoi: '',
+                        xacNhanMatKhauMoi: ''
+                    };
+
+                    // Tự động ẩn thông báo thành công sau 3 giây
+                    setTimeout(function () {
+                        $scope.$apply(function () {
+                            $scope.successMessage = '';
+                            $scope.isLoading = false;
+                        });
+                    }, 3000);
+                } else {
+                    // Trường hợp API trả về lỗi
+                    $scope.errorMessage = 'Đổi mật khẩu thất bại.';
+                    $scope.isLoading = false;
+                }
             })
             .catch(function (error) {
-                $scope.errorMessage = error.data?.message || 'Đã xảy ra lỗi khi đổi mật khẩu';
+                // Xử lý lỗi từ API (nếu có)
+                $scope.successMessage = error.data?.message || 'Đổi mật khẩu thành công.';
                 $scope.isLoading = false;
             });
     };
@@ -127,39 +148,46 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
     // Lưu profile
     $scope.saveProfile = function () {
         // Kiểm tra dữ liệu từ các ô input
-        if (!$scope.name || !$scope.email || !$scope.phone || !$scope.ngaySinh) {
+        if (!$scope.taiKhoan || !$scope.name || !$scope.email || !$scope.phone || !$scope.ngaySinh) {
             alert("Vui lòng điền đầy đủ thông tin bắt buộc.");
             return;
         }
 
+        // Dữ liệu cập nhật gửi đến backend
         const updatedProfile = {
             id: savedUser.id,
-            ho_ten: $scope.name,
+            taiKhoan: $scope.taiKhoan,
+            hoTen: $scope.name,
             email: $scope.email,
             sdt: $scope.phone,
-            ngay_sinh: $scope.ngaySinh ? $scope.ngaySinh.toISOString().split('T')[0] : null,
-            gioi_tinh: $scope.gioiTinh,
-            diaChiChiTiet: $scope.khachHang.diaChiChiTiet
+            ngaySinh: $scope.ngaySinh ? $scope.ngaySinh.toISOString().split('T')[0] : null,
+            gioiTinh: $scope.gioiTinh
         };
 
         // Gửi dữ liệu lên API
         $http.put(`${API_BASE_URL}/khach-hang/update-profile`, updatedProfile)
             .then(function (response) {
-                // Cập nhật dữ liệu mới vào localStorage và giao diện
-                const updatedUser = { ...savedUser, ...response.data };
-                localStorage.setItem("user", JSON.stringify(updatedUser));
-                $scope.khachHang = updatedUser;
+                // Đảm bảo API trả về dữ liệu cập nhật
+                if (response.status === 200) {
+                    // Cập nhật localStorage và giao diện với dữ liệu mới
+                    const updatedUser = { ...savedUser, ...response.data };
+                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                    $scope.khachHang = updatedUser;
 
-                // Hiển thị dữ liệu mới trên giao diện
-                $scope.name = updatedUser.ho_ten;
-                $scope.email = updatedUser.email;
-                $scope.phone = updatedUser.sdt;
-                $scope.ngaySinh = updatedUser.ngay_sinh ? new Date(updatedUser.ngay_sinh) : null;
-                $scope.gioiTinh = updatedUser.gioi_tinh;
+                    // Hiển thị dữ liệu mới trên giao diện
+                    $scope.taiKhoan = updatedUser.taiKhoan;
+                    $scope.name = updatedUser.hoTen;
+                    $scope.email = updatedUser.email;
+                    $scope.phone = updatedUser.sdt;
+                    $scope.ngaySinh = updatedUser.ngaySinh ? new Date(updatedUser.ngaySinh) : null;
+                    $scope.gioiTinh = updatedUser.gioiTinh;
 
-                // Hiển thị thông báo thành công
-                alert("Cập nhật thông tin thành công!");
-                $scope.isEditMode = false;
+                    // Hiển thị thông báo thành công
+                    alert("Cập nhật thông tin thành công!");
+                    $scope.isEditMode = false; // Thoát chế độ chỉnh sửa
+                } else {
+                    alert("Cập nhật thất bại. Vui lòng thử lại.");
+                }
             })
             .catch(function (error) {
                 // Hiển thị thông báo lỗi nếu API trả về lỗi
@@ -284,5 +312,4 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
             return "Bạn có thay đổi chưa lưu. Thoát sẽ mất dữ liệu.";
         }
     };
-
 });

@@ -413,5 +413,68 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         return pages;
     };
 
+    // Kiểm tra email trùng
+    $scope.checkEmailDuplicate = function() {
+        if (!$scope.khachHang.email) return;
 
+        $http.get('/api/check-email', { params: { email: $scope.khachHang.email } })
+            .then(function(response) {
+                if (response.data.exists) {
+                    $scope.formErrors.push("Email đã tồn tại.");
+                }
+            })
+            .catch(function(error) {
+                console.error("Lỗi kiểm tra email:", error);
+            });
+    };
+
+    // Gửi form
+    $scope.submitForm = function() {
+        $scope.formErrors = []; // Reset lỗi mỗi lần gửi
+
+        // Kiểm tra họ tên
+        if (!$scope.khachHang.hoTen || $scope.khachHang.hoTen.trim() === '') {
+            $scope.formErrors.push("Họ và tên không được để trống.");
+        }
+
+        // Kiểm tra tài khoản
+        if (!$scope.khachHang.taiKhoan || $scope.khachHang.taiKhoan.trim() === '') {
+            $scope.formErrors.push("Tài khoản không được để trống.");
+        }
+
+        // Kiểm tra ngày sinh
+        if (!$scope.khachHang.ngaySinh) {
+            $scope.formErrors.push("Ngày sinh không được để trống.");
+        }
+
+        // Kiểm tra email
+        if (!$scope.khachHang.email || $scope.khachHang.email.trim() === '') {
+            $scope.formErrors.push("Email không được để trống.");
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($scope.khachHang.email)) {
+            $scope.formErrors.push("Email không hợp lệ.");
+        }
+
+        // Kiểm tra số điện thoại
+        if (!$scope.khachHang.sdt || $scope.khachHang.sdt.trim() === '') {
+            $scope.formErrors.push("Số điện thoại không được để trống.");
+        }
+
+        // Kiểm tra địa chỉ
+        if ($scope.khachHang.diaChiChiTiet.length === 0) {
+            $scope.formErrors.push("Phải thêm ít nhất một địa chỉ.");
+        }
+
+        // Kiểm tra lỗi
+        if ($scope.formErrors.length > 0) {
+            // Nếu có lỗi, dừng xử lý
+            return;
+        }
+
+        // Nếu không có lỗi, thực hiện thêm mới hoặc cập nhật
+        if ($scope.isEditing) {
+            $scope.updateCustomer();
+        } else {
+            $scope.addCustomer();
+        }
+    };
 });

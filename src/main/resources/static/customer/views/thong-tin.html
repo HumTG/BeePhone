@@ -1,97 +1,155 @@
 <br><br><br><br><br>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <!-- Header -->
-                    <div class="d-flex flex-column align-items-center mb-4">
-                        <!-- Avatar Circle -->
-                        <div class="avatar-circle mb-3">
-                            <span class="initials">{{name | limitTo:1}}</span>
-                        </div>
-                        <h4 class="card-title mb-0">Thông Tin Cá Nhân</h4>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <!-- Header -->
+                <div class="d-flex flex-column align-items-center mb-4">
+                    <!-- Avatar Circle -->
+                    <div class="avatar-circle mb-3">
+                        <span class="initials">{{name | limitTo:1}}</span>
                     </div>
-                    <!-- Form khách hàng -->
-                        <div class="row g-4">
-                            <!-- Họ tên và Tài khoản -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="name" ng-model="name" required>
-                                    <label for="name">Họ và Tên</label>
+                    <h4 class="card-title mb-0">Thông Tin Cá Nhân</h4>
+                </div>
+                <!-- Form khách hàng -->
+                <form name="profileForm" novalidate>
+                    <div class="row g-4">
+                        <!-- Họ tên -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text"
+                                       class="form-control"
+                                       id="name"
+                                       name="name"
+                                       ng-model="name"
+                                       ng-required="true"
+                                       ng-pattern="/^[a-zA-ZÀ-ỹ\s]+$/"
+                                       placeholder="Nhập họ và tên">
+                                <label for="name">Họ và Tên</label>
+                                <div ng-show="profileForm.name.$touched && profileForm.name.$invalid" class="text-danger">
+                                    <small ng-show="profileForm.name.$error.required">Họ và tên không được để trống.</small>
+                                    <small ng-show="profileForm.name.$error.pattern">Họ và tên chỉ được chứa chữ cái và khoảng trắng.</small>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="tai_khoan" ng-model="taiKhoan"
-                                           placeholder="Nhập tài khoản" required>
-                                    <label for="tai_khoan">Tài Khoản</label>
-                                </div>
-                            </div>
-
-                            <!-- Ngày sinh -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="date" class="form-control" id="ngaySinh" ng-model="ngaySinh" required>
-                                    <label for="ngaySinh">Ngày Sinh</label>
-                                </div>
-                            </div>
-
-                            <!-- Email và Số điện thoại -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" ng-model="email"
-                                           placeholder="Nhập email" required>
-                                    <label for="email">Email</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="tel" class="form-control" id="sdt" ng-model="phone"
-                                           placeholder="Nhập số điện thoại" required>
-                                    <label for="sdt">Số Điện Thoại</label>
-                                </div>
-                            </div>
-
-                            <!-- Giới tính -->
-                            <div class="col-md-6">
-                                <label class="form-label">Giới Tính</label>
-                                <div class="form-check">
-                                    <input
-                                            class="form-check-input"
-                                            type="radio"
-                                            id="gioiTinhNam"
-                                            name="gioiTinh"
-                                            ng-model="gioiTinh"
-                                            ng-value="0"
-                                    />
-                                    <label class="form-check-label" for="gioiTinhNam">Nam</label>
-                                </div>
-                                <div class="form-check">
-                                    <input
-                                            class="form-check-input"
-                                            type="radio"
-                                            id="gioiTinhNu"
-                                            name="gioiTinh"
-                                            ng-model="gioiTinh"
-                                            ng-value="1"
-                                    />
-                                    <label class="form-check-label" for="gioiTinhNu">Nữ</label>
-                                </div>
-                            </div>
-
                         </div>
+
+                        <!-- Tài khoản -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text"
+                                       class="form-control"
+                                       id="taiKhoan"
+                                       name="taiKhoan"
+                                       ng-model="taiKhoan"
+                                       ng-required="true"
+                                       ng-pattern="/^[a-zA-Z0-9]+$/"
+                                       placeholder="Nhập tài khoản">
+                                <label for="taiKhoan">Tài Khoản</label>
+                                <div ng-show="profileForm.taiKhoan.$touched && profileForm.taiKhoan.$invalid" class="text-danger">
+                                    <small ng-show="profileForm.taiKhoan.$error.required">Tài khoản không được để trống.</small>
+                                    <small ng-show="profileForm.taiKhoan.$error.pattern">Tài khoản không được chứa ký tự đặc biệt.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ngày sinh -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="date"
+                                       class="form-control"
+                                       id="ngaySinh"
+                                       name="ngaySinh"
+                                       ng-model="ngaySinh"
+                                       ng-required="true">
+                                <label for="ngaySinh">Ngày Sinh</label>
+                                <div ng-show="profileForm.ngaySinh.$touched && profileForm.ngaySinh.$invalid" class="text-danger">
+                                    <small>Ngày sinh không được để trống.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email"
+                                       class="form-control"
+                                       id="email"
+                                       name="email"
+                                       ng-model="email"
+                                       ng-required="true"
+                                       ng-pattern="/^[a-zA-Z0-9._%+-]+@gmail\.com$/"
+                                       placeholder="Nhập email">
+                                <label for="email">Email</label>
+                                <div ng-show="profileForm.email.$touched && profileForm.email.$invalid" class="text-danger">
+                                    <small ng-show="profileForm.email.$error.required">Email không được để trống.</small>
+                                    <small ng-show="profileForm.email.$error.pattern">Email phải có đuôi @gmail.com.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="tel"
+                                       class="form-control"
+                                       id="sdt"
+                                       name="sdt"
+                                       ng-model="phone"
+                                       ng-required="true"
+                                       ng-pattern="/^(0[3|5|7|8|9])[0-9]{8,9}$/"
+                                       placeholder="Nhập số điện thoại">
+                                <label for="sdt">Số Điện Thoại</label>
+                                <div ng-show="profileForm.sdt.$touched && profileForm.sdt.$invalid" class="text-danger">
+                                    <small ng-show="profileForm.sdt.$error.required">Số điện thoại không được để trống.</small>
+                                    <small ng-show="profileForm.sdt.$error.pattern">Số điện thoại phải bắt đầu bằng 03, 05, 07, 08, 09 và dài 10-11 số.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Giới tính -->
+                        <div class="col-md-6">
+                            <label class="form-label">Giới Tính</label>
+                            <div class="form-check">
+                                <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        id="gioiTinhNam"
+                                        name="gioiTinh"
+                                        ng-model="gioiTinh"
+                                        ng-value="0"
+                                        required />
+                                <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                            </div>
+                            <div class="form-check">
+                                <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        id="gioiTinhNu"
+                                        name="gioiTinh"
+                                        ng-model="gioiTinh"
+                                        ng-value="1"
+                                        required />
+                                <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                            </div>
+                            <div ng-show="profileForm.gioiTinh.$touched && profileForm.gioiTinh.$invalid" class="text-danger">
+                                <small>Vui lòng chọn giới tính.</small>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Edit Button -->
                     <div class="d-grid mt-4">
-                        <button class="btn btn-outline-primary" ng-click="saveProfile()">
+                        <button class="btn btn-outline-primary"
+                                ng-click="saveProfile()">
                             <i class="fas fa-pen me-2"></i>Chỉnh sửa thông tin
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 <style>
 

@@ -269,12 +269,13 @@ public class KhachHangService {
     }
 
     // Cập nhật thông tin khách hàng cho user
+    @Transactional
     public KhachHangDTO updateCustomerProfile(KhachHangDTO khachHangDTO) {
-        // Kiểm tra các trường bắt buộc
         if (khachHangDTO.getId() == null) {
             throw new IllegalArgumentException("ID khách hàng không được để trống");
         }
 
+        // Tìm kiếm khách hàng trong cơ sở dữ liệu
         Optional<khach_hang> existingCustomerOpt = khachHangRepository.findById(khachHangDTO.getId());
         if (!existingCustomerOpt.isPresent()) {
             throw new ResourceNotFoundException("Không tìm thấy khách hàng với ID: " + khachHangDTO.getId());
@@ -282,7 +283,10 @@ public class KhachHangService {
 
         khach_hang existingCustomer = existingCustomerOpt.get();
 
-        // Cập nhật thông tin, chỉ cập nhật nếu DTO có giá trị không null
+        // Cập nhật thông tin cá nhân (Không bao gồm mật khẩu và địa chỉ)
+        if (khachHangDTO.getTaiKhoan() != null && !khachHangDTO.getTaiKhoan().trim().isEmpty()) {
+            existingCustomer.setTai_khoan(khachHangDTO.getTaiKhoan());
+        }
         if (khachHangDTO.getHoTen() != null && !khachHangDTO.getHoTen().trim().isEmpty()) {
             existingCustomer.setHo_ten(khachHangDTO.getHoTen());
         }
@@ -298,8 +302,11 @@ public class KhachHangService {
         if (khachHangDTO.getGioiTinh() != null) {
             existingCustomer.setGioi_tinh(khachHangDTO.getGioiTinh());
         }
+        if (khachHangDTO.getTrangThai() != null) {
+            existingCustomer.setTrang_thai(khachHangDTO.getTrangThai());
+        }
 
-        // Lưu thay đổi vào database
+        // Lưu các thay đổi vào cơ sở dữ liệu
         khachHangRepository.save(existingCustomer);
 
         // Trả về DTO đã được cập nhật
