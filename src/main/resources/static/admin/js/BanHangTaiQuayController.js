@@ -8,9 +8,9 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
     $scope.pageKhachHang = 0; /// trang của khách hàng
     $scope.switchGiaoHang = false;
     $scope.khachHang_new = {
-        ho_ten : null,
-        email : null,
-        sdt : null,
+        ho_ten : '',
+        email : '',
+        sdt : '',
         gioi_tinh : 0
     }
 
@@ -361,6 +361,21 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
 
     /// thêm mới nhanh khách hàng tại quầy
     $scope.themKhachHangTaiQuay = function (){
+        if ($scope.khachHang_new.ho_ten.trim().length == 0 || $scope.khachHang_new.sdt.trim().length == 0 || $scope.khachHang_new.email.trim().length == 0){
+            toastr.warning('Không để trống dữ liệu', '');
+            return;
+        }
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test($scope.khachHang_new.email)){
+            toastr.warning('Sai định dạng Email', '');
+            return;
+        }
+        const regexSDT = /^(0|\+84)([3|5|7|8|9])[0-9]{8}$/;
+        if (!regexSDT.test($scope.khachHang_new.sdt)){
+            toastr.warning('Số điện thoại phải có 10 số, bắt đầu bằng 0 và 3/5/7/8/9', '');
+            return;
+        }
+
         $http.post("http://localhost:8080/rest/khach-hang/add-khach-hang-tai-quay",$scope.khachHang_new).then(function (respone) {
             $scope.getKhachHang(0);
             toastr.success('Thêm khách hàng thành công', 'OK');
@@ -368,6 +383,11 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
             var modalElement = document.getElementById('themKhachHangModal');
             var Modal = bootstrap.Modal.getInstance(modalElement);
             Modal.hide(); // đóng modal
+
+            $scope.khachHang_new.ho_ten = '';
+            $scope.khachHang_new.sdt = '';
+            $scope.khachHang_new.email = '';
+
         })  .catch(function (error) {
             console.error("Đã có lỗi xảy ra khi thêm khách hàng", error);
         });
