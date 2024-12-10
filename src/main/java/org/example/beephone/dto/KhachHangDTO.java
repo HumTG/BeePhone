@@ -28,9 +28,7 @@ public class KhachHangDTO {
     private Integer gioiTinh;
     private Integer trangThai;
     private List<DiaChiDTO> diaChiChiTiet; // Thay vì List<String>
-
-
-
+    private DiaChiDTO diaChiMacDinh;
 
     // Chuyển đổi từ Entity KhachHang sang KhachHangDTO
     public static KhachHangDTO fromEntity(khach_hang khachHang) {
@@ -69,6 +67,13 @@ public class KhachHangDTO {
         khachHang.setTrang_thai(this.trangThai);
         // Thêm chuyển đổi cho các trường khác nếu cần
         return khachHang;
+    }
+
+    public Integer getGioiTinh() {
+        return gioiTinh != null ? gioiTinh : 0; // Giá trị mặc định là 0
+    }
+    public void setGioiTinh(Integer gioiTinh) {
+        this.gioiTinh = gioiTinh;
     }
 
 }

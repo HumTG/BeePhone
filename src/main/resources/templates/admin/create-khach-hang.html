@@ -54,51 +54,62 @@
         body {
             background-color: #f8f9fa;
         }
+
         .form-container {
             max-width: 800px;
             margin: 2rem auto;
             padding: 2rem;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
+
         .form-label {
             font-weight: 600;
             color: #495057;
         }
+
         .form-control, .form-select {
             border-radius: 8px;
             border: 1px solid #ced4da;
             padding: 0.625rem;
         }
+
         .form-control:focus, .form-select:focus {
             border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
         }
+
         .btn {
             padding: 0.625rem 1.25rem;
             border-radius: 8px;
             font-weight: 500;
         }
+
         .btn-primary {
             background-color: #0d6efd;
             border: none;
         }
+
         .btn-primary:hover {
             background-color: #0b5ed7;
         }
+
         .address-list {
             max-height: 200px;
             overflow-y: auto;
         }
+
         .address-item {
             border-left: 3px solid transparent;
             transition: all 0.3s ease;
         }
+
         .address-item.default {
             border-left-color: #0d6efd;
             background-color: #f8f9fa;
         }
+
         .radio-group {
             display: flex;
             gap: 1rem;
@@ -246,9 +257,11 @@
 
                     <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                         <li class="nav-item topbar-user dropdown hidden-caret">
-                            <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                            <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
+                               aria-expanded="false">
                                 <div class="avatar-sm">
-                                    <img th:src="@{'/admin/images/' + ${session.nhanVien.hinh_anh}}"  alt="..." class="avatar-img rounded-circle" />
+                                    <img th:src="@{'/admin/images/' + ${session.nhanVien.hinh_anh}}" alt="..."
+                                         class="avatar-img rounded-circle"/>
                                 </div>
                                 <span class="profile-username">
                     <span class="op-7">Hi,</span>
@@ -260,7 +273,8 @@
                                     <li>
                                         <div class="user-box">
                                             <div class="avatar-lg">
-                                                <img th:src="@{'/admin/images/' + ${session.nhanVien.hinh_anh}}" alt="image profile" class="avatar-img rounded" />
+                                                <img th:src="@{'/admin/images/' + ${session.nhanVien.hinh_anh}}"
+                                                     alt="image profile" class="avatar-img rounded"/>
                                             </div>
                                             <div class="u-text">
                                                 <h4 th:text="${session.nhanVien.ho_ten}"></h4>
@@ -271,8 +285,8 @@
                                     </li>
                                     <li>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" >Đổi Mật Khẩu</a>
-                                        <a class="dropdown-item" href="/auth/logoff" >Đăng Xuất</a>
+                                        <a class="dropdown-item">Đổi Mật Khẩu</a>
+                                        <a class="dropdown-item" href="/auth/logoff">Đăng Xuất</a>
                                     </li>
                                 </div>
                             </ul>
@@ -290,47 +304,82 @@
                     }}</h2>
 
                 <!-- Form khách hàng -->
-                <form id="customerForm" ng-controller="KhachHangController" ng-init="initializeEdit()"
+                <form id="customerForm" name="customerForm" novalidate
+                      ng-controller="KhachHangController"
+                      ng-init="initializeEdit()"
                       ng-submit="isEditing ? updateCustomer() : addCustomer()">
 
                     <div class="row g-4">
-                        <!-- Họ tên và Tài khoản -->
+                        <!-- Họ tên -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="hoTen" ng-model="khachHang.hoTen"
-                                       placeholder="Nhập họ tên" required>
+                                       placeholder="Nhập họ tên" required
+                                       ng-class="{'is-invalid': customerForm.hoTen.$touched && customerForm.hoTen.$invalid}">
                                 <label for="hoTen">Họ và Tên</label>
+                                <div class="invalid-feedback">
+                                    Họ tên không được để trống.
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Tài khoản -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="taiKhoan" ng-model="khachHang.taiKhoan"
-                                       placeholder="Nhập tài khoản" required>
+                                       placeholder="Nhập tài khoản" required
+                                       ng-class="{'is-invalid': customerForm.taiKhoan.$touched && customerForm.taiKhoan.$invalid}">
                                 <label for="taiKhoan">Tài Khoản</label>
+                                <div class="invalid-feedback">
+                                    Tài khoản không được để trống.
+                                </div>
                             </div>
                         </div>
 
                         <!-- Ngày sinh -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="date" class="form-control" id="ngaySinh" ng-model="khachHang.ngaySinh" required>
+                                <input type="date" class="form-control" id="ngaySinh" ng-model="khachHang.ngaySinh"
+                                       required ng-blur="validateDateOfBirth()"
+                                       ng-class="{'is-invalid': dateOfBirthError}">
                                 <label for="ngaySinh">Ngày Sinh</label>
+                                <div class="invalid-feedback">
+                                    {{ dateOfBirthError }}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Email và Số điện thoại -->
+                        <!-- Email -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="email" class="form-control" id="email" ng-model="khachHang.email"
-                                       placeholder="Nhập email" required>
+                                       placeholder="Nhập email" required ng-blur="checkEmailDuplicate()"
+                                       ng-class="{
+                                   'is-invalid': customerForm.email.$touched && customerForm.email.$invalid || emailDuplicate
+                               }">
                                 <label for="email">Email</label>
+                                <div class="invalid-feedback" ng-if="emailDuplicate">
+                                    Email đã tồn tại.
+                                </div>
+                                <div class="invalid-feedback" ng-if="customerForm.email.$error.required">
+                                    Email không được để trống.
+                                </div>
+                                <div class="invalid-feedback" ng-if="customerForm.email.$error.email">
+                                    Email không hợp lệ.
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Số điện thoại -->
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="tel" class="form-control" id="sdt" ng-model="khachHang.sdt"
-                                       placeholder="Nhập số điện thoại" required>
+                                       placeholder="Nhập số điện thoại" required ng-blur="validatePhoneNumber()"
+                                       ng-class="{'is-invalid': phoneError}">
                                 <label for="sdt">Số Điện Thoại</label>
+                                <div class="invalid-feedback">
+                                    {{ phoneError }}
+                                </div>
                             </div>
                         </div>
 
@@ -365,12 +414,30 @@
                         <!-- Địa chỉ -->
                         <div class="col-12">
                             <label class="form-label">Địa Chỉ</label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" ng-model="address.diaChi"
-                                       placeholder="Nhập địa chỉ mới">
-                                <button type="button" class="btn btn-primary" ng-click="addAddress()">
+                            <!-- Hướng dẫn định dạng -->
+                            <small class="form-text text-muted mb-1 d-block">
+                                Nhập đúng định dạng: <b>Thành phố, Quận/Huyện, Xã</b>.
+                            </small>
+                            <div class="input-group">
+                                <!-- Ô nhập địa chỉ -->
+                                <input type="text"
+                                       class="form-control"
+                                       ng-model="address.diaChi"
+                                       placeholder="Nhập địa chỉ (VD: Hà Nội, Ba Đình, Kim Mã)"
+                                       required
+                                       ng-blur="validateAddress()"
+                                       ng-class="{'is-invalid': addressError}">
+                                <!-- Nút thêm địa chỉ -->
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        ng-click="addAddress()"
+                                        ng-disabled="!validateAddress()">
                                     <i class="fas fa-plus-circle me-1"></i> Thêm
                                 </button>
+                                <!-- Thông báo lỗi -->
+                                <div class="invalid-feedback">
+                                    {{ addressError }}
+                                </div>
                             </div>
                         </div>
 
@@ -406,12 +473,19 @@
                         </div>
                     </div>
 
+                    <!-- Thông báo lỗi tổng quát -->
+                    <div class="alert alert-danger mt-3" role="alert" ng-show="formErrors.length > 0">
+                        <ul>
+                            <li ng-repeat="error in formErrors">{{ error }}</li>
+                        </ul>
+                    </div>
+
                     <!-- Nút hành động -->
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a href="/admin/khach-hang" class="btn btn-outline-secondary">
                             <i class="fas fa-times me-1"></i> Hủy
                         </a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" ng-disabled="!validateAllFields()">
                             <i class="fas" ng-class="isEditing ? 'fa-save' : 'fa-user-plus'"></i>
                             {{ isEditing ? 'Cập Nhật' : 'Thêm Mới' }}
                         </button>
