@@ -1,11 +1,15 @@
 package org.example.beephone.controller.api;
 
+import org.example.beephone.dto.DiaChiDTO;
+import org.example.beephone.dto.DoiMatKhauDTO;
 import org.example.beephone.dto.KhachHangDTO;
 import org.example.beephone.dto.LoginRequest;
+import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 import org.example.beephone.repository.KhachHangRepository;
 import org.example.beephone.service.DiaChiService;
 import org.example.beephone.service.KhachHangService;
+import org.example.beephone.service.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rest/khach-hang")
@@ -28,6 +34,8 @@ public class KhachHangController {
 
     @Autowired
     private DiaChiService  diaChiService;
+
+    /* admin */
 
     // Lấy danh sách khách hàng với phân trang
     @GetMapping("/all")
@@ -70,7 +78,7 @@ public class KhachHangController {
         }
     }
 
-//    // Thêm khách hàng mới
+    // Thêm khách hàng mới
     @PostMapping("/add")
     public ResponseEntity<?> addCustomer(@RequestBody KhachHangDTO khachHangDTO) {
         try {
@@ -140,7 +148,7 @@ public class KhachHangController {
         return ResponseEntity.ok(filteredCustomers);
     }
 
-    /// lấy danh sách khách hàng để bán hàng tại quầy
+    // lấy danh sách khách hàng để bán hàng tại quầy
     @GetMapping("/ban-hang")
     public ResponseEntity<?> getKhBanHang(@RequestParam(defaultValue = "0") Integer page) {
         return ResponseEntity.ok(service.getListKhBanHang(page));
@@ -187,4 +195,88 @@ public class KhachHangController {
                     .body("Lỗi khi đăng nhập: " + e.getMessage());
         }
     }
-}
+
+    // API kiểm tra email trùng
+    @GetMapping("/check-email")
+    public ResponseEntity<Map<String, Boolean>> checkEmailDuplicate(@RequestParam String email) {
+        boolean exists = khachHangRepository.existsByEmail(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
+    }
+
+    /* customer */
+
+    // Lấy thông tin chi tiết khách hàng sau khi đăng nhập
+    @GetMapping("/profile")
+    public ResponseEntity<?> getCustomerProfile(@RequestParam Integer customerId) {
+        try {
+            KhachHangDTO customerProfile = service.getCustomerProfile(customerId);
+            return ResponseEntity.ok(customerProfile);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy thông tin khách hàng: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi lấy thông tin khách hàng: " + e.getMessage());
+        }
+    }
+
+    // cập nhật thông tin
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateProfile(@RequestBody KhachHangDTO khachHangDTO) {
+        try {
+            // Lấy dữ liệu hiện tại từ database
+            KhachHangDTO currentData = service.getCustomerProfile(khachHangDTO.getId());
+
+            // So sánh dữ liệu gửi lên với dữ liệu hiện tại
+            if (khachHangDTO.equals(currentData)) {
+                return ResponseEntity.badRequest().body("Không có thay đổi nào để cập nhật.");
+            }
+
+            // Log dữ liệu cập nhật
+            System.out.println("Dữ liệu cần cập nhật: " + khachHangDTO);
+
+            // Cập nhật thông tin
+            KhachHangDTO updatedCustomer = service.updateCustomerProfile(khachHangDTO);
+            return ResponseEntity.ok(updatedCustomer);
+        } catch (ResourceNotFoundException e) {
+            System.err.println("Không tìm thấy khách hàng: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Lỗi hệ thống khi cập nhật: " + e.getMessage());
+            e.printStackTrace(); // In lỗi chi tiết ra logs
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi cập nhật thông tin: " + e.getMessage());
+        }
+    }
+
+    // Đổi mật khẩu
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody DoiMatKhauDTO doiMatKhauDTO) {
+        try {
+            boolean result = service.doiMatKhau(doiMatKhauDTO);
+            return ResponseEntity.ok("Đổi mật khẩu thành công");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi đổi mật khẩu: " + e.getMessage());
+        }
+    }
+
+    // Lấy danh sách địa chỉ của một khách hàng theo ID
+    @GetMapping("/{id}/addresses")
+    public ResponseEntity<List<dia_chi_khach_hang>> getAddressesByCustomerId(@PathVariable Integer id) {
+        List<dia_chi_khach_hang> addresses = diaChiService.findAddressesByCustomerId(id);
+
+        if (addresses.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null); // Không có địa chỉ nào
+        }
+
+        return ResponseEntity.ok(addresses); // Trả về danh sách địa chỉ
+    }
+ }

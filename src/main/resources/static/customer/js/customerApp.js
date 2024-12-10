@@ -30,9 +30,23 @@ app.config(function($routeProvider) {
             templateUrl : "/customer/views/chat.html",
             controller : "ChatController"
         })
+<<<<<<< HEAD
         .when("/tra-cuu-don-hang", {
             templateUrl : "/customer/views/tra-cuu-don-hang.html",
             controller : "TraCuuController"
+=======
+        .when("/thong-tin", {
+            templateUrl : "/customer/views/thong-tin.html",
+            controller : "ThongTinController"
+        })
+        .when("/doi-mat-khau", {
+            templateUrl : "/customer/views/doi-mat-khau.html",
+            controller : "ThongTinController"
+        })
+        .when("/dia-chi", {
+            templateUrl : "/customer/views/dia-chi.html",
+            controller : "ThongTinController"
+>>>>>>> 1258e8400b181b00953ec112015d5977ace371ba
         })
         .otherwise({
             redirectTo: '/'

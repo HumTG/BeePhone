@@ -382,36 +382,140 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
         }
     });
 
-    // Hàm thay đổi trang
-    $scope.changePage = function (page) {
-        if (page < 0 || page >= $scope.totalPages) return;
-        $scope.currentPage = page;
-        $scope.getData();
+    // Hàm để chuyển trang
+    $scope.changePage = function(page) {
+        if (page >= 0 && page < $scope.totalPages) {
+            $scope.currentPage = page;
+            $scope.getData($scope.currentPage);
+        }
     };
 
-    // Hàm thay đổi số lượng item mỗi trang
-    $scope.changePageSize = function () {
-        $scope.currentPage = 0; // Reset về trang đầu tiên
-        $scope.getData();
+    // Kiểm tra email trùng
+    $scope.checkEmailDuplicate = function () {
+        if (!$scope.khachHang.email) return;
+
+        $http.get(`${hosts}/check-email`, { params: { email: $scope.khachHang.email } })
+            .then(function (response) {
+                $scope.emailDuplicate = response.data.exists;
+            })
+            .catch(function (error) {
+                console.error("Lỗi kiểm tra email:", error);
+                $scope.emailDuplicate = false; // Trong trường hợp lỗi, mặc định là không trùng.
+            });
     };
 
-    // Hàm tạo mảng số trang để hiển thị
-    $scope.getPages = function () {
-        const pages = [];
-        const maxPages = 5; // Số lượng nút trang tối đa hiển thị
-        let startPage = Math.max(0, $scope.currentPage - Math.floor(maxPages / 2));
-        let endPage = Math.min($scope.totalPages, startPage + maxPages);
+    // Check số điện thoại
+    $scope.validatePhoneNumber = function () {
+        const phoneRegex = /^0[0-9]{9,10}$/;
+        if (!$scope.khachHang.sdt || !phoneRegex.test($scope.khachHang.sdt)) {
+            $scope.phoneError = "Số điện thoại không hợp lệ. Phải bắt đầu bằng 0 và có 10-11 số.";
+            return false;
+        }
+        $scope.phoneError = null;
+        return true;
+    };
 
-        // Điều chỉnh startPage nếu endPage đã đạt giới hạn
-        if (endPage === $scope.totalPages) {
-            startPage = Math.max(0, endPage - maxPages);
+    // Check ngày sinh
+    $scope.validateDateOfBirth = function () {
+        const now = new Date();
+        const minDate = new Date(now.getFullYear() - 110, now.getMonth(), now.getDate());
+        const maxDate = new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
+
+        const dob = new Date($scope.khachHang.ngaySinh);
+
+        if (dob < minDate || dob > maxDate) {
+            $scope.dateOfBirthError = "Ngày sinh phải từ 18 tuổi trở lên và không vượt quá 110 năm.";
+            return false;
+        }
+        $scope.dateOfBirthError = null;
+        return true;
+    };
+
+    // Check địa chỉ
+    $scope.validateAddress = function () {
+        // Biểu thức regex kiểm tra định dạng Thành phố, Quận/Huyện, Xã
+        const addressRegex = /^[a-zA-ZÀ-ỹ\s]+,\s*[a-zA-ZÀ-ỹ\s]+,\s*[a-zA-ZÀ-ỹ\s]+$/;
+
+        if (!$scope.address.diaChi || !addressRegex.test($scope.address.diaChi)) {
+            $scope.addressError = "Địa chỉ không hợp lệ. Định dạng: Thành phố, Quận/Huyện, Xã.";
+            return false;
+        }
+        $scope.addressError = null; // Không có lỗi
+        return true;
+    };
+
+    // Gọi để check
+    $scope.validateAllFields = function () {
+        let isValid = true;
+
+        // Kiểm tra email trùng
+        if ($scope.emailDuplicate) {
+            isValid = false;
         }
 
-        for (let i = startPage; i < endPage; i++) {
-            pages.push(i);
+        // Kiểm tra số điện thoại
+        if (!$scope.validatePhoneNumber()) {
+            isValid = false;
         }
-        return pages;
+
+        // Kiểm tra ngày sinh
+        if (!$scope.validateDateOfBirth()) {
+            isValid = false;
+        }
+
+        // Kiểm tra địa chỉ
+        if (!$scope.khachHang.diaChiChiTiet.length) {
+            $scope.addressError = "Phải thêm ít nhất một địa chỉ.";
+            isValid = false;
+        } else {
+            $scope.addressError = null; // Không có lỗi nếu danh sách địa chỉ không rỗng
+        }
+
+        return isValid;
     };
 
+    // Gửi form
+    $scope.submitForm = function () {
+        $scope.formErrors = []; // Reset lỗi mỗi lần gửi
+
+        // Kiểm tra email trùng lặp
+        if ($scope.emailDuplicate) {
+            $scope.formErrors.push("Email đã tồn tại. Vui lòng sử dụng email khác.");
+        }
+
+        // Các kiểm tra khác
+        if (!$scope.khachHang.hoTen || $scope.khachHang.hoTen.trim() === '') {
+            $scope.formErrors.push("Họ và tên không được để trống.");
+        }
+        if (!$scope.khachHang.taiKhoan || $scope.khachHang.taiKhoan.trim() === '') {
+            $scope.formErrors.push("Tài khoản không được để trống.");
+        }
+        if (!$scope.khachHang.ngaySinh) {
+            $scope.formErrors.push("Ngày sinh không được để trống.");
+        }
+        if (!$scope.khachHang.email || $scope.khachHang.email.trim() === '') {
+            $scope.formErrors.push("Email không được để trống.");
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($scope.khachHang.email)) {
+            $scope.formErrors.push("Email không hợp lệ.");
+        }
+        if (!$scope.khachHang.sdt || $scope.khachHang.sdt.trim() === '') {
+            $scope.formErrors.push("Số điện thoại không được để trống.");
+        }
+        if ($scope.khachHang.diaChiChiTiet.length === 0) {
+            $scope.formErrors.push("Phải thêm ít nhất một địa chỉ.");
+        }
+
+        // Nếu có lỗi, không thực hiện thêm hoặc cập nhật
+        if ($scope.formErrors.length > 0) {
+            return;
+        }
+
+        // Nếu không có lỗi, thực hiện thêm mới hoặc cập nhật
+        if ($scope.isEditing) {
+            $scope.updateCustomer();
+        } else {
+            $scope.addCustomer();
+        }
+    };
 
 });
