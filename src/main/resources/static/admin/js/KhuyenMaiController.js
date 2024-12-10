@@ -13,16 +13,16 @@ app.controller('KhuyenMaiController',function ($scope,$http){
 
     }
 
-    $scope.capNhatTrangThai = function (){
-        $http.put("http://localhost:8080/rest/khuyen-mai/update-trang-thai-auto")
-            .then(function (res){
-                console.log(res)
-            })
-            .catch(function(error) {
-                console.error("Lỗi :"+error)
-            });
-    }
-    $scope.capNhatTrangThai();
+    // $scope.capNhatTrangThai = function (){
+    //     $http.put("http://localhost:8080/rest/khuyen-mai/update-trang-thai-auto")
+    //         .then(function (res){
+    //             console.log(res)
+    //         })
+    //         .catch(function(error) {
+    //             console.error("Lỗi :"+error)
+    //         });
+    // }
+    // $scope.capNhatTrangThai();
 
 
     // Hàm để lấy dữ liệu từ API

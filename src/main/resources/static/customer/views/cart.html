@@ -1,10 +1,10 @@
-<br><br><br><br><br>
+<br><br><br><br><br><br><br>
 <div class="container">
     <h3 class="text-center">Giỏ Hàng</h3>
     <div class="row">
         <div class="col-9">
-            <table class="table">
-                <thead class="table-warning">
+            <table class="table  table-hover align-middle">
+                <thead class="table-warning text-center">
                 <tr>
                     <th scope="col">Hình ảnh</th>
                     <th scope="col">Sản phẩm</th>
@@ -17,30 +17,47 @@
                 <tbody>
                 <!-- Hiển thị thông báo khi giỏ hàng trống -->
                 <tr ng-if="cart.length === 0">
-                    <td colspan="6" class="text-center">Không có sản phẩm nào trong giỏ hàng</td>
+                    <td colspan="6" class="text-center text-muted">Không có sản phẩm nào trong giỏ hàng</td>
                 </tr>
                 <!-- Hiển thị danh sách sản phẩm khi có sản phẩm trong giỏ hàng -->
                 <tr ng-repeat="item in cart" ng-if="cart.length > 0">
-                    <td><img ng-src="/images/{{ item.variant.anh }}" style="width: 50px; height: 50px;" alt="Hình ảnh sản phẩm"></td>
-                    <td>{{ item.product.ten }} ({{ item.variant.mauSac.ten }} - {{ item.variant.kichCo.ten }})</td>
+                    <td class="text-center">
+                        <div class="image-container">
+                            <span class="discount-label" ng-if="item.variant.giamGia">{{ item.variant.giamGia.gia_tri }}%</span>
+                            <img ng-src="/images/{{ item.variant.anh }}" class="product-image" alt="Hình ảnh sản phẩm">
+                        </div>
+                    </td>
                     <td>
-                            <span ng-if="item.variant.giamGia">
-                                {{ (item.variant.gia_ban * (1 - item.variant.giamGia.gia_tri / 100)) | currency:"":0 }} đ
-                            </span>
+                        <strong>{{ item.product.ten }}</strong>
+                        <p class="text-muted">Màu: {{ item.variant.mauSac.ten }} - Kích cỡ: {{ item.variant.kichCo.ten }}</p>
+                    </td>
+                    <td class="text-center">
+                <span ng-if="item.variant.giamGia" class="text-danger fw-bold">
+                    {{ (item.variant.gia_ban * (1 - item.variant.giamGia.gia_tri / 100)) | currency:"":0 }} đ
+                </span>
                         <span ng-if="!item.variant.giamGia">
-                                {{ item.variant.gia_ban | currency:"":0 }} đ
-                            </span>
+                    {{ item.variant.gia_ban | currency:"":0 }} đ
+                </span>
                     </td>
-                    <td>
-                        <input type="number" ng-model="item.quantity" ng-change="updateCart()" min="1" max="{{ item.variant.so_luong }}" style="width: 60px;">
+                    <td class="text-center">
+                        <input type="number"
+                               ng-model="item.quantity"
+                               ng-change="updateCart()"
+                               min="1"
+                               max="{{ item.variant.so_luong }}"
+                               class="form-control text-center d-inline-block"
+                               style="width: 60px;">
                     </td>
-                    <td>{{ calculateTotalPrice(item) | currency:"":0 }} đ</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" ng-click="removeFromCart($index)">Xóa</button>
+                    <td class="text-end fw-bold">{{ calculateTotalPrice(item) | currency:"":0 }} đ</td>
+                    <td class="text-center">
+                        <button class="btn btn-danger btn-sm" ng-click="removeFromCart($index)">
+                            <i class="fas fa-trash-alt"></i> Xóa
+                        </button>
                     </td>
                 </tr>
                 </tbody>
             </table>
+
         </div>
         <div class="col-3 p-3">
             <div class="card p-4">
@@ -51,17 +68,25 @@
                         <span>Đơn hàng:</span>
                         <span>{{ calculateCartTotal() | currency:"":0 }} VND</span>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <span>Giảm:</span>
-                        <span>0 VND</span>
-                    </div>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between">
                     <strong>Tổng tiền:</strong>
                     <strong>{{ calculateCartTotal() | currency:"":0 }} VND</strong>
                 </div><br>
-                <a href="#!thanh-toan"><button class="btn btn-danger w-100 mt-3 p-3">TIẾP TỤC THANH TOÁN</button></a>
+                <!-- Nút thanh toán được vô hiệu hóa khi giỏ hàng trống -->
+                <a ng-if="cart.length > 0" href="#!thanh-toan">
+                    <button class="btn btn-danger w-100 mt-3 p-3">
+                        TIẾP TỤC THANH TOÁN
+                    </button>
+                </a>
+                <!-- Hiển thị thông báo nếu giỏ hàng trống -->
+                <a ng-if="cart.length === 0" href="javascript:void(0)">
+                    <button class="btn btn-danger w-100 mt-3 p-3" disabled>
+                        TIẾP TỤC THANH TOÁN
+                    </button>
+                </a>
+
             </div>
         </div>
     </div>

@@ -342,6 +342,20 @@ app.controller('SanPhamController', function($scope, $http) {
 
     // Hàm để hiển thị modal khi bấm nút "Chỉnh sửa số lượng và giá chung"
     $scope.openEditModal = function() {
+
+        // Lọc các biến thể được chọn
+        const selectedVariants = $scope.productVariants.filter(variant => variant.selected);
+
+        // Kiểm tra nếu số lượng được chọn ít hơn 2
+        if (selectedVariants.length < 2) {
+            toastr.warning('Vui lòng chọn ít nhất 2 biến thể để chỉnh sửa!', 'Thông báo', {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 3000
+            });
+            return; // Không mở modal
+        }
+
         // Mở modal
         var modal = new bootstrap.Modal(document.getElementById('editQuantityPriceModal'));
         modal.show();
@@ -349,11 +363,39 @@ app.controller('SanPhamController', function($scope, $http) {
 
     // Hàm áp dụng thay đổi cho các hàng được chọn trong bảng
     $scope.applyChanges = function() {
+
+        let hasChanges = false; // Biến để kiểm tra xem có thay đổi hay không
+
         $scope.productVariants.forEach(variant => {
             if (variant.selected) { // Chỉ áp dụng cho các hàng đã chọn
                 variant.quantity = $scope.modalQuantity;
                 variant.price = $scope.modalPrice;
+                hasChanges = true; // Đánh dấu là có thay đổi
             }
+        });
+
+        if (hasChanges) {
+            // Hiển thị thông báo thành công
+            toastr.success('Cập nhật thông tin biến thể thành công!', 'Thành công', {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 3000
+            });
+        } else {
+            // Hiển thị thông báo nếu không có biến thể nào được chọn
+            toastr.warning('Không có biến thể nào được chọn để cập nhật!', 'Thông báo', {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 3000
+            });
+        }
+
+        // Reset tất cả checkbox trong giao diện
+        const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            const row = checkbox.closest('tr');
+            row.classList.remove('table-active'); // Loại bỏ màu nền của hàng
         });
 
         // Đóng modal sau khi cập nhật

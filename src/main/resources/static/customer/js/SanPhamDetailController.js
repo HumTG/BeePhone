@@ -76,15 +76,40 @@ app.controller('SanPhamDetailController', function($scope,$routeParams, $http,$w
     $scope.addToCart = function(selectedProduct) {
         // console.log($scope.selectedVariant);
         if ($scope.selectedVariant) {
+            if ($scope.selectedVariant.so_luong === 0) {
+                toastr.error('Sản phẩm này đã hết hàng');
+                return; // Dừng hàm nếu hết hàng
+            }
+
             // Kiểm tra xem sản phẩm đã có trong giỏ chưa
             const existingProduct = $scope.cart.find(item =>
                 item.product.id === selectedProduct.id && item.variant.id === $scope.selectedVariant.id
             );
 
             if (existingProduct) {
+                const totalQuantity = existingProduct.quantity + $scope.quantity;
+                if (totalQuantity > $scope.selectedVariant.so_luong) {
+                    toastr.error('Không thể thêm sản phẩm vượt quá số lượng tồn kho');
+                    return; // Dừng nếu vượt quá tồn kho
+                }
+                if ($scope.quantity <= 0) {
+                    toastr.error('Số lượng phải lớn hơn 0');
+                    return; // Dừng nếu số lượng <= 0
+                }
+
                 // Nếu sản phẩm đã tồn tại, tăng số lượng
                 existingProduct.quantity += $scope.quantity;
             } else {
+                // Kiểm tra số lượng thêm vào lần đầu
+                if ($scope.quantity > $scope.selectedVariant.so_luong) {
+                    toastr.error('Số lượng không được vượt quá số lượng tồn kho');
+                    return; // Dừng nếu vượt quá tồn kho
+                }
+                if ($scope.quantity <= 0) {
+                    toastr.error('Số lượng phải lớn hơn 0');
+                    return; // Dừng nếu số lượng <= 0
+                }
+
                 // Nếu sản phẩm chưa tồn tại, thêm vào giỏ
                 $scope.cart.push({
                     product: selectedProduct,
@@ -94,7 +119,16 @@ app.controller('SanPhamDetailController', function($scope,$routeParams, $http,$w
             }
             // Lưu giỏ hàng vào LocalStorage
             $scope.saveCart();
-            toastr.success('Sản phẩm đã được thêm vào giỏ hàng');
+            // Hiển thị thông báo toastr thành công
+            toastr.success('Sản phẩm đã được thêm vào giỏ hàng', '', {
+                timeOut: 500,  // Hiển thị toastr trong 1 giây (1000ms)
+                onHidden: function() {
+                    // Đợi 0.5 giây (500ms) rồi reload trang
+                    setTimeout(function() {
+                        window.location.reload(); // Tải lại trang sau khi 0.5 giây
+                    }, 200); // 500ms = 0.5 giây
+                }
+            });
             // Cập nhật giao diện ngay lập tức
             $timeout(function() {
                 $scope.getCartItemCount();
@@ -105,9 +139,9 @@ app.controller('SanPhamDetailController', function($scope,$routeParams, $http,$w
     };
 
     // Hàm cập nhật giỏ hàng khi số lượng thay đổi
-    $scope.updateCart = function() {
-        $scope.cart = $scope.cart.filter(item => item.quantity > 0);
-        $scope.saveCart(); // Cập nhật lại LocalStorage sau khi thay đổi
-    };
+    // $scope.updateCart = function() {
+    //     $scope.cart = $scope.cart.filter(item => item.quantity > 0);
+    //     $scope.saveCart(); // Cập nhật lại LocalStorage sau khi thay đổi
+    // };
 
 });

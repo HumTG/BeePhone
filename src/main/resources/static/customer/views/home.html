@@ -1,7 +1,48 @@
+<br><br><br>
 <div ng-include="'/customer/views/components/sidebar.html'"></div>
 <!-- components/home.html -->
 <section id="mobile-products" class="product-store position-relative padding-large no-padding-top">
     <div class="container" ng-controller="SanPhamController">
+        <!-- Sản phẩm mới nhất -->
+        <div class="display-header d-flex justify-content-between pb-3">
+            <h2 class="display-7 text-dark text-uppercase">Sản phẩm mới nhất</h2>
+            <div class="btn-right">
+                <a href="#!san-pham" class="btn btn-medium btn-normal text-uppercase">Go to Shop</a>
+            </div>
+        </div>
+        <br>
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+            <div class="col" ng-repeat="product in productsNew">
+                <div class="card product-card">
+                    <!-- Nhãn giảm giá (hiển thị ở góc nếu có giảm giá) -->
+                    <div ng-if="product.variants[0].giamGia" class="discount-badge">
+                        Giảm {{ product.variants[0].giamGia.gia_tri }}%
+                    </div>
+                    <!-- Nhãn New (hiển thị ở góc nếu là sản phẩm mới) -->
+                    <div class="new-badge">
+                        Mới
+                    </div>
+                    <!-- Hình ảnh sản phẩm -->
+                    <img class="card-img-top" ng-src=" /images/{{ product.variants[0].anh }}" alt="{{ product.tenSanPham }}" style="width: 150px">
+
+                    <!-- Thông tin sản phẩm -->
+                    <div class="card-body">
+
+                        <!-- Tên sản phẩm -->
+                        <h5 class="card-title product-name">{{ product.ten }}</h5>
+
+                        <!-- Giá sản phẩm -->
+                        <div class="product-price">
+                            <span class="price">{{ product.variants[0].gia_ban | vndCurrency }}</span>
+                        </div>
+                    </div>
+                    <!-- Nút "Mua Ngay" -->
+                    <button class="buy-now-btn" ng-click="openModal(product)">MUA NGAY</button>
+                </div>
+
+            </div>
+        </div>
+        <br><br><br><br>
         <!-- Sản phẩm bán chạy -->
         <div class="display-header d-flex justify-content-between pb-3">
             <h2 class="display-7 text-dark text-uppercase">Sản phẩm bán chạy</h2>
@@ -10,34 +51,124 @@
             </div>
         </div>
         <br>
-        <div ng-controller="HomeController" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
             <div class="col" ng-repeat="product in products">
                 <div class="card product-card">
+                    <!-- Nhãn giảm giá (hiển thị ở góc nếu có giảm giá) -->
+                    <div ng-if="product.variants[0].giamGia" class="discount-badge">
+                        Giảm {{ product.variants[0].giamGia.gia_tri }}%
+                    </div>
                     <!-- Hình ảnh sản phẩm -->
-                    <img class="card-img-top" ng-src=" /images/{{ product.anh }}" alt="{{ product.tenSanPham }}" style="width: 150px">
+                    <img class="card-img-top" ng-src=" /images/{{ product.variants[0].anh }}" alt="{{ product.tenSanPham }}" style="width: 150px">
 
                     <!-- Thông tin sản phẩm -->
                     <div class="card-body">
 
                         <!-- Tên sản phẩm -->
-                        <h5 class="card-title product-name">{{ product.tenSanPham }}</h5>
+                        <h5 class="card-title product-name">{{ product.ten }}</h5>
 
-                        <!-- Đánh giá sao -->
+                        <!-- Đã bán -->
                         <div class="product-rating">
                             <span ng-repeat="star in [] | range:5" class="star">&#9733;</span>
-                            <span class="rating-text">({{ product.soLuongDaBan }} đã bán)</span>
+                            <span class="rating-text">({{ product.daBan }} đã bán)</span>
                         </div>
 
                         <!-- Giá sản phẩm -->
                         <div class="product-price">
-                            <span class="price">{{ product.giaBan | vndCurrency }}</span>
+                            <span class="price">{{ product.variants[0].gia_ban | vndCurrency }}</span>
+                        </div>
+                    </div>
+                    <!-- Nút "Mua Ngay" -->
+                    <button class="buy-now-btn" ng-click="openModal(product)">MUA NGAY</button>
+                </div>
+
+            </div>
+        </div>
+        <!-- Modal thông tin biến thể sản phẩm -->
+        <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Ảnh chính của sản phẩm -->
+                                <img ng-src="/images/{{ selectedProduct.variants[0].anh }}" alt="{{ selectedProduct.ten }}" style="width: 100%;"><br>
+
+                                <!-- Hiển thị tất cả ảnh biến thể bên dưới ảnh chính -->
+                                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                                    <div ng-repeat="variant in selectedProduct.variants">
+                                        <img ng-src="/images/{{ variant.anh }}" alt="Ảnh biến thể" style="width: 70px; height: 70px; cursor: pointer;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5 class="modal-title" id="productModalLabel">{{ selectedProduct.ten }}</h5>
+                                <p><strong>Mã sản phẩm:</strong> {{ selectedProduct.ma_san_pham }}</p>
+
+                                <!-- Giá sản phẩm -->
+                                <p class="text-danger"><strong>Giá:</strong>
+                                    <span ng-if="selectedVariant">
+                                    <span ng-if="selectedVariant.giamGia">
+                                        <!-- Hiển thị giá sau giảm -->
+                                        {{ (selectedVariant.gia_ban * (1 - selectedVariant.giamGia.gia_tri / 100)) | currency:"":0 }} đ
+                                    </span>
+                                    <span ng-if="!selectedVariant.giamGia">
+                                        <!-- Hiển thị giá gốc nếu không có giảm giá -->
+                                        {{ selectedVariant.gia_ban | currency:"":0 }} đ
+                                    </span>
+                                </span>
+                                    <span ng-if="!selectedVariant">Vui lòng chọn màu sắc và kích cỡ</span>
+                                </p>
+
+                                <!-- Màu sắc -->
+                                <p><strong>Màu sắc</strong></p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                    <div ng-repeat="variant in getUniqueColors()" ng-click="selectColor(variant.mauSac.ten)">
+                                        <button ng-class="{'selected': selectedColor === variant.mauSac.ten}"
+                                                style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
+                                            {{ variant.mauSac.ten }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Kích thước -->
+                                <p><strong>Kích thước</strong></p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                    <div ng-repeat="variant in selectedProduct.variants | filter: { mauSac: { ten: selectedColor } }"
+                                         ng-click="selectSize(variant.kichCo.ten, variant)">
+                                        <button ng-class="{'selected': selectedSize === variant.kichCo.ten}"
+                                                style="padding: 5px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">
+                                            {{ variant.kichCo.ten }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Số lượng tồn -->
+                                <p><strong>Số lượng tồn:</strong> {{ selectedVariant ? selectedVariant.so_luong : 'Vui lòng chọn màu sắc và kích cỡ' }}</p>
+
+                                <!-- Số lượng -->
+                                <p><strong>Số lượng</strong></p>
+                                <div class="quantity-control">
+                                    <button ng-click="decreaseQuantity()" ng-disabled="!selectedVariant">-</button>
+                                    <input type="number" ng-model="quantity" ng-disabled="!selectedVariant" style="width: 40px; text-align: center;" />
+                                    <button ng-click="increaseQuantity()" ng-disabled="!selectedVariant">+</button>
+                                </div>
+
+                                <!-- Nút Thêm vào giỏ hàng -->
+                                <br>
+                                <button class="btn btn-pink" ng-click="addToCart(selectedProduct)" ng-disabled="!selectedVariant">
+                                    THÊM VÀO GIỎ HÀNG
+                                </button>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="swiper-pagination position-absolute text-center"></div>
 </section>
 
 <!-- Tuyển dụng -->
@@ -88,6 +219,9 @@
         </div>
     </div>
 </section>
+
+
+
 
 
 

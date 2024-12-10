@@ -336,7 +336,7 @@ app.controller('DetailHoaDonController', function($scope, $http,$filter) {
         })
             .then(function(response) {
                 toastr.success('Xác nhận thành công!', 'Success');
-
+                $scope.moTa = "";
                 // Đóng modal sau khi xác nhận thành công
                 $('#confirmModal').modal('hide');
 

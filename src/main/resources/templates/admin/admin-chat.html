@@ -231,29 +231,52 @@
             <div class="page-inner">
                 <h5>Quản lý Chat</h5>
 
-                <!-- Danh sách người gửi tin nhắn (Chỉ hiển thị người gửi duy nhất) -->
-                <div id="admin-chat-list">
-                    <h3>Danh sách người gửi tin nhắn</h3>
-                    <ul>
-                        <li ng-repeat="sender in uniqueSenders" ng-click="selectSender(sender.id)">
-                            {{sender.senderType}} - {{sender.id}}
-                        </li>
-                    </ul>
-                </div>
+                    <div class="container-fluid chat-container">
+                        <div class="row h-100">
+                            <!-- Danh sách người gửi -->
+                            <div class="col-md-4 chat-list bg-light border-right">
+                                <h5 class="p-3 border-bottom">Danh sách người gửi</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item list-group-item-action"
+                                        ng-repeat="sender in uniqueSenders"
+                                        ng-class="{'active': selectedSenderId === sender.id}"
+                                        ng-click="selectSender(sender.id)">
+                                        {{ sender.senderType }} - {{ sender.id }}
+                                    </li>
+                                </ul>
+                            </div>
 
-                <!-- Hiển thị tin nhắn của người gửi đã chọn (bao gồm cả phản hồi) -->
-                <div id="admin-chat-box">
-                    <div ng-repeat="message in selectedMessages">
-                        <p><strong>{{message.senderType}}:</strong> {{message.content}} <span>{{message.timestamp}}</span></p>
+                            <!-- Nội dung chat -->
+                            <div class="col-md-8 d-flex flex-column">
+                                <!-- Tiêu đề người gửi -->
+                                <div class="p-3 border-bottom">
+                                    <h5 class="mb-0">{{ selectedSenderType }}</h5>
+                                </div>
+
+                                <!-- Tin nhắn -->
+                                <div class="chat-messages flex-grow-1 overflow-auto p-3">
+                                    <div ng-repeat="message in selectedMessages" class="mb-3">
+                                        <div class="d-flex" ng-class="{'justify-content-start': message.senderId !== 1, 'justify-content-end': message.senderId === 1}">
+                                            <div class="message p-2 rounded"
+                                                 ng-class="{'bg-primary text-white': message.senderId === 1, 'bg-light border': message.senderId !== 1}">
+                                                <strong>{{ message.senderType }}:</strong> {{ message.content }}
+                                                <div class="text-muted small">{{ message.timestamp | date:'short' }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Nhập tin nhắn -->
+                                <div class="chat-input border-top p-3">
+                                    <div class="input-group">
+                                        <textarea class="form-control" ng-model="responseContent" placeholder="Nhập tin nhắn..."></textarea>
+                                        <button class="btn btn-primary" ng-click="sendResponse()">Gửi</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-
-
-
-                <!-- Nhập tin nhắn để trả lời khách hàng -->
-                <textarea ng-model="responseContent"></textarea>
-                <button ng-click="sendResponse()">Trả lời</button>
 
 
             </div>

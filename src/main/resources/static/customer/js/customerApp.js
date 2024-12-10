@@ -41,6 +41,9 @@ app.config(function($routeProvider) {
         .when("/dia-chi", {
             templateUrl : "/customer/views/dia-chi.html",
             controller : "ThongTinController"
+        .when("/tra-cuu-don-hang", {
+            templateUrl : "/customer/views/tra-cuu-don-hang.html",
+            controller : "TraCuuController"
         })
         .otherwise({
             redirectTo: '/'

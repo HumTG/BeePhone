@@ -1,9 +1,7 @@
 package org.example.beephone;
 
-import org.example.beephone.service.EmailService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
 public class BeePhoneApplication {

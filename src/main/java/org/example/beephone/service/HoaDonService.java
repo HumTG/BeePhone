@@ -47,6 +47,9 @@ public class HoaDonService {
     @Autowired
     private HttpSession session;
 
+    @Autowired
+    private EmailService emailService;
+
 
     public List<hoa_don> getAll(){
         return hdRP.findAll();
@@ -338,7 +341,39 @@ public class HoaDonService {
         LocalDate localDate = LocalDate.now();
         Date sqlDate = Date.valueOf(localDate);
         hoaDon.setNgay_tao(sqlDate);
-        return hdRP.save(hoaDon);
+        // Lưu hóa đơn
+        hoa_don savedHoaDon = hdRP.save(hoaDon);
+
+        // Gửi email thông tin hóa đơn cho người dùng
+        sendOrderEmail(savedHoaDon);
+
+        return savedHoaDon;
+    }
+
+    // Hàm gửi email thông tin hóa đơn cho người dùng
+    private void sendOrderEmail(hoa_don hoaDon) {
+        String to = hoaDon.getEmail_nguoi_nhan(); // Địa chỉ email người nhận từ hóa đơn
+        String subject = "Hóa Đơn Mua Hàng - " + hoaDon.getMa_hoa_don(); // Tiêu đề email
+        StringBuilder text = new StringBuilder();
+
+        text.append("Chào " + hoaDon.getTen_nguoi_nhan() + ",\n\n");
+        text.append("Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi. Dưới đây là thông tin hóa đơn của bạn:\n\n");
+        text.append("Mã Hóa Đơn: " + hoaDon.getMa_hoa_don() + "\n");
+        text.append("Ngày Tạo: " + hoaDon.getNgay_tao() + "\n");
+        text.append("Địa Chỉ Nhận Hàng: " + hoaDon.getDia_chi_nguoi_nhan() + "\n");
+        text.append("Số Điện Thoại: " + hoaDon.getSdt_nguoi_nhan() + "\n");
+        text.append("Phương Thức Thanh Toán: " + (hoaDon.getPhuong_thuc_thanh_toan() == 0 ? "COD" : "Chuyển Khoản Ngân Hàng") + "\n");
+        text.append("Tổng Tiền: " + hoaDon.getThanh_tien() + " VND\n");
+
+        if (hoaDon.getKhuyenMai() != null) {
+            text.append("Giảm Giá: " + hoaDon.getTien_sau_giam_gia() + " VND\n");
+        }
+
+        text.append("\nXin cảm ơn bạn đã mua hàng tại cửa hàng của chúng tôi.\n");
+        text.append("Trân trọng,\nCửa Hàng BeePhone");
+
+        // Gửi email
+        emailService.sendEmail(to, subject, text.toString());
     }
 
 

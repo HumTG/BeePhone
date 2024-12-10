@@ -260,6 +260,17 @@ public class HoaDonRestController {
     }
 
 
+    // Tra cứu hóa đơn qua mã hóa đơn
+    @GetMapping("/tra-cuu")
+    public ResponseEntity<?> traCuuDonHang(@RequestParam String maHoaDon) {
+        hoa_don hoaDon = hoaDonRepository.findHoaDonByMaHoaDon(maHoaDon);
+        if (hoaDon != null) {
+            return ResponseEntity.ok(hoaDon);
+        }
+        return ResponseEntity.status(404).body("Không tìm thấy đơn hàng!");
+    }
+
+
 
 
 

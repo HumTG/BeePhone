@@ -1203,6 +1203,12 @@ figure.instagram-item img.insta-image {
   opacity: 1; /* Hiển thị nút */
 }
 
+.product-card:hover .buy-now-btn {
+  bottom: 0px; /* Di chuyển nút lên */
+  opacity: 1; /* Hiển thị nút */
+}
+
+
 /* Định dạng giá gốc gạch ngang */
 .original-price {
   text-decoration: line-through;
@@ -1467,6 +1473,99 @@ button {
 .voucher-item .btn-apply:hover {
   background-color: #0056b3;
 }
+
+/* chat */
+
+.chat-box {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+.text-right {
+  text-align: right;
+}
+
+/* Container hình ảnh */
+.image-container {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 60px;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Nhãn giảm giá */
+.discount-label {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background-color: #ff5a5f;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Đường viền và hover */
+.table-hover tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.text-muted {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.new-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #FF5733; /* Màu cam sáng */
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px; /* Tạo hình tròn mềm mại */
+  z-index: 10;
+  text-transform: uppercase; /* Chữ in hoa */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
+
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards; /* Hiệu ứng xuất hiện */
+}
+
+/* Hiệu ứng khi di chuột vào */
+.new-badge:hover {
+  transform: scale(1.1); /* Phóng to khi hover */
+  background-color: #ff6f4e; /* Màu khi hover */
+}
+
+/* Keyframes cho hiệu ứng fade-in */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px); /* Lướt từ trên xuống */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
 
 
 

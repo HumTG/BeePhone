@@ -48,7 +48,11 @@ public interface HoaDonChiTietRepository extends JpaRepository<hoa_don_chi_tiet,
     List<Object[]> findBestSellingProducts(Pageable pageable);
 
 
-
-
+    @Query("SELECT ctsp.sanPham.id AS sanPhamId, SUM(hdct.so_luong) AS daBan " +
+            "FROM hoa_don_chi_tiet hdct " +
+            "JOIN hdct.chi_tiet_san_pham ctsp " +
+            "GROUP BY ctsp.sanPham.id " +
+            "ORDER BY SUM(hdct.so_luong) DESC")
+    List<Object[]> findTopSellingProducts(Pageable pageable);
 
 }

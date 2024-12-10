@@ -1,19 +1,17 @@
 <br><br><br><br><br>
 
 <div class="container">
-    Hộ trợ khách hàng
-    <div ng-controller="ChatController">
-        <div>
-            <h3>Chat Room</h3>
-            <div id="chat-box">
-                <div ng-repeat="message in messages">
-                    <p><strong>{{message.senderType}}:</strong> {{message.content}} <span>{{message.timestamp}}</span></p>
-                </div>
+    <h3>Chat</h3>
+    <div class="chat-box border rounded p-3" style="height: 400px; overflow-y: scroll;">
+        <div ng-repeat="message in messages">
+            <div ng-class="{'text-right': message.senderId === savedUser.id}">
+                <strong>{{ message.senderType }}:</strong> {{ message.content }}
+                <span class="text-muted small d-block">{{ message.timestamp | date:'short' }}</span>
             </div>
-
-            <textarea ng-model="messageContent"></textarea>
-            <button ng-click="sendMessage()">Gửi</button>
         </div>
     </div>
-
+    <div class="input-group mt-3">
+        <input type="text" class="form-control" ng-model="messageContent" placeholder="Nhập tin nhắn...">
+        <button class="btn btn-primary" ng-click="sendMessage()">Gửi</button>
+    </div>
 </div>

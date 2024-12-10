@@ -52,6 +52,16 @@ public class NhanVienService  {
 
 
     public nhan_vien add(nhan_vien nhanVien){
+
+        // Kiểm tra email và số điện thoại
+        if (nhanVienRepository.existsByEmail(nhanVien.getEmail())) {
+            throw new IllegalArgumentException("Email đã tồn tại!");
+        }
+
+        if (nhanVienRepository.existsBySdt(nhanVien.getSdt())) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại!");
+        }
+
         chuc_vu chucVu = new chuc_vu(2,"CV002","Nhân viên bán hàng",1);
         // Tạo mã nhân viên ngẫu nhiên và mật khẩu ngẫu nhiên
         nhanVien.setMa_nhan_vien(generateMaKhachHang());

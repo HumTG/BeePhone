@@ -87,6 +87,13 @@ public class GiamGiaService {
     }
 
     public void updateGiamGia(giam_gia gg){
+        if (gg.getTrang_thai() == 0) { // Kiểm tra trạng thái là "hết hạn"
+            List<chi_tiet_san_pham> chiTietSanPhams = chiTietSanPhamRepository.findByGiamGiaId(gg.getId());
+            for (chi_tiet_san_pham ctsp : chiTietSanPhams) {
+                ctsp.setGiamGia(null);
+                chiTietSanPhamRepository.save(ctsp);
+            }
+        }
         giamGiaRepository.save(gg);
     }
 
