@@ -1,52 +1,50 @@
 var app = angular.module('customerApp', ['ngRoute']);
 
-app.config(function($routeProvider) {
+app.config(function ($routeProvider) {
     $routeProvider
         .when("/", {
-            templateUrl : "/customer/views/home.html",
-            controller : "HomeController"
+            templateUrl: "/customer/views/home.html",
+            controller: "HomeController"
         })
         .when("/san-pham", {
-            templateUrl : "/customer/views/san-pham.html",
-            controller : "SanPhamController"
+            templateUrl: "/customer/views/san-pham.html",
+            controller: "SanPhamController"
         })
         .when("/san-pham/detail/:idSP", {
-            templateUrl : "/customer/views/san-pham-detail.html",
-             controller : "SanPhamDetailController"
+            templateUrl: "/customer/views/san-pham-detail.html",
+            controller: "SanPhamDetailController"
         })
         .when("/cart", {
-            templateUrl : "/customer/views/cart.html",
-            controller : "SanPhamController"
+            templateUrl: "/customer/views/cart.html",
+            controller: "SanPhamController"
         })
         .when("/thanh-toan", {
-            templateUrl : "/customer/views/thanh-toan.html",
-            controller : "SanPhamController"
+            templateUrl: "/customer/views/thanh-toan.html",
+            controller: "SanPhamController"
         })
         .when("/don-hang", {
-            templateUrl : "/customer/views/don-hang.html",
-            controller : "DonHangController"
+            templateUrl: "/customer/views/don-hang.html",
+            controller: "DonHangController"
         })
         .when("/chat", {
-            templateUrl : "/customer/views/chat.html",
-            controller : "ChatController"
+            templateUrl: "/customer/views/chat.html",
+            controller: "ChatController"
         })
-<<<<<<< HEAD
-        .when("/tra-cuu-don-hang", {
-            templateUrl : "/customer/views/tra-cuu-don-hang.html",
-            controller : "TraCuuController"
-=======
         .when("/thong-tin", {
-            templateUrl : "/customer/views/thong-tin.html",
-            controller : "ThongTinController"
+            templateUrl: "/customer/views/thong-tin.html",
+            controller: "ThongTinController"
         })
         .when("/doi-mat-khau", {
-            templateUrl : "/customer/views/doi-mat-khau.html",
-            controller : "ThongTinController"
+            templateUrl: "/customer/views/doi-mat-khau.html",
+            controller: "ThongTinController"
         })
         .when("/dia-chi", {
-            templateUrl : "/customer/views/dia-chi.html",
-            controller : "ThongTinController"
->>>>>>> 1258e8400b181b00953ec112015d5977ace371ba
+            templateUrl: "/customer/views/dia-chi.html",
+            controller: "ThongTinController"
+        })
+        .when("/tra-cuu-don-hang", {
+            templateUrl: "/customer/views/tra-cuu-don-hang.html",
+            controller: "TraCuuController"
         })
         .otherwise({
             redirectTo: '/'
@@ -55,7 +53,7 @@ app.config(function($routeProvider) {
 });
 
 
-app.controller('HomeController', function($scope, $http, $window) {
+app.controller('HomeController', function ($scope, $http, $window) {
     // Kiểm tra trạng thái thông báo
     const loginSuccess = localStorage.getItem("loginSuccess");
     if (loginSuccess === "true") {
@@ -95,23 +93,18 @@ app.controller('HomeController', function($scope, $http, $window) {
         // Xóa trạng thái để không hiển thị lại khi tải lại trang
         localStorage.removeItem("loginSuccess");
         // Điều hướng về trang chủ hoặc trang đăng nhập
-        toastr.success('Đăng xuất thành công!','Success');
+        toastr.success('Đăng xuất thành công!', 'Success');
     };
 
     // Các sản phẩm bán chạy
 });
 
 
-
-
-
-
 // Tạo filter để định dạng giá tiền Việt Nam Đồng
-app.filter('currencyVND', function() {
-    return function(input) {
+app.filter('currencyVND', function () {
+    return function (input) {
         if (!input) return '';
         // Chuyển số thành chuỗi với định dạng 1.000.000
-        return parseFloat(input).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        return parseFloat(input).toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
     };
 });
-
