@@ -313,24 +313,20 @@ public class KhachHangService {
         return KhachHangDTO.fromEntity(existingCustomer);
     }
 
-    // đổi mật khẩu
     @Transactional
     public boolean doiMatKhau(DoiMatKhauDTO doiMatKhauDTO) {
-        // Validate đầu vào
-        if (doiMatKhauDTO.getMatKhauMoi() == null ||
-                !doiMatKhauDTO.getMatKhauMoi().equals(doiMatKhauDTO.getXacNhanMatKhauMoi())) {
-            throw new IllegalArgumentException("Mật khẩu mới không khớp");
-        }
-        // Tìm khách hàng
         Optional<khach_hang> khachHangOpt = khachHangRepository.findById(doiMatKhauDTO.getCustomerId());
         if (!khachHangOpt.isPresent()) {
             throw new ResourceNotFoundException("Không tìm thấy khách hàng");
         }
+
         khach_hang khachHang = khachHangOpt.get();
+
         // Kiểm tra mật khẩu hiện tại
         if (!khachHang.getMat_khau().equals(doiMatKhauDTO.getMatKhauHienTai())) {
             throw new IllegalArgumentException("Mật khẩu hiện tại không đúng");
         }
+
         // Cập nhật mật khẩu
         khachHang.setMat_khau(doiMatKhauDTO.getMatKhauMoi());
         khachHangRepository.save(khachHang);

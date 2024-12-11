@@ -25,23 +25,15 @@ public class DiaChiDTO {
         dto.setId(entity.getId());
         dto.setDiaChiChiTiet(entity.getDia_chi_chi_tiet());
         dto.setTrangThai(entity.getTrang_thai());
+
         // Tính toán version dựa trên dữ liệu hiện tại
         String rawData = entity.getDia_chi_chi_tiet() + "|" + entity.getTrang_thai();
         dto.setVersion(rawData.hashCode()); // Hash làm version
+
+        // Đặt state mặc định nếu cần
+        dto.setState("unchange"); // Mặc định state là "unchange" khi lấy từ database
+
         return dto;
     }
-
-//    public DiaChiDTO toDTO(dia_chi_khach_hang entity) {
-//        DiaChiDTO dto = new DiaChiDTO();
-//        dto.setId(entity.getId());
-//        dto.setDiaChiChiTiet(entity.getDia_chi_chi_tiet());
-//        dto.setTrangThai(entity.getTrang_thai());
-//
-//        // Tạo version (dựa trên giá trị hash của các cột dữ liệu)
-//        String rawData = entity.getDia_chi_chi_tiet() + "|" + entity.getTrang_thai();
-//        dto.setVersion(rawData.hashCode());
-//
-//        return dto;
-//    }
 
 }
