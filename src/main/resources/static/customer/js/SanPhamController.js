@@ -49,6 +49,76 @@ app.controller('SanPhamController', function($scope, $http,$window) {
     $scope.getMauSacList();
     $scope.getKichCoList();
 
+    $scope.filters = {
+        color: '',
+        size: '',
+        minPrice: '',
+        maxPrice: ''
+    };
+
+    // Hàm áp dụng bộ lọc
+    $scope.applyFilters = function() {
+        const params = {
+            page: 0, // Luôn bắt đầu từ trang đầu tiên khi lọc
+            size: 12, // Số sản phẩm trên mỗi trang
+            color: $scope.filters.color,
+            size: $scope.filters.size,
+            minPrice: $scope.removeCurrencyFormat($scope.filters.minPrice), // Loại bỏ định dạng tiền tệ
+            maxPrice: $scope.removeCurrencyFormat($scope.filters.maxPrice)  // Loại bỏ định dạng tiền tệ
+        };
+
+        // Gọi API với các tham số lọc
+        $http.get('http://localhost:8080/rest/san-pham/filler', { params: params })
+            .then(function(response) {
+                $scope.sp = response.data.content; // Dữ liệu sản phẩm
+                $scope.totalPages = response.data.totalPages; // Tổng số trang
+            })
+            .catch(function(error) {
+                console.error('Error applying filters:', error);
+            });
+    };
+    // Hàm định dạng số thành tiền tệ
+    $scope.formatCurrency = function (field) {
+        const value = $scope.filters[field];
+        if (!value) {
+            $scope.filters[field] = '';
+            return;
+        }
+
+        // Loại bỏ các ký tự không phải số
+        const numericValue = value.toString().replace(/[^\d]/g, '');
+
+        // Định dạng số thành tiền tệ
+        const formattedValue = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0
+        }).format(numericValue);
+
+        // Cập nhật lại giá trị hiển thị trong ô input
+        $scope.filters[field] = formattedValue;
+    };
+
+    $scope.removeCurrencyFormat = function(value) {
+        if (!value) return null; // Trả về null nếu không có giá trị
+        return Number(value.toString().replace(/[^\d]/g, ''));
+    };
+
+    $scope.resetFilters = function() {
+        // Đặt lại các giá trị lọc về mặc định
+        $scope.filters = {
+            color: '',
+            size: '',
+            minPrice: '',
+            maxPrice: ''
+        };
+
+        // Gọi hàm để lấy dữ liệu trang đầu tiên
+        $scope.getData($scope.currentPage);
+
+    };
+
+
 
 
     // Gọi hàm để lấy dữ liệu trang đầu tiên

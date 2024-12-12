@@ -9,11 +9,14 @@ import org.example.beephone.repository.SanPhamRepository;
 import org.example.beephone.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class SanPhamController {
@@ -32,6 +35,22 @@ public class SanPhamController {
         Page<san_pham> sanPhams = service.getSanPhamWithPagination(page, size);
         return ResponseEntity.ok(sanPhams);
     }
+
+    @GetMapping("/rest/san-pham/filler")
+    public ResponseEntity<Page<san_pham>> filterSanPham(
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> size,
+            @RequestParam Optional<Integer> color,
+            @RequestParam Optional<Integer> sizeId,
+            @RequestParam Optional<Double> minPrice,
+            @RequestParam Optional<Double> maxPrice) {
+
+        Pageable pageable = PageRequest.of(page.orElse(0), size.orElse(12));
+        Page<san_pham> sanPhams = service.filterSanPham(color, sizeId, minPrice, maxPrice, pageable);
+
+        return ResponseEntity.ok(sanPhams);
+    }
+
 
 
     @GetMapping("/rest/san-pham/list")

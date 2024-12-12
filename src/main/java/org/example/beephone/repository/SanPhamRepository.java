@@ -45,8 +45,14 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
     List<san_pham> findLatestProducts(Pageable pageable);
 
 
-
-
-
-
+    @Query("SELECT sp FROM san_pham sp JOIN sp.variants v WHERE " +
+            "(:color IS NULL OR v.mauSac.id = :color) AND " +
+            "(:sizeId IS NULL OR v.kichCo.id = :sizeId) AND " +
+            "(:minPrice IS NULL OR v.gia_ban >= :minPrice) AND " +
+            "(:maxPrice IS NULL OR v.gia_ban <= :maxPrice)")
+    Page<san_pham> findSanPhamWithFilters(@Param("color") Integer color,
+                                         @Param("sizeId") Integer sizeId,
+                                         @Param("minPrice") Double minPrice,
+                                         @Param("maxPrice") Double maxPrice,
+                                         Pageable pageable);
 }

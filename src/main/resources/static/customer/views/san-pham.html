@@ -13,33 +13,59 @@
         </div>
     </div>
     <div class="row">
-        <!-- Lọc sản phẩm -->
-        <div class="col-3">
-            <div class="col-md-3">
-                <!-- Lọc theo Màu sắc -->
-                <div class="form-group">
-                    <label for="colorFilter">Màu sắc</label>
-                    <select id="colorFilter"  class="form-control">
-                        <option value="">Tất cả</option>
-                        <option ng-repeat="color in colors" value="{{color.id}}">{{color.ten}}</option>
-                    </select>
-                </div>
+        <div class="col-3 p-3 border rounded bg-light shadow-sm p-2" style="height: 500px">
+            <h5 class="text-center mb-3">Bộ lọc sản phẩm</h5>
 
-                <!-- Lọc theo Kích thước -->
-                <div class="form-group">
-                    <label for="sizeFilter">Kích thước</label>
-                    <select id="sizeFilter" class="form-control">
-                        <option value="">Tất cả</option>
-                        <option ng-repeat="size in sizes" value="{{size.id}}">{{size.ten}}</option>
-                    </select>
-                </div>
-
-                <!-- Nút Lọc --><br>
-                <button  class="btn btn-primary">Lọc</button>
+            <!-- Lọc theo Màu sắc -->
+            <div class="form-group mb-3">
+                <label for="colorFilter" class="form-label">Màu sắc</label>
+                <select id="colorFilter" class="form-control" ng-model="filters.color">
+                    <option value="">Tất cả</option>
+                    <option ng-repeat="color in colors" value="{{color.id}}">{{color.ten}}</option>
+                </select>
             </div>
 
+            <!-- Lọc theo Kích thước -->
+            <div class="form-group mb-3">
+                <label for="sizeFilter" class="form-label">Kích thước</label>
+                <select id="sizeFilter" class="form-control" ng-model="filters.size">
+                    <option value="">Tất cả</option>
+                    <option ng-repeat="size in sizes" value="{{size.id}}">{{size.ten}}</option>
+                </select>
+            </div>
 
+            <!-- Lọc theo khoảng giá -->
+            <div class="form-group mb-3">
+                <label for="priceFilter" class="form-label">Khoảng giá</label>
+                <div class="d-flex gap-2">
+                    <input type="text"
+                           id="minPrice"
+                           class="form-control"
+                           ng-model="filters.minPrice"
+                           placeholder="Tối thiểu"
+                           ng-change="formatCurrency('minPrice')" />
+
+                    <input type="text"
+                           id="maxPrice"
+                           class="form-control"
+                           ng-model="filters.maxPrice"
+                           placeholder="Tối đa"
+                           ng-change="formatCurrency('maxPrice')" />
+                </div>
+            </div>
+
+            <!-- Nút Lọc -->
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" ng-click="applyFilters()">
+                    <i class="bi bi-filter"></i> Lọc
+                </button>
+                <button class="btn btn-warning" ng-click="resetFilters()">
+                    <i class="bi bi-arrow-clockwise"></i> Làm mới
+                </button>
+            </div>
         </div>
+
+
 
         <!-- Trưng bày sản phẩm -->
         <div class="col-9">

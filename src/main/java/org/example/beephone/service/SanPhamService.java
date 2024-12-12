@@ -54,6 +54,13 @@ public class SanPhamService {
         return sanPhamRepository.findAll(pageRequest);
     }
 
+    public Page<san_pham> filterSanPham(Optional<Integer> color, Optional<Integer> sizeId,
+                                       Optional<Double> minPrice, Optional<Double> maxPrice, Pageable pageable) {
+        return sanPhamRepository.findSanPhamWithFilters(color.orElse(null), sizeId.orElse(null),
+                minPrice.orElse(0.0), maxPrice.orElse(Double.MAX_VALUE), pageable);
+    }
+
+
 
     public Page<SanPhamDTO> getSanPhamWithSoLuongTon(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
