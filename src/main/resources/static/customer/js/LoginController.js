@@ -26,5 +26,40 @@ app.controller("LoginController", function ($scope, $http, $window ) {
             });
     };
 
+    /* đăng ký */
+
+    $scope.userData = {};
+    $scope.errorMessage = '';
+
+    // Hàm đăng ký người dùng
+    $scope.registerUser = function () {
+        console.log("Payload being sent:", $scope.userData);
+
+        $http.post('/api/auth/register-info', $scope.userData, {
+            transformResponse: function (data) {
+                try {
+                    return JSON.parse(data);
+                } catch (e) {
+                    return { message: data };
+                }
+            }
+        })
+            .then(function (response) {
+                console.log("Registration success:", response);
+                $scope.successMessage = response.data.message || "Thông tin cá nhân đã lưu.";
+
+                // Gửi OTP
+                return $http.post('/api/auth/send-otp', { email: $scope.userData.email });
+            })
+            .then(function (response) {
+                console.log("OTP sent successfully:", response);
+                $window.location.href = '/login/verificationOTP';
+            })
+            .catch(function (error) {
+                console.error("Error during registration or OTP:", error);
+                $scope.errorMessage = error.data.message || error.data || "Đã xảy ra lỗi.";
+            });
+    };
+
 });
 

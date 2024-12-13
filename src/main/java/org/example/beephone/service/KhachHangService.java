@@ -3,6 +3,8 @@ package org.example.beephone.service;
 
 import org.example.beephone.dto.DoiMatKhauDTO;
 import org.example.beephone.dto.KhachHangDTO;
+import org.example.beephone.dto.register.OtpDTO;
+import org.example.beephone.dto.register.PasswordDTO;
 import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 import org.example.beephone.repository.DiaChiRepository;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,6 +36,9 @@ public class KhachHangService {
 
     @Autowired
     private DiaChiService diaChiService;
+
+    @Autowired
+    private EmailService emailService;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int MA_KH_LENGTH = 8; // Độ dài mã khách hàng

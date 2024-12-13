@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhachHangRepository extends JpaRepository<khach_hang, Integer> {
@@ -31,4 +32,5 @@ public interface KhachHangRepository extends JpaRepository<khach_hang, Integer> 
 
     // Kiểm tra email có tồn tại
     boolean existsByEmail(String email);
+    Optional<khach_hang> findByEmail(String email);
 }

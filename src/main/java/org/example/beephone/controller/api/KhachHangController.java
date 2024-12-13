@@ -4,6 +4,8 @@ import org.example.beephone.dto.DiaChiDTO;
 import org.example.beephone.dto.DoiMatKhauDTO;
 import org.example.beephone.dto.KhachHangDTO;
 import org.example.beephone.dto.LoginRequest;
+import org.example.beephone.dto.register.OtpDTO;
+import org.example.beephone.dto.register.PasswordDTO;
 import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 import org.example.beephone.repository.KhachHangRepository;
@@ -274,4 +276,4 @@ public class KhachHangController {
         }
     }
 
- }
+}

@@ -26,4 +26,19 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
+    // Phương thức gửi OTP
+    public void sendOtp(String to, String otpCode) {
+        String subject = "Mã OTP xác thực của bạn";
+        String text = String.format("""
+                Xin chào,
+
+                Mã OTP của bạn là: %s
+                Mã có hiệu lực trong 5 phút.
+
+                Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!
+                """, otpCode);
+
+        sendEmail(to, subject, text);
+    }
 }

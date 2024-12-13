@@ -14,19 +14,23 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 </head>
 
-<body>
+<body ng-app="loginApp">
 
     <div class="container" id="container">
-        <div class="form-container sign-up">
-            <form>
+        <div class="form-container sign-up" ng-controller="LoginController">
+            <form ng-submit="registerUser()">
                 <h1>Tạo tài khoản</h1>
-                <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <button>Đăng ký</button>
+                <input type="text" placeholder="Tên đăng nhập" ng-model="userData.taiKhoan" required>
+                <input type="text" placeholder="Họ và tên" ng-model="userData.hoTen" required>
+                <input type="text" placeholder="Số điện thoại" ng-model="userData.sdt" required>
+                <input type="email" placeholder="Email" ng-model="userData.email" required>
+                <button type="submit">Đăng ký</button>
+                <p style="color: red;" ng-if="errorMessage">{{ errorMessage }}</p>
             </form>
         </div>
-        <div class="form-container sign-in" ng-app="loginApp" ng-controller="LoginController">
+
+        <!--        form đăng nhập      -->
+        <div class="form-container sign-in"  ng-controller="LoginController">
             <form ng-submit="handleLogin()">
                 <h1>Đăng nhập</h1>
                 <div class="social-icons">
@@ -44,6 +48,7 @@
             </form>
         </div>
 
+        <!--        Thông báo      -->
         <div class="toggle-container">
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
@@ -65,6 +70,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- ANGULAR JS -->
     <script th:src="@{/customer/js/LoginController.js}"></script>
+<!--    <script th:src="@{/customer/js/RegisterController.js}"></script>-->
 </body>
 
 </html>
