@@ -6,6 +6,7 @@ import org.example.beephone.repository.KhachHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -22,6 +23,8 @@ public class RegisterController {
     private OtpVerificationService otpService;
     @Autowired
     private KhachHangRepository khachHangRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Hàm tạo mã khách hàng tự động
     private String generateMaKhachHang() {
@@ -60,15 +63,17 @@ public class RegisterController {
     // Gửi OTP (B2)
     @PostMapping("/send-otp")
     public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> request) {
-        String email = request.get("email"); // Lấy email từ body JSON
+        String email = request.get("email");
         if (email == null || email.isEmpty()) {
-            return ResponseEntity.badRequest().body("Email không được để trống.");
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email không được để trống."));
         }
         try {
             String otpToken = otpService.generateOtpToken(email);
-            return ResponseEntity.ok(Collections.singletonMap("otpToken", otpToken));
+            Map<String, String> response = new HashMap<>();
+            response.put("otpToken", otpToken); // Trả về đúng key
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi gửi OTP.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Lỗi khi gửi OTP."));
         }
     }
 
@@ -79,14 +84,18 @@ public class RegisterController {
         String otpCode = request.get("otpCode");
 
         if (token == null || otpCode == null) {
-            return ResponseEntity.badRequest().body("Token hoặc OTP không được để trống.");
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Token hoặc OTP không được để trống."));
         }
 
         boolean isValid = otpService.validateOtpToken(token, otpCode);
         if (isValid) {
-            return ResponseEntity.ok("Xác minh OTP thành công.");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Xác minh OTP thành công.");
+            return ResponseEntity.ok(response);  // Trả về JSON hợp lệ
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sai mã OTP.");
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Sai mã OTP hoặc token không hợp lệ.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error); // Trả về JSON lỗi
         }
     }
 
@@ -98,35 +107,39 @@ public class RegisterController {
         String confirmPassword = request.get("confirmPassword");
 
         if (token == null || password == null || confirmPassword == null) {
-            return ResponseEntity.badRequest().body("Thông tin không đầy đủ.");
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Thông tin không đầy đủ."));
         }
 
         if (!password.equals(confirmPassword)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mật khẩu không khớp.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("message", "Mật khẩu không khớp."));
         }
 
         try {
+            // Giải mã token và lấy email
             String decodedToken = new String(Base64.getDecoder().decode(token));
-            String[] parts = decodedToken.split(":");
-            String email = parts[0];
+            String email = decodedToken.split(":")[0];
 
+            // Lấy thông tin từ bộ nhớ tạm
             Optional<KhachHangDTO> userInfo = otpService.getUserInfo(email);
             if (userInfo.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thông tin người dùng không tồn tại.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("message", "Thông tin người dùng không tồn tại."));
             }
 
-            Optional<khach_hang> existingUser = khachHangRepository.findByEmail(email);
-            if (existingUser.isPresent()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email đã được sử dụng.");
-            }
+            // Tạo đối tượng KhachHangEntity và lưu vào DB
+            khach_hang khachHang = new khach_hang();
+            khachHang.setEmail(userInfo.get().getEmail());
+            khachHang.setSdt(userInfo.get().getSdt());
+            khachHang.setTai_khoan(userInfo.get().getTaiKhoan());
+            khachHang.setHo_ten(userInfo.get().getHoTen());
+            khachHang.setMat_khau(passwordEncoder.encode(password)); // Mã hóa mật khẩu
+            khachHang.setMa_khach_hang(userInfo.get().getMaKhachHang());
+            khachHang.setTrang_thai(1);
 
-            khach_hang newUser = userInfo.get().toEntity();
-            newUser.setMat_khau(password); // Cập nhật mật khẩu sau khi xác minh OTP
-            khachHangRepository.save(newUser);
+            khachHangRepository.save(khachHang);
 
-            return ResponseEntity.ok("Tạo tài khoản thành công.");
+            return ResponseEntity.ok(Collections.singletonMap("message", "Tạo tài khoản thành công."));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi tạo tài khoản.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Lỗi xử lý máy chủ: " + e.getMessage()));
         }
     }
 }
