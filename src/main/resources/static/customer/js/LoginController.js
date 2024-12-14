@@ -46,7 +46,8 @@ app.controller("LoginController", function ($scope, $http, $window, $timeout) {
     $scope.userData = {};
 
     $scope.isValidName = function (name) {
-        const nameRegex = /^[a-zA-Z\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+$/;
+        // Regex kiểm tra không chứa số
+        const nameRegex = /^[^\d]+$/;
         return nameRegex.test(name);
     };
 
