@@ -11,4 +11,14 @@ public class LoginController {
         return "login/index";
     }
 
+    @GetMapping("/login/verificationOTP")
+    public String registrationOTP() {
+        return "login/verificationOTP";
+    }
+
+    @GetMapping("/login/password")
+    public String password() {
+        return "login/password";
+    }
+
 }

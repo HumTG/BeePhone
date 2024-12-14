@@ -3,7 +3,7 @@
 <div class="container my-5">
     <form name="addressForm" novalidate>
         <!-- Tiêu đề -->
-        <h2 class="mb-4 text-center text-primary">Địa chỉ</h2>
+        <h2 class="mb-4 text-center text-primary">Quản lý Địa chỉ</h2>
 
         <!-- Nhập địa chỉ mới -->
         <div class="card mb-4 shadow-sm">
@@ -16,108 +16,67 @@
                            name="newAddress"
                            ng-model="newAddress"
                            ng-required="true"
-                           ng-pattern="/^[a-zA-Z0-9À-ỹ\s,.-]+$/"
                            placeholder="Nhập địa chỉ mới">
                     <label for="newAddress">Nhập địa chỉ mới</label>
                 </div>
-                <div class="text-danger mt-1" ng-show="addressForm.newAddress.$touched && addressForm.newAddress.$invalid">
-                    <small ng-show="addressForm.newAddress.$error.pattern">Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy, dấu chấm và dấu gạch ngang.</small>
+                <div class="text-danger mt-1"
+                     ng-show="addressForm.newAddress.$touched && addressForm.newAddress.$invalid">
+                    <small>Vui lòng nhập địa chỉ hợp lệ.</small>
                 </div>
                 <button type="button" class="btn btn-primary mt-2" ng-click="addAddress()">
                     <i class="fas fa-plus-circle me-1"></i> Thêm
                 </button>
-                <small class="text-muted d-block mt-2">Hãy nhập đầy đủ thông tin địa chỉ để thêm mới.</small>
             </div>
         </div>
 
-        <!-- Danh sách địa chỉ -->
-        <div class="list-group">
-            <!-- Nút cập nhật -->
-            <div class="text-end mt-4">
-                <button type="button" class="btn btn-success" ng-click="updateAddresses()">
-                    <i class="fas fa-sync-alt me-1"></i> Cập nhật
-                </button>
-            </div>
-            <!-- Hiển thị danh sách địa chỉ -->
-            <div class="list-group-item d-flex justify-content-between align-items-center"
-                 ng-repeat="diaChi in khachHang.diaChiChiTiet">
-                <div>
-                    <p class="mb-0 fw-bold text-secondary">
-                        <i class="fas fa-home me-2"></i>{{ diaChi.dia_chi_chi_tiet }}
-                    </p>
-                    <!-- Hiển thị badge mặc định -->
-                    <span class="badge bg-primary mt-1" ng-if="diaChi.trang_thai === 1">Mặc định</span>
-                </div>
-                <div class="d-flex align-items-center">
-                    <!-- Chọn mặc định -->
-                    <div class="form-check me-3">
-                        <input type="radio" class="form-check-input" name="defaultAddress"
-                               ng-checked="diaChi.trang_thai === 1"
-                               ng-click="setDefaultAddress($index)">
-                        <label class="form-check-label text-muted">Mặc định</label>
-                    </div>
-                    <!-- Xóa địa chỉ -->
-                    <button type="button" class="btn btn-outline-danger btn-sm" ng-click="removeAddress($index)">
-                        <i class="fas fa-trash-alt"></i> Xóa
-                    </button>
-                </div>
-            </div>
-
-            <!-- Không có địa chỉ -->
-            <div class="text-center text-muted mt-3" ng-if="!khachHang.diaChiChiTiet.length">
-                <i class="fas fa-info-circle me-2"></i>Không có địa chỉ nào được lưu trong hệ thống.
-            </div>
-        </div>
+        <!-- Bảng hiển thị danh sách địa chỉ -->
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Địa chỉ</th>
+                <th>Mặc định</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="address in addressList">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ address.diaChiChiTiet }}</td>
+                <td>
+                    <input type="radio" name="defaultAddress"
+                           ng-checked="address.trangThai === 1"
+                           ng-click="setDefaultAddress(address.id)">
+                </td>
+                <td>
+                    <button class="btn btn-warning btn-sm" ng-click="editAddress(address)">Sửa</button>
+                    <button class="btn btn-danger btn-sm" ng-click="removeAddress(address.id)">Xóa</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </form>
 </div>
 
-<style>
-    .container {
-        max-width: 800px;
-    }
-
-    .card {
-        border-radius: 10px;
-    }
-
-    .list-group-item {
-        border-radius: 10px;
-        border: 1px solid #ddd;
-        padding: 15px;
-        margin-bottom: 10px;
-    }
-
-    .list-group-item.border-primary {
-        border-color: #0d6efd !important;
-        background-color: #f8f9fa;
-    }
-
-    .list-group-item .form-check-label {
-        font-weight: 500;
-    }
-
-    .btn {
-        border-radius: 5px;
-    }
-
-    .btn-outline-danger {
-        border-color: #dc3545;
-    }
-
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: #fff;
-    }
-
-    .card-title i {
-        color: #0d6efd;
-    }
-
-    .badge {
-        font-size: 0.85rem;
-    }
-
-    .form-floating .form-control {
-        border-radius: 5px;
-    }
-</style>
+<!-- Modal sửa địa chỉ -->
+<div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAddressModalLabel">Chỉnh sửa địa chỉ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="editAddressInput" class="form-label">Địa chỉ</label>
+                    <input type="text" id="editAddressInput" class="form-control"
+                           ng-model="editingAddress.diaChiChiTiet">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" ng-click="updateAddress()">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+</div>

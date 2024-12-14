@@ -8,6 +8,7 @@ import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,10 @@ public class KhachHangDTO {
     private Integer trangThai;
     private List<DiaChiDTO> diaChiChiTiet; // Thay vì List<String>
     private DiaChiDTO diaChiMacDinh;
+
+    // Các trường cho OTP
+    private String otpCode;
+    private LocalDateTime otpExpiry;
 
     // Chuyển đổi từ Entity KhachHang sang KhachHangDTO
     public static KhachHangDTO fromEntity(khach_hang khachHang) {

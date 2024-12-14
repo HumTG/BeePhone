@@ -3,6 +3,8 @@ package org.example.beephone.service;
 
 import org.example.beephone.dto.DoiMatKhauDTO;
 import org.example.beephone.dto.KhachHangDTO;
+import org.example.beephone.dto.register.OtpDTO;
+import org.example.beephone.dto.register.PasswordDTO;
 import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 import org.example.beephone.repository.DiaChiRepository;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,6 +36,9 @@ public class KhachHangService {
 
     @Autowired
     private DiaChiService diaChiService;
+
+    @Autowired
+    private EmailService emailService;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int MA_KH_LENGTH = 8; // Độ dài mã khách hàng
@@ -313,24 +319,20 @@ public class KhachHangService {
         return KhachHangDTO.fromEntity(existingCustomer);
     }
 
-    // đổi mật khẩu
     @Transactional
     public boolean doiMatKhau(DoiMatKhauDTO doiMatKhauDTO) {
-        // Validate đầu vào
-        if (doiMatKhauDTO.getMatKhauMoi() == null ||
-                !doiMatKhauDTO.getMatKhauMoi().equals(doiMatKhauDTO.getXacNhanMatKhauMoi())) {
-            throw new IllegalArgumentException("Mật khẩu mới không khớp");
-        }
-        // Tìm khách hàng
         Optional<khach_hang> khachHangOpt = khachHangRepository.findById(doiMatKhauDTO.getCustomerId());
         if (!khachHangOpt.isPresent()) {
             throw new ResourceNotFoundException("Không tìm thấy khách hàng");
         }
+
         khach_hang khachHang = khachHangOpt.get();
+
         // Kiểm tra mật khẩu hiện tại
         if (!khachHang.getMat_khau().equals(doiMatKhauDTO.getMatKhauHienTai())) {
             throw new IllegalArgumentException("Mật khẩu hiện tại không đúng");
         }
+
         // Cập nhật mật khẩu
         khachHang.setMat_khau(doiMatKhauDTO.getMatKhauMoi());
         khachHangRepository.save(khachHang);

@@ -4,6 +4,8 @@ import org.example.beephone.dto.DiaChiDTO;
 import org.example.beephone.dto.DoiMatKhauDTO;
 import org.example.beephone.dto.KhachHangDTO;
 import org.example.beephone.dto.LoginRequest;
+import org.example.beephone.dto.register.OtpDTO;
+import org.example.beephone.dto.register.PasswordDTO;
 import org.example.beephone.entity.dia_chi_khach_hang;
 import org.example.beephone.entity.khach_hang;
 import org.example.beephone.repository.KhachHangRepository;
@@ -253,30 +255,25 @@ public class KhachHangController {
 
     // Đổi mật khẩu
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody DoiMatKhauDTO doiMatKhauDTO) {
+    public ResponseEntity<Map<String, String>> changePassword(@RequestBody DoiMatKhauDTO doiMatKhauDTO) {
+        Map<String, String> response = new HashMap<>();
         try {
             boolean result = service.doiMatKhau(doiMatKhauDTO);
-            return ResponseEntity.ok("Đổi mật khẩu thành công");
+
+            if (result) {
+                response.put("message", "Đổi mật khẩu thành công!");
+                return ResponseEntity.ok(response); // HTTP 200 OK
+            } else {
+                response.put("message", "Không thể đổi mật khẩu.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // HTTP 400
+            }
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            response.put("message", "Mật khẩu hiện tại không đúng");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // HTTP 400
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi khi đổi mật khẩu: " + e.getMessage());
+            response.put("message", "Lỗi khi đổi mật khẩu: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // HTTP 500
         }
     }
 
-    // Lấy danh sách địa chỉ của một khách hàng theo ID
-    @GetMapping("/{id}/addresses")
-    public ResponseEntity<List<dia_chi_khach_hang>> getAddressesByCustomerId(@PathVariable Integer id) {
-        List<dia_chi_khach_hang> addresses = diaChiService.findAddressesByCustomerId(id);
-
-        if (addresses.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null); // Không có địa chỉ nào
-        }
-
-        return ResponseEntity.ok(addresses); // Trả về danh sách địa chỉ
-    }
- }
+}

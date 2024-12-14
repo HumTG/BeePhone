@@ -17,6 +17,10 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
     $scope.errorMessage = '';
     $scope.successMessage = '';
     $scope.isLoading = false;
+    $scope.newAddress = "";
+    $scope.addressList = [];
+    $scope.editingAddress = {};
+
 
     /* Thông tin */
 
@@ -67,21 +71,49 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
         $scope.errorMessage = '';
         $scope.successMessage = '';
     };
+
+    // Danh sách các trường mật khẩu
+    $scope.passwordFields = [
+        {
+            id: "currentPassword",
+            name: "currentPassword",
+            model: "matKhauHienTai",
+            label: "Mật khẩu hiện tại",
+            placeholder: "Nhập mật khẩu hiện tại",
+            required: true,
+            errorRequired: "Mật khẩu hiện tại không được để trống.",
+            show: false
+        },
+        {
+            id: "newPassword",
+            name: "newPassword",
+            model: "matKhauMoi",
+            label: "Mật khẩu mới",
+            placeholder: "Nhập mật khẩu mới",
+            required: true,
+            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+            errorRequired: "Mật khẩu mới không được để trống.",
+            errorPattern: "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.",
+            show: false
+        },
+        {
+            id: "confirmPassword",
+            name: "confirmPassword",
+            model: "xacNhanMatKhauMoi",
+            label: "Xác nhận mật khẩu mới",
+            placeholder: "Xác nhận mật khẩu mới",
+            required: true,
+            errorRequired: "Xác nhận mật khẩu không được để trống.",
+            errorPattern: "Mật khẩu xác nhận không khớp.",
+            show: false
+        }
+    ];
+
     // Toggle hiển thị/ẩn mật khẩu
     $scope.togglePasswordVisibility = function (field) {
-        switch (field) {
-            case 'current':
-                $scope.showCurrentPassword = !$scope.showCurrentPassword;
-                break;
-            case 'new':
-                $scope.showNewPassword = !$scope.showNewPassword;
-                break;
-            case 'confirm':
-                $scope.showConfirmPassword = !$scope.showConfirmPassword;
-                break;
-        }
+        field.show = !field.show;
     };
-    console.log(savedUser);
+
     // Validate mật khẩu
     $scope.validatePassword = function () {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -96,51 +128,50 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
         }
         return '';
     };
+
     // Đổi mật khẩu
     $scope.changePassword = function () {
-        // Reset thông báo và trạng thái xử lý
         $scope.errorMessage = '';
         $scope.successMessage = '';
         $scope.isLoading = true;
 
-        // Dữ liệu gửi đến API
         const changePasswordData = {
-            customerId: savedUser.id, // ID khách hàng
-            matKhauHienTai: $scope.passwordForm.matKhauHienTai, // Mật khẩu hiện tại
-            matKhauMoi: $scope.passwordForm.matKhauMoi, // Mật khẩu mới
-            xacNhanMatKhauMoi: $scope.passwordForm.xacNhanMatKhauMoi // Xác nhận mật khẩu mới
+            customerId: savedUser.id,
+            matKhauHienTai: $scope.passwordForm.matKhauHienTai,
+            matKhauMoi: $scope.passwordForm.matKhauMoi,
+            xacNhanMatKhauMoi: $scope.passwordForm.xacNhanMatKhauMoi
         };
 
-        // Gửi yêu cầu đổi mật khẩu đến API
+        // Gửi yêu cầu đổi mật khẩu
         $http.post(`${API_BASE_URL}/khach-hang/change-password`, changePasswordData)
             .then(function (response) {
-                // Nếu API trả về thành công
-                if (response.status === 200) {
-                    $scope.successMessage = 'Đổi mật khẩu thành công!';
+                // Ghi log thành công
+                console.log("HTTP Success Status:", response.status);
+                console.log("Response Data:", response.data);
 
-                    // Reset form nhập mật khẩu
+                if (response.status === 200 && response.data.message) {
+                    $scope.successMessage = response.data.message;
                     $scope.passwordForm = {
                         matKhauHienTai: '',
                         matKhauMoi: '',
                         xacNhanMatKhauMoi: ''
                     };
-
-                    // Tự động ẩn thông báo thành công sau 3 giây
-                    setTimeout(function () {
-                        $scope.$apply(function () {
-                            $scope.successMessage = '';
-                            $scope.isLoading = false;
-                        });
-                    }, 3000);
                 } else {
-                    // Trường hợp API trả về lỗi
-                    $scope.errorMessage = 'Đổi mật khẩu thất bại.';
-                    $scope.isLoading = false;
+                    $scope.errorMessage = "Đổi mật khẩu không thành công.";
                 }
+                $scope.isLoading = false;
             })
             .catch(function (error) {
-                // Xử lý lỗi từ API (nếu có)
-                $scope.successMessage = error.data?.message || 'Đổi mật khẩu thành công.';
+                // Ghi log lỗi
+                console.error("HTTP Error Status:", error?.status || "Không xác định");
+                console.error("Error Data:", error?.data || "Không có dữ liệu lỗi");
+
+                // Xử lý lỗi
+                if (error?.status === 400 && error?.data?.message?.includes("Mật khẩu hiện tại không đúng")) {
+                    $scope.errorMessage = "Mật khẩu hiện tại sai. Vui lòng thử lại.";
+                } else {
+                    $scope.errorMessage = error?.data?.message || "Đổi mật khẩu không thành công. Vui lòng thử lại sau.";
+                }
                 $scope.isLoading = false;
             });
     };
@@ -198,118 +229,109 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
 
     /* địa chỉ */
 
-    // Tải danh sách địa chỉ từ API
-    const addressData = $scope.khachHang.diaChiChiTiet.map(address => ({
-        id: address.id,
-        diaChiChiTiet: address.diaChiChiTiet,
-        trangThai: address.trangThai,
-        state: address.state,
-        version: address.version, // Gửi version hiện tại từ backend
-    }));
+    // Lấy danh sách địa chỉ
+    $scope.getAddresses = function () {
+        $http.get("/rest/dia-chi/all").then(function (response) {
+            $scope.addressList = response.data;
+        }, function (error) {
+            console.error("Lỗi khi tải danh sách địa chỉ:", error);
+        });
+    };
 
-    // Tải danh sách địa chỉ
-    $scope.loadAddress = function () {
-        $http.get(`${API_BASE_URL}/khach-hang/${savedUser.id}/addresses`)
+    // Hàm tải danh sách địa chỉ
+    $scope.loadAddresses = function (customerId) {
+        $http.get(`/rest/dia-chi/${customerId}/all`)
             .then(function (response) {
-                $scope.khachHang.diaChiChiTiet = response.data.map(address => ({
-                    ...address,
-                    state: "unchange", // Gắn trạng thái mặc định
-                }));
-                localStorage.setItem("user", JSON.stringify($scope.khachHang));
+                $scope.addressList = response.data; // Gán danh sách địa chỉ vào bảng
             })
             .catch(function (error) {
-                alert("Lỗi khi tải địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
+                console.error("Lỗi khi tải danh sách địa chỉ:", error);
             });
     };
 
-    // Gọi loadAddress để tải địa chỉ khi trang được tải
-    $scope.loadAddress();
+    // Tải dữ liệu khi trang được tải
+    const customerId = savedUser.id;
+    $scope.loadAddresses(customerId);
 
     // Thêm địa chỉ mới
     $scope.addAddress = function () {
-        if (!$scope.newAddress) {
-            alert("Vui lòng nhập địa chỉ!");
+        if (!$scope.newAddress.trim()) {
+            alert("Vui lòng nhập địa chỉ chi tiết.");
             return;
         }
 
-        $scope.khachHang.diaChiChiTiet.push({
-            id: null, // Địa chỉ mới chưa có ID
+        const newAddress = {
             diaChiChiTiet: $scope.newAddress,
-            trangThai: 0, // Không mặc định
-            state: "new", // Trạng thái là "new"
-            version: null // Không có phiên bản cho địa chỉ mới
-        });
+            trangThai: 0, // Mặc định trạng thái là 0
+            state: "new"
+        };
 
-        localStorage.setItem("user", JSON.stringify($scope.khachHang));
-        $scope.newAddress = ""; // Reset input
-    };
-
-    // Sửa địa chỉ
-    $scope.editAddress = function (index, newDetail) {
-        const address = $scope.khachHang.diaChiChiTiet[index];
-        address.diaChiChiTiet = newDetail;
-        if (address.state !== "new") {
-            address.state = "edited"; // Chỉ thay đổi nếu không phải địa chỉ mới
-        }
-        localStorage.setItem("user", JSON.stringify($scope.khachHang));
-    };
-
-    // Xóa địa chỉ
-    $scope.removeAddress = function (index) {
-        const address = $scope.khachHang.diaChiChiTiet[index];
-
-        if (address.state === "new") {
-            // Xóa ngay lập tức nếu là địa chỉ mới
-            $scope.khachHang.diaChiChiTiet.splice(index, 1);
-        } else {
-            // Đánh dấu là "deleted"
-            address.state = "deleted";
-        }
-
-        localStorage.setItem("user", JSON.stringify($scope.khachHang));
-    };
-
-    // Gửi thay đổi lên server
-    $scope.updateAddresses = function () {
-        const changes = $scope.khachHang.diaChiChiTiet.filter(address => address.state !== "unchange");
-
-        if (changes.length === 0) {
-            alert("Không có thay đổi nào để cập nhật.");
-            return;
-        }
-
-        $http.post(`${API_BASE_URL}/dia-chi/${savedUser.id}/sync-addresses`, changes)
+        $http.post(`${API_BASE_URL}/dia-chi/${customerId}/add`, newAddress)
             .then(function (response) {
-                const results = response.data;
-
-                results.forEach(result => {
-                    if (result.state === "success") {
-                        // Xóa trạng thái thay đổi cho các bản ghi thành công
-                        const address = $scope.khachHang.diaChiChiTiet.find(addr => addr.id === result.id || addr.state === "new");
-                        if (address) {
-                            address.state = "unchange";
-                            if (result.id) address.id = result.id; // Cập nhật ID cho địa chỉ mới
-                        }
-                    } else if (result.state === "conflict") {
-                        alert(`Xung đột địa chỉ ID ${result.id}: ${result.message}`);
-                        console.log("Dữ liệu mới nhất từ server:", result.updatedData);
-                    } else if (result.state === "error") {
-                        alert(`Lỗi đồng bộ địa chỉ ID ${result.id}: ${result.message}`);
-                    }
-                });
-
-                // Tải lại dữ liệu từ server
-                $scope.loadAddress();
+                console.log("Thêm địa chỉ thành công:", response.data);
+                alert("Địa chỉ đã được thêm thành công!");
+                $scope.newAddress = ""; // Reset input địa chỉ
+                $scope.loadAddresses(); // Tải lại danh sách địa chỉ
+                $window.location.reload();
             })
             .catch(function (error) {
-                alert("Lỗi khi đồng bộ địa chỉ: " + (error.data?.message || 'Đã xảy ra lỗi'));
+                console.error("Lỗi khi thêm địa chỉ:", error);
+                alert("Đã xảy ra lỗi khi thêm địa chỉ: " + (error.data?.message || "Không rõ nguyên nhân"));
             });
     };
 
-    // Cảnh báo khi rời trang nếu có thay đổi chưa lưu
-    window.onbeforeunload = function () {
-        if ($scope.khachHang.diaChiChiTiet.some(address => address.state !== "unchange")) {
-            return "Bạn có thay đổi chưa lưu. Thoát sẽ mất dữ liệu.";
+    // Xóa địa chỉ
+    $scope.removeAddress = function (addressId) {
+        const confirmDelete = confirm("Bạn có chắc muốn xóa địa chỉ này không?");
+        if (confirmDelete) {
+            $http.post(`/rest/dia-chi/${customerId}/sync-addresses`, [{ id: addressId, state: "deleted" }])
+                .then(function () {
+                    $scope.loadAddresses(customerId); // Tải lại danh sách
+                })
+                .catch(function (error) {
+                    console.error("Lỗi khi xóa địa chỉ:", error);
+                });
         }
     };
+
+    // Đặt địa chỉ mặc định
+    $scope.setDefaultAddress = function (addressId) {
+        $http.post(`/rest/dia-chi/${customerId}/sync-addresses`, [{ id: addressId, state: "edited", trangThai: 1 }])
+            .then(function () {
+                $scope.loadAddresses(customerId); // Tải lại danh sách địa chỉ
+            })
+            .catch(function (error) {
+                console.error("Lỗi khi đặt địa chỉ mặc định:", error);
+            });
+    };
+
+    // Hiển thị modal sửa địa chỉ
+    $scope.editAddress = function (address) {
+        $scope.editingAddress = angular.copy(address);
+        new bootstrap.Modal(document.getElementById("editAddressModal")).show();
+    };
+
+    // Cập nhật địa chỉ
+    $scope.updateAddress = function () {
+        const updatedAddress = {
+            ...$scope.editingAddress,
+            state: "edited"
+        };
+
+        $http.post(`/rest/dia-chi/${customerId}/sync-addresses`, [updatedAddress])
+            .then(function () {
+                $scope.loadAddresses(customerId); // Tải lại danh sách
+                document.getElementById("editAddressModal").querySelector(".btn-close").click();
+            })
+            .catch(function (error) {
+                console.error("Lỗi khi cập nhật địa chỉ:", error);
+            });
+    };
+
+    // // Cảnh báo khi rời trang nếu có thay đổi chưa lưu
+    // window.onbeforeunload = function () {
+    //     if ($scope.khachHang.diaChiChiTiet.some(address => address.state !== "unchange")) {
+    //         return "Bạn có thay đổi chưa lưu. Thoát sẽ mất dữ liệu.";
+    //     }
+    // };
 });

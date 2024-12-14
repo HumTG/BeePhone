@@ -1,119 +1,60 @@
 <br><br><br><br><br>
-
 <div class="row justify-content-center py-5">
     <div class="col-md-8 col-lg-6">
         <div class="card shadow-sm">
             <div class="card-body p-4">
                 <!-- Header -->
                 <div class="d-flex flex-column align-items-center mb-4">
-                    <!-- Avatar Circle -->
-                    <div class="avatar-circle mb-3 bg-primary text-white">
-                        <i class="fas fa-key fa-2x"></i>
-                    </div>
+
                     <h4 class="card-title mb-0">Đổi Mật Khẩu</h4>
                 </div>
+
                 <!-- Change Password Form -->
                 <form name="passwordForm" novalidate ng-submit="changePassword()">
-                    <!-- Mật khẩu hiện tại -->
-                    <div class="mb-4">
-                        <div class="form-floating">
-                            <input type="{{showCurrentPassword ? 'text' : 'password'}}"
-                                   class="form-control"
-                                   id="currentPassword"
-                                   name="currentPassword"
-                                   ng-model="passwordForm.matKhauHienTai"
-                                   placeholder="Nhập mật khẩu hiện tại"
-                                   required>
-                            <label for="currentPassword">Mật khẩu hiện tại</label>
-                            <div class="text-danger mt-1"
-                                 ng-show="passwordForm.currentPassword.$touched && passwordForm.currentPassword.$error.required">
-                                Mật khẩu hiện tại không được để trống.
-                            </div>
-                        </div>
-                        <button type="button"
-                                class="btn btn-outline-secondary mt-2"
-                                ng-click="togglePasswordVisibility('current')">
-                            <i class="fas" ng-class="{'fa-eye': !showCurrentPassword, 'fa-eye-slash': showCurrentPassword}"></i>
-                            Hiển thị mật khẩu
-                        </button>
-                    </div>
 
-                    <!-- Mật khẩu mới -->
-                    <div class="mb-4">
-                        <div class="form-floating">
-                            <input type="{{showNewPassword ? 'text' : 'password'}}"
+                    <!-- Ô nhập mật khẩu -->
+                    <div ng-repeat="field in passwordFields" class="mb-4">
+                        <div class="form-floating position-relative">
+                            <input type="{{field.show ? 'text' : 'password'}}"
                                    class="form-control"
-                                   id="newPassword"
-                                   name="newPassword"
-                                   ng-model="passwordForm.matKhauMoi"
-                                   placeholder="Nhập mật khẩu mới"
-                                   ng-pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/"
-                                   required>
-                            <label for="newPassword">Mật khẩu mới</label>
-                            <div class="text-danger mt-1" ng-show="passwordForm.newPassword.$touched">
-                                <small ng-show="passwordForm.newPassword.$error.required">Mật khẩu mới không được để trống.</small>
-                                <small ng-show="passwordForm.newPassword.$error.pattern">
-                                    Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.
-                                </small>
-                            </div>
-                        </div>
-                        <button type="button"
-                                class="btn btn-outline-secondary mt-2"
-                                ng-click="togglePasswordVisibility('new')">
-                            <i class="fas" ng-class="{'fa-eye': !showNewPassword, 'fa-eye-slash': showNewPassword}"></i>
-                            Hiển thị mật khẩu
-                        </button>
-                    </div>
+                                   id="{{field.id}}"
+                                   name="{{field.name}}"
+                                   ng-model="passwordForm[field.model]"
+                                   placeholder="{{field.placeholder}}"
+                                   ng-pattern="field.pattern"
+                                   ng-required="field.required">
 
-                    <!-- Xác nhận mật khẩu mới -->
-                    <div class="mb-4">
-                        <div class="form-floating">
-                            <input type="{{showConfirmPassword ? 'text' : 'password'}}"
-                                   class="form-control"
-                                   id="confirmPassword"
-                                   name="confirmPassword"
-                                   ng-model="passwordForm.xacNhanMatKhauMoi"
-                                   placeholder="Xác nhận mật khẩu mới"
-                                   required>
-                            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
-                            <div class="text-danger mt-1" ng-show="passwordForm.confirmPassword.$touched">
-                                <small ng-show="passwordForm.confirmPassword.$error.required">
-                                    Xác nhận mật khẩu không được để trống.
-                                </small>
-                                <small ng-show="passwordForm.xacNhanMatKhauMoi !== passwordForm.matKhauMoi">
-                                    Mật khẩu xác nhận không khớp.
-                                </small>
+                            <label for="{{field.id}}">{{field.label}}</label>
+
+                            <!-- Hiển thị lỗi -->
+                            <div class="text-danger mt-1" ng-show="passwordForm[field.name].$touched">
+                                <small ng-show="passwordForm[field.name].$error.required">{{field.errorRequired}}</small>
+                                <small ng-show="passwordForm[field.name].$error.pattern">{{field.errorPattern}}</small>
                             </div>
+
+                            <!-- Icon Mắt -->
+                            <button type="button" class="btn-eye" ng-click="togglePasswordVisibility(field)">
+                                <i class="bi bi-eye" ng-class="{'fa-eye': !field.show, 'fa-eye-slash': field.show}"></i>
+                            </button>
                         </div>
-                        <button type="button"
-                                class="btn btn-outline-secondary mt-2"
-                                ng-click="togglePasswordVisibility('confirm')">
-                            <i class="fas" ng-class="{'fa-eye': !showConfirmPassword, 'fa-eye-slash': showConfirmPassword}"></i>
-                            Hiển thị mật khẩu
-                        </button>
                     </div>
 
                     <!-- Nút Gửi -->
                     <div class="d-grid mt-4">
-                        <button type="submit"
-                                class="btn btn-outline-primary btn-lg">
+                        <button type="submit" class="btn btn-outline-primary btn-lg" ng-disabled="isLoading">
                             <i class="fas fa-key me-2"></i>
                             {{isLoading ? 'Đang xử lý...' : 'Đổi mật khẩu'}}
                         </button>
                     </div>
                 </form>
 
-                <!-- Thông báo thành công -->
-                <div class="alert alert-success mt-4"
-                     role="alert"
-                     ng-if="successMessage">
+                <!-- Thông báo Thành Công -->
+                <div class="alert alert-success mt-4" role="alert" ng-if="successMessage">
                     <i class="fas fa-check-circle me-2"></i> {{successMessage}}
                 </div>
 
-                <!-- Thông báo lỗi -->
-                <div class="alert alert-danger mt-4"
-                     role="alert"
-                     ng-if="errorMessage">
+                <!-- Thông báo Lỗi -->
+                <div class="alert alert-danger mt-4" role="alert" ng-if="errorMessage">
                     <i class="fas fa-exclamation-circle me-2"></i> {{errorMessage}}
                 </div>
             </div>
@@ -121,6 +62,7 @@
     </div>
 </div>
 
+<!-- CSS Cải Tiến -->
 <style>
     .avatar-circle {
         width: 80px;
@@ -135,10 +77,23 @@
 
     .form-floating .form-control {
         border-radius: 5px;
+        padding-right: 3rem;
     }
 
-    .btn-outline-secondary {
-        margin-top: 10px;
+    .btn-eye {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .btn-eye:hover {
+        color: #495057;
     }
 
     .card {
@@ -151,6 +106,10 @@
 
     .alert {
         border-radius: 5px;
+    }
+
+    .text-danger small {
+        font-size: 0.875rem;
     }
 </style>
 
