@@ -362,7 +362,7 @@ public class HoaDonService {
         text.append("Ngày Tạo: " + hoaDon.getNgay_tao() + "\n");
         text.append("Địa Chỉ Nhận Hàng: " + hoaDon.getDia_chi_nguoi_nhan() + "\n");
         text.append("Số Điện Thoại: " + hoaDon.getSdt_nguoi_nhan() + "\n");
-        text.append("Phương Thức Thanh Toán: " + (hoaDon.getPhuong_thuc_thanh_toan() == 0 ? "COD" : "Chuyển Khoản Ngân Hàng") + "\n");
+        text.append("Phương Thức Thanh Toán: " + (hoaDon.getPhuong_thuc_thanh_toan() == 2 ? "Thanh toán khi nhận hàng " : "Chuyển Khoản Ngân Hàng") + "\n");
         text.append("Tổng Tiền: " + hoaDon.getThanh_tien() + " VND\n");
 
         if (hoaDon.getKhuyenMai() != null) {

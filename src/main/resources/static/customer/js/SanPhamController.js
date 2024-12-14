@@ -412,13 +412,14 @@ app.controller('SanPhamController', function($scope, $http,$window) {
             // Kiểm tra phương thức thanh toán
             if (!$scope.paymentMethod) {
                 toastr.error('Vui lòng chọn phương thức thanh toán!');
+                console.log($scope.paymentMethod)
                 return;
             }
 
             let hoaDon = {
                 tien_sau_giam_gia : $scope.calculateCartTotal() - $scope.discountValue ,
                 thanh_tien : $scope.calculateCartTotal(),
-                phuong_thuc_thanh_toan: $scope.paymentMethod, // 1: COD, 2: Bank Transfer
+                phuong_thuc_thanh_toan: $scope.paymentMethod, // 1: COD, 0: Bank Transfer
                 loai_hoa_don: 2,
                 dia_chi_nguoi_nhan : $scope.getFullAddress(),
                 ten_nguoi_nhan : $scope.name ,
