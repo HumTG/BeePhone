@@ -35,7 +35,7 @@ public interface NhanVienRepository extends JpaRepository<nhan_vien,Integer> {
     Page<nhan_vien> getNhanVienDESCID(Pageable pageable);
 
     // Sử dụng SQL native để tìm nhân viên theo email
-    @Query(value = "SELECT * FROM nhan_vien WHERE email = :email", nativeQuery = true)
+    @Query(value = "SELECT * FROM nhan_vien WHERE email = :email and trang_thai = 1", nativeQuery = true)
     Optional<nhan_vien> findByEmail(@Param("email") String email);
 
     boolean existsByEmail(String email);

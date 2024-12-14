@@ -4,7 +4,9 @@ import org.example.beephone.entity.san_pham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
+public interface SanPhamRepository extends JpaRepository<san_pham,Integer> , JpaSpecificationExecutor<san_pham> {
 
 
 
@@ -41,7 +43,7 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
 
     // Sản phẩm mới nhất
     // Truy vấn lấy 5 sản phẩm mới nhất dựa vào ngày nhập của chi tiết sản phẩm
-    @Query("SELECT sp FROM san_pham sp WHERE sp.id IN (SELECT csp.sanPham.id FROM chi_tiet_san_pham csp ORDER BY csp.ngay_nhap DESC LIMIT 5)")
+    @Query("SELECT sp FROM san_pham sp WHERE sp.id IN (SELECT csp.sanPham.id FROM chi_tiet_san_pham csp ORDER BY csp.ngay_nhap DESC LIMIT 5) and sp.trang_thai = 1")
     List<san_pham> findLatestProducts(Pageable pageable);
 
 
@@ -49,10 +51,11 @@ public interface SanPhamRepository extends JpaRepository<san_pham,Integer> {
             "(:color IS NULL OR v.mauSac.id = :color) AND " +
             "(:sizeId IS NULL OR v.kichCo.id = :sizeId) AND " +
             "(:minPrice IS NULL OR v.gia_ban >= :minPrice) AND " +
-            "(:maxPrice IS NULL OR v.gia_ban <= :maxPrice)")
+            "(:maxPrice IS NULL OR v.gia_ban <= :maxPrice) AND sp.trang_thai = 1")
     Page<san_pham> findSanPhamWithFilters(@Param("color") Integer color,
                                          @Param("sizeId") Integer sizeId,
                                          @Param("minPrice") Double minPrice,
                                          @Param("maxPrice") Double maxPrice,
                                          Pageable pageable);
+
 }

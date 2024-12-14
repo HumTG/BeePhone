@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -51,7 +52,11 @@ public class SanPhamService {
     public Page<san_pham> getSanPhamWithPagination(int page, int size) {
         // Lấy dữ liệu phân trang mà không áp dụng bộ lọc
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        return sanPhamRepository.findAll(pageRequest);
+
+        Specification<san_pham> specification = (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("trang_thai"), 1);
+
+        return sanPhamRepository.findAll(specification, pageRequest);
     }
 
     public Page<san_pham> filterSanPham(Optional<Integer> color, Optional<Integer> sizeId,
