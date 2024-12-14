@@ -9,50 +9,148 @@ app.controller("LoginController", function ($scope, $http, $window ) {
 
     $scope.errorMessage = "";
 
+    $scope.isLoginFormValid = function () {
+        return $scope.isValidEmail($scope.loginData.email) && $scope.loginData.matKhau;
+    };
+
     $scope.handleLogin = function () {
+        // Reset thông báo lỗi
+        $scope.errorMessage = '';
+
+        // Kiểm tra email và mật khẩu
+        if (!$scope.loginData.email || !$scope.isValidEmail($scope.loginData.email)) {
+            $scope.errorMessage = "Email không hợp lệ. Phải có định dạng hợp lệ và kết thúc bằng @gmail.com.";
+            return;
+        }
+
+        if (!$scope.loginData.matKhau) {
+            $scope.errorMessage = "Mật khẩu không được để trống.";
+            return;
+        }
+
+        // Gửi form đăng nhập nếu hợp lệ
         $http.post("http://localhost:8080/rest/khach-hang/login", $scope.loginData)
             .then(function (response) {
-                // Lưu thông tin người dùng vào localStorage
+                console.log("Đăng nhập thành công:", response.data);
                 localStorage.setItem("user", JSON.stringify(response.data));
-
-                // Lưu trạng thái thông báo
-                localStorage.setItem("loginSuccess", "true");
-
-                // Chuyển hướng sang trang index
                 $window.location.href = "http://localhost:8080/index";
             })
             .catch(function (error) {
-                toastr.error('Mật khẩu hoặc email không đúng', 'Lỗi đăng nhập'); // Sử dụng toastr để hiển thị lỗi
+                console.error("Lỗi khi đăng nhập:", error);
+                $scope.errorMessage = "Mật khẩu hoặc email không đúng.";
             });
     };
 
     /* đăng ký */
 
     $scope.userData = {};
-    $scope.errorMessage = '';
 
-    // Hàm đăng ký người dùng trong LoginController
+    $scope.isValidName = function (name) {
+        const nameRegex = /^[a-zA-Z\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+$/;
+        return nameRegex.test(name);
+    };
+
+    $scope.isValidPhone = function (phone) {
+        const phoneRegex = /^0\d{9,10}$/;
+        return phoneRegex.test(phone);
+    };
+
+    $scope.isValidEmail = function (email) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    };
+
+
+    // Hàm đăng ký người
     $scope.registerUser = function () {
-        console.log("Payload being sent:", $scope.userData);
+        // Reset thông báo lỗi
+        $scope.errorMessage = '';
+        $scope.successMessage = '';
+        $scope.isEmailTaken = false;
+        $scope.isPhoneTaken = false;
 
-        $http.post('/api/auth/register-info', $scope.userData)
-            .then(function (response) {
-                console.log("Registration success:", response);
-                $scope.successMessage = response.data.message || "Thông tin cá nhân đã lưu.";
+        // Kiểm tra thông tin người dùng
+        if (!$scope.userData.hoTen || !$scope.userData.hoTen.trim()) {
+            $scope.errorMessage = "Họ và tên không được để trống hoặc chứa toàn khoảng trắng.";
+            return;
+        }
 
-                // Gửi OTP
-                return $http.post('/api/auth/send-otp', { email: $scope.userData.email });
-            })
+        if (!$scope.isValidName($scope.userData.hoTen)) {
+            $scope.errorMessage = "Họ và tên không hợp lệ. Không được chứa ký tự đặc biệt hoặc số.";
+            return;
+        }
+
+        if (!$scope.userData.sdt || !$scope.userData.sdt.trim()) {
+            $scope.errorMessage = "Số điện thoại không được để trống hoặc chứa toàn khoảng trắng.";
+            return;
+        }
+
+        if (!$scope.isValidPhone($scope.userData.sdt)) {
+            $scope.errorMessage = "Số điện thoại không hợp lệ. Phải bắt đầu bằng số 0 và có 10-11 số.";
+            return;
+        }
+
+        if (!$scope.userData.email || !$scope.userData.email.trim()) {
+            $scope.errorMessage = "Email không được để trống hoặc chứa toàn khoảng trắng.";
+            return;
+        }
+
+        if (!$scope.isValidEmail($scope.userData.email)) {
+            $scope.errorMessage = "Email không hợp lệ. Phải có đuôi @gmail.com và không chứa ký tự đặc biệt.";
+            return;
+        }
+
+        // Gửi yêu cầu kiểm tra trùng email và số điện thoại
+        const checkData = {
+            email: $scope.userData.email.trim(),
+            sdt: $scope.userData.sdt.trim()
+        };
+
+        $http.post('/api/auth/check-duplicate', checkData)
             .then(function (response) {
-                console.log("OTP sent successfully:", response.data);
-                const otpToken = response.data.otpToken;  // Lấy token từ phản hồi
-                sessionStorage.setItem('otpToken', otpToken); // Lưu token vào sessionStorage
-                console.log("Token saved to sessionStorage:", otpToken);
-                $window.location.href = '/login/verificationOTP';
+                $scope.isEmailTaken = response.data.emailTaken;
+                $scope.isPhoneTaken = response.data.phoneTaken;
+
+                if ($scope.isEmailTaken) {
+                    $scope.errorMessage = "Email này đã được đăng ký.";
+                    return;
+                }
+                if ($scope.isPhoneTaken) {
+                    $scope.errorMessage = "Số điện thoại này đã được đăng ký.";
+                    return;
+                }
+
+                // Nếu không có lỗi, gửi dữ liệu đăng ký
+                const payload = {
+                    taiKhoan: $scope.userData.taiKhoan.trim(),
+                    hoTen: $scope.userData.hoTen.trim(),
+                    email: $scope.userData.email.trim(),
+                    sdt: $scope.userData.sdt.trim()
+                };
+
+                $http.post('/api/auth/register-info', $scope.userData)
+                    .then(function (response) {
+                        console.log("Registration success:", response);
+                        $scope.successMessage = response.data.message || "Thông tin cá nhân đã lưu.";
+
+                        // Gửi OTP
+                        return $http.post('/api/auth/send-otp', { email: $scope.userData.email });
+                    })
+                    .then(function (response) {
+                        console.log("OTP sent successfully:", response.data);
+                        const otpToken = response.data.otpToken;  // Lấy token từ phản hồi
+                        sessionStorage.setItem('otpToken', otpToken); // Lưu token vào sessionStorage
+                        console.log("Token saved to sessionStorage:", otpToken);
+                        $window.location.href = '/login/verificationOTP';
+                    })
+                    .catch(function (error) {
+                        console.error("Error during registration or OTP:", error);
+                        $scope.errorMessage = error.data.message || "Đã xảy ra lỗi.";
+                    });
             })
             .catch(function (error) {
-                console.error("Error during registration or OTP:", error);
-                $scope.errorMessage = error.data.message || "Đã xảy ra lỗi.";
+                console.error("Lỗi khi kiểm tra trùng email/số điện thoại:", error);
+                $scope.errorMessage = "Không thể kiểm tra trùng email/số điện thoại.";
             });
     };
 
@@ -135,19 +233,56 @@ app.controller("LoginController", function ($scope, $http, $window ) {
 
     /* Cài đặt mật khẩu */
 
+    // Mật khẩu mạnh
+    $scope.passwordStrength = function (password) {
+        if (!password) return 'weak'; // Mật khẩu trống
+
+        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/; // Mạnh: ít nhất 8 ký tự, chữ hoa, chữ thường và số
+        const mediumRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/; // Trung bình: ít nhất 6 ký tự, có chữ và số
+
+        if (strongRegex.test(password)) return 'strong';
+        if (mediumRegex.test(password)) return 'medium';
+        return 'weak'; // Còn lại là yếu
+    };
+
     // Hàm cài đặt mật khẩu
     $scope.setupPassword = function () {
+        $scope.errorMessage = '';
+        $scope.successMessage = '';
+
         const password = $scope.passwordFields[0].value;
         const confirmPassword = $scope.passwordFields[1].value;
 
-        // Kiểm tra mật khẩu khớp
-        if (password !== confirmPassword) {
-            $scope.errorMessage = "Mật khẩu không khớp.";
-            $scope.successMessage = "";
+        // Kiểm tra trống
+        if (!password || !password.trim()) {
+            $scope.errorMessage = "Mật khẩu không được để trống.";
             return;
         }
 
-        // Gửi dữ liệu đến backend
+        if (!confirmPassword || !confirmPassword.trim()) {
+            $scope.errorMessage = "Vui lòng nhập xác nhận mật khẩu.";
+            return;
+        }
+
+        // Kiểm tra ký tự đặc biệt
+        const specialCharRegex = /[^a-zA-Z0-9]/;
+        if (specialCharRegex.test(password)) {
+            $scope.errorMessage = "Mật khẩu không được chứa ký tự đặc biệt.";
+            return;
+        }
+
+        if (specialCharRegex.test(confirmPassword)) {
+            $scope.errorMessage = "Xác nhận mật khẩu không được chứa ký tự đặc biệt.";
+            return;
+        }
+
+        // Kiểm tra độ khớp mật khẩu
+        if (password !== confirmPassword) {
+            $scope.errorMessage = "Mật khẩu và xác nhận mật khẩu không khớp.";
+            return;
+        }
+
+        // Gửi dữ liệu nếu hợp lệ
         const requestData = {
             token: sessionStorage.getItem("otpToken"), // Lấy token từ sessionStorage
             password: password,
@@ -156,15 +291,12 @@ app.controller("LoginController", function ($scope, $http, $window ) {
 
         $http.post("/api/auth/setup-password", requestData)
             .then(function (response) {
-                console.log("Response:", response.data);
-                $scope.successMessage = response.data.message || "Cài đặt mật khẩu thành công!";
-                $scope.errorMessage = "";
+                console.log("Đổi mật khẩu thành công:", response.data);
+                $scope.successMessage = response.data.message || "Mật khẩu đã được cài đặt thành công!";
             })
             .catch(function (error) {
-                // Xử lý lỗi với kiểm tra an toàn
-                console.error("Error:", error);
-                $scope.errorMessage = error.data?.message || "Lỗi khi cài đặt mật khẩu.";
-                $scope.successMessage = "";
+                console.error("Lỗi khi đổi mật khẩu:", error);
+                $scope.errorMessage = error.data?.message || "Lỗi hệ thống.";
             });
     };
 

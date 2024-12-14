@@ -18,14 +18,19 @@
 
     <div class="container" id="container">
         <div class="form-container sign-up" ng-controller="LoginController">
-            <form ng-submit="registerUser()">
+            <form ng-submit="registerUser()" name="registerForm" novalidate>
                 <h1>Tạo tài khoản</h1>
                 <input type="text" placeholder="Tên đăng nhập" ng-model="userData.taiKhoan" required>
+
                 <input type="text" placeholder="Họ và tên" ng-model="userData.hoTen" required>
                 <input type="text" placeholder="Số điện thoại" ng-model="userData.sdt" required>
                 <input type="email" placeholder="Email" ng-model="userData.email" required>
+
                 <button type="submit">Đăng ký</button>
+
+                <!-- Hiển thị thông báo lỗi -->
                 <p style="color: red;" ng-if="errorMessage">{{ errorMessage }}</p>
+                <p style="color: green;" ng-if="successMessage">{{ successMessage }}</p>
             </form>
         </div>
 

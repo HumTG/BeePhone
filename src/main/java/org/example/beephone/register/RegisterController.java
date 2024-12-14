@@ -142,4 +142,20 @@ public class RegisterController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Lỗi xử lý máy chủ: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/check-duplicate")
+    public ResponseEntity<?> checkDuplicate(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String sdt = request.get("sdt");
+
+        boolean emailTaken = khachHangRepository.existsByEmail(email);
+        boolean phoneTaken = khachHangRepository.existsBySdt(sdt);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("emailTaken", emailTaken);
+        response.put("phoneTaken", phoneTaken);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
