@@ -1,7 +1,7 @@
 // Khởi tạo AngularJS module
 const app = angular.module("loginApp", []);
 
-app.controller("LoginController", function ($scope, $http, $window ) {
+app.controller("LoginController", function ($scope, $http, $window, $timeout) {
     $scope.loginData = {
         email: "",
         matKhau: ""
@@ -59,7 +59,6 @@ app.controller("LoginController", function ($scope, $http, $window ) {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
         return emailRegex.test(email);
     };
-
 
     // Hàm đăng ký người
     $scope.registerUser = function () {
@@ -130,23 +129,19 @@ app.controller("LoginController", function ($scope, $http, $window ) {
 
                 $http.post('/api/auth/register-info', $scope.userData)
                     .then(function (response) {
-                        console.log("Registration success:", response);
                         $scope.successMessage = response.data.message || "Thông tin cá nhân đã lưu.";
-
-                        // Gửi OTP
-                        return $http.post('/api/auth/send-otp', { email: $scope.userData.email });
+                        sessionStorage.setItem('userEmail', $scope.userData.email.trim()); // Lưu email vào sessionStorage
+                        return $http.post('/api/auth/send-otp', {email: $scope.userData.email});
                     })
                     .then(function (response) {
-                        console.log("OTP sent successfully:", response.data);
-                        const otpToken = response.data.otpToken;  // Lấy token từ phản hồi
-                        sessionStorage.setItem('otpToken', otpToken); // Lưu token vào sessionStorage
-                        console.log("Token saved to sessionStorage:", otpToken);
+                        const otpToken = response.data.otpToken;
+                        sessionStorage.setItem('otpToken', otpToken);
                         $window.location.href = '/login/verificationOTP';
                     })
                     .catch(function (error) {
-                        console.error("Error during registration or OTP:", error);
                         $scope.errorMessage = error.data.message || "Đã xảy ra lỗi.";
                     });
+
             })
             .catch(function (error) {
                 console.error("Lỗi khi kiểm tra trùng email/số điện thoại:", error);
@@ -199,7 +194,9 @@ app.controller("LoginController", function ($scope, $http, $window ) {
                 console.log('Server Response:', response.data);
                 $scope.successMessage = response.data.message || 'OTP xác minh thành công!';
                 $scope.errorMessage = '';
-                $window.location.href = '/login/password';
+                $timeout(function () {
+                    $window.location.href = '/login/password';
+                }, 3000); //
 
             })
             .catch(function (error) {
@@ -211,10 +208,18 @@ app.controller("LoginController", function ($scope, $http, $window ) {
 
     // Hàm gửi lại OTP
     $scope.resendOtp = function () {
-        console.log('Resend OTP triggered');
+        // Kiểm tra xem email có tồn tại không
+        const email = $scope.userData.email ? $scope.userData.email.trim() : sessionStorage.getItem('userEmail');
+
+        if (!email) {
+            $scope.errorMessage = 'Không thể gửi lại mã OTP. Vui lòng cung cấp email.';
+            return;
+        }
+
+        console.log('Resend OTP triggered for email:', email);
 
         const requestData = {
-            email: 'user@example.com' // Thay bằng email thực tế của người dùng
+            email: email
         };
 
         $http.post('/api/auth/send-otp', requestData)
@@ -222,7 +227,7 @@ app.controller("LoginController", function ($scope, $http, $window ) {
                 console.log('OTP Token Resent:', response.data.otpToken);
                 $scope.successMessage = 'Mã OTP đã được gửi lại!';
                 $scope.errorMessage = '';
-                storeToken(response.data.otpToken); // Lưu token mới
+                sessionStorage.setItem('otpToken', response.data.otpToken); // Lưu token mới
             })
             .catch(function (error) {
                 console.error('Error Resending OTP:', error);
@@ -293,6 +298,9 @@ app.controller("LoginController", function ($scope, $http, $window ) {
             .then(function (response) {
                 console.log("Đổi mật khẩu thành công:", response.data);
                 $scope.successMessage = response.data.message || "Mật khẩu đã được cài đặt thành công!";
+                $timeout(function () {
+                    $window.location.href = '/login';
+                }, 3000); // Chờ 5 giây
             })
             .catch(function (error) {
                 console.error("Lỗi khi đổi mật khẩu:", error);

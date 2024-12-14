@@ -36,4 +36,14 @@ public class DiaChiDTO {
         return dto;
     }
 
+    // Chuyển từ DTO sang Entity
+    public static dia_chi_khach_hang toEntity(DiaChiDTO dto) {
+        dia_chi_khach_hang entity = new dia_chi_khach_hang();
+        entity.setId(dto.getId());
+        entity.setMa_dia_chi(dto.getMaDiaChi());
+        entity.setDia_chi_chi_tiet(dto.getDiaChiChiTiet());
+        entity.setTrang_thai(dto.getTrangThai());
+        return entity;
+    }
+
 }

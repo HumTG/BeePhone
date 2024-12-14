@@ -36,10 +36,13 @@ public class DiaChiService {
 
     // Phương thức để cập nhật địa chỉ mặc định
     public void updateDefaultAddress(Integer customerId, Integer addressId) {
-        // Đặt tất cả địa chỉ của khách hàng về trạng thái 0
         diaChiRepository.updateAllAddressesToNonDefault(customerId);
 
-        // Đặt địa chỉ được chọn là mặc định
+        Optional<dia_chi_khach_hang> addressOpt = diaChiRepository.findById(addressId);
+        if (!addressOpt.isPresent()) {
+            throw new RuntimeException("Địa chỉ không tồn tại với ID: " + addressId);
+        }
+
         diaChiRepository.setAddressAsDefault(addressId);
     }
 
@@ -63,55 +66,85 @@ public class DiaChiService {
 
     // Đồng bộ danh sách địa chỉ
     public void syncAddresses(Integer customerId, List<DiaChiDTO> addresses) {
-        Optional<khach_hang> khachHangOpt = khachHangRepository.findById(customerId);
-        if (!khachHangOpt.isPresent()) {
-            throw new RuntimeException("Khách hàng không tồn tại với ID: " + customerId);
-        }
-        khach_hang khachHang = khachHangOpt.get();
-
-        for (DiaChiDTO addressDTO : addresses) {
-            switch (addressDTO.getState()) {
-                case "new":
-                    // Thêm địa chỉ mới
-                    dia_chi_khach_hang newAddress = new dia_chi_khach_hang();
-                    newAddress.setDia_chi_chi_tiet(addressDTO.getDiaChiChiTiet());
-                    newAddress.setTrang_thai(addressDTO.getTrangThai());
-                    newAddress.setKhachHang(khachHang);
-                    newAddress.setMa_dia_chi(UUID.randomUUID().toString()); // Tạo mã địa chỉ ngẫu nhiên
-                    diaChiRepository.save(newAddress);
-                    break;
-
+        for (DiaChiDTO dto : addresses) {
+            if (dto == null) {
+                throw new RuntimeException("Dữ liệu không hợp lệ.");
+            }
+            switch (dto.getState()) {
                 case "edited":
-                    // Sửa địa chỉ
-                    dia_chi_khach_hang existingAddress = diaChiRepository.findById(addressDTO.getId())
-                            .orElseThrow(() -> new RuntimeException("Địa chỉ không tồn tại với ID: " + addressDTO.getId()));
-                    // Kiểm tra version để đảm bảo không ghi đè thay đổi
-                    int currentVersion = (existingAddress.getDia_chi_chi_tiet() + "|" + existingAddress.getTrang_thai()).hashCode();
-                    if (currentVersion !=  (addressDTO.getVersion())) {
-                        throw new RuntimeException("Địa chỉ đã bị chỉnh sửa trước đó, vui lòng tải lại.");
+                    if (dto.getId() == null || dto.getDiaChiChiTiet() == null || dto.getDiaChiChiTiet().trim().isEmpty()) {
+                        throw new RuntimeException("Dữ liệu cập nhật không hợp lệ. Vui lòng kiểm tra lại.");
                     }
-                    existingAddress.setDia_chi_chi_tiet(addressDTO.getDiaChiChiTiet());
-                    existingAddress.setTrang_thai(addressDTO.getTrangThai());
-                    diaChiRepository.save(existingAddress);
-                    break;
 
+                    // Cập nhật thông tin địa chỉ
+                    diaChiRepository.updateAddressDetail(dto.getId(), dto.getDiaChiChiTiet());
+
+                    // Nếu trạng thái là mặc định
+                    if (dto.getTrangThai() == 1) {
+                        updateDefaultAddress(customerId, dto.getId());
+                    }
+                    break;
                 case "deleted":
-                    // Xóa địa chỉ
-                    diaChiRepository.deleteById(addressDTO.getId());
+                    diaChiRepository.deleteById(dto.getId());
                     break;
-
+                case "new":
+                    dia_chi_khach_hang newEntity = DiaChiDTO.toEntity(dto);
+                    Optional<khach_hang> khachHangOpt = khachHangRepository.findById(customerId);
+                    if (!khachHangOpt.isPresent()) {
+                        throw new RuntimeException("Khách hàng không tồn tại với ID: " + customerId);
+                    }
+                    newEntity.setKhachHang(khachHangOpt.get());
+                    diaChiRepository.save(newEntity);
+                    break;
                 default:
-                    throw new RuntimeException("Trạng thái không hợp lệ: " + addressDTO.getState());
+                    // Không làm gì với state "unchange"
+                    break;
             }
         }
     }
 
+    // Thay đổi thông tin địa chỉ (áp dụng cho mọi trạng thái)
+    public void updateAddressInfo(Integer addressId, String addressDetail) {
+        if (addressId == null || addressDetail == null || addressDetail.trim().isEmpty()) {
+            throw new RuntimeException("Thông tin địa chỉ không hợp lệ.");
+        }
+        diaChiRepository.updateAddressDetail(addressId, addressDetail);
+    }
+
+    // Thay đổi trạng thái của địa chỉ
+    public void updateAddressState(Integer customerId, Integer addressId) {
+        if (customerId == null || addressId == null) {
+            throw new RuntimeException("Thông tin không hợp lệ.");
+        }
+
+        // Đặt tất cả các địa chỉ khác về trạng thái không mặc định
+        diaChiRepository.CapNhatDiaChiKhongTT(customerId, addressId);
+
+        // Đặt địa chỉ này là mặc định
+        diaChiRepository.setAddressAsDefault(addressId);
+    }
+
     // Lấy danh sách địa chỉ theo ID khách hàng
     public List<DiaChiDTO> getAddressesByCustomerId(Integer customerId) {
-        List<dia_chi_khach_hang> addressEntities = diaChiRepository.findByKhachHangId(customerId);
-        return addressEntities.stream()
-                .map(DiaChiDTO::fromEntity) // Chuyển đổi từ Entity sang DTO
-                .collect(Collectors.toList());
+        List<dia_chi_khach_hang> addresses = diaChiRepository.findByKhachHangId(customerId);
+        return addresses.stream().map(DiaChiDTO::fromEntity).collect(Collectors.toList());
     }
+
+    // Xóa địa chỉ theo ID
+    public void deleteAddress(Integer customerId, Integer addressId) {
+        Optional<khach_hang> khachHangOpt = khachHangRepository.findById(customerId);
+        if (!khachHangOpt.isPresent()) {
+            throw new RuntimeException("Khách hàng không tồn tại với ID: " + customerId);
+        }
+
+        // Kiểm tra địa chỉ có tồn tại hay không
+        Optional<dia_chi_khach_hang> addressOpt = diaChiRepository.findById(addressId);
+        if (!addressOpt.isPresent()) {
+            throw new RuntimeException("Địa chỉ không tồn tại với ID: " + addressId);
+        }
+
+        diaChiRepository.deleteById(addressId); // Xóa địa chỉ
+    }
+
 
 }

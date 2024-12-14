@@ -229,103 +229,162 @@ app.controller('ThongTinController', function ($scope, $http, $window, $location
 
     /* địa chỉ */
 
+    const customerId = savedUser.id;
+
     // Lấy danh sách địa chỉ
     $scope.getAddresses = function () {
-        $http.get("/rest/dia-chi/all").then(function (response) {
+        $http.get(`${API_BASE_URL}/dia-chi/all`).then(function (response) {
             $scope.addressList = response.data;
         }, function (error) {
             console.error("Lỗi khi tải danh sách địa chỉ:", error);
         });
     };
 
-    // Hàm tải danh sách địa chỉ
-    $scope.loadAddresses = function (customerId) {
-        $http.get(`/rest/dia-chi/${customerId}/all`)
+    // Tải danh sách địa chỉ
+    $scope.loadAddresses = function () {
+        $http.get(`${API_BASE_URL}/dia-chi/${customerId}/all`)
             .then(function (response) {
-                $scope.addressList = response.data; // Gán danh sách địa chỉ vào bảng
+                $scope.addressList = response.data;
             })
             .catch(function (error) {
                 console.error("Lỗi khi tải danh sách địa chỉ:", error);
+                $scope.showNotification("Không thể tải danh sách địa chỉ.", "danger");
             });
     };
 
-    // Tải dữ liệu khi trang được tải
-    const customerId = savedUser.id;
-    $scope.loadAddresses(customerId);
+    // Hiển thị thông báo
+    $scope.showNotification = function (message, type = 'success') {
+        $scope.notification = {
+            message: message,
+            class: type === 'success' ? 'alert-success' : 'alert-danger',
+            show: true
+        };
+
+        // Tự động ẩn sau 3 giây
+        setTimeout(() => {
+            $scope.notification.show = false;
+            $scope.$apply();
+        }, 3000);
+    };
+
+    // Thay đổi thông tin địa chỉ
+    $scope.updateAddressInfo = function () {
+        const validationError = $scope.validateAddress($scope.editingAddress.diaChiChiTiet);
+        if (validationError) {
+            $scope.showNotification(validationError, "danger");
+            return;
+        }
+
+        const updatedAddress = {
+            diaChiChiTiet: $scope.editingAddress.diaChiChiTiet
+        };
+
+        $http.put(`/rest/dia-chi/update-info/${$scope.editingAddress.id}`, updatedAddress)
+            .then(function (response) {
+                $scope.showNotification("Cập nhật địa chỉ thành công!", "success");
+                $scope.loadAddresses(); // Reload danh sách địa chỉ
+                document.getElementById("editAddressModal").querySelector(".btn-close").click();
+            })
+            .catch(function (error) {
+                console.error("Lỗi khi cập nhật địa chỉ:", error);
+                $scope.showNotification("Đã xảy ra lỗi khi cập nhật địa chỉ.", "danger");
+            });
+    };
 
     // Thêm địa chỉ mới
     $scope.addAddress = function () {
-        if (!$scope.newAddress.trim()) {
-            alert("Vui lòng nhập địa chỉ chi tiết.");
+        const validationError = $scope.validateAddress($scope.newAddress);
+        if (validationError) {
+            $scope.showNotification(validationError, "danger");
             return;
         }
 
         const newAddress = {
-            diaChiChiTiet: $scope.newAddress,
-            trangThai: 0, // Mặc định trạng thái là 0
-            state: "new"
+            diaChiChiTiet: $scope.newAddress
         };
 
-        $http.post(`${API_BASE_URL}/dia-chi/${customerId}/add`, newAddress)
+        $http.post(`/rest/dia-chi/${customerId}/add`, newAddress)
             .then(function (response) {
-                console.log("Thêm địa chỉ thành công:", response.data);
-                alert("Địa chỉ đã được thêm thành công!");
-                $scope.newAddress = ""; // Reset input địa chỉ
-                $scope.loadAddresses(); // Tải lại danh sách địa chỉ
-                $window.location.reload();
+                $scope.showNotification("Thêm địa chỉ thành công!", "success");
+                $scope.newAddress = ""; // Reset input
+                $scope.loadAddresses(); // Reload danh sách địa chỉ
             })
             .catch(function (error) {
                 console.error("Lỗi khi thêm địa chỉ:", error);
-                alert("Đã xảy ra lỗi khi thêm địa chỉ: " + (error.data?.message || "Không rõ nguyên nhân"));
+                $scope.showNotification("Đã xảy ra lỗi khi thêm địa chỉ.", "danger");
             });
+    };
+
+    // Thay đổi trạng thái địa chỉ
+    $scope.updateAddressState = function (addressId) {
+        $http.put(`/rest/dia-chi/update-state/${customerId}/${addressId}`)
+            .then(function (response) {
+                $scope.showNotification("Cập nhật trạng thái địa chỉ thành công!", "success");
+                $scope.loadAddresses();
+            })
+            .catch(function (error) {
+                console.error("Lỗi khi cập nhật trạng thái địa chỉ:", error);
+                $scope.showNotification("Đã xảy ra lỗi khi cập nhật trạng thái địa chỉ.", "danger");
+            });
+    };
+
+    // Hiển thị modal chỉnh sửa địa chỉ
+    $scope.editAddress = function (address) {
+        $scope.editingAddress = angular.copy(address);
+        new bootstrap.Modal(document.getElementById("editAddressModal")).show();
     };
 
     // Xóa địa chỉ
     $scope.removeAddress = function (addressId) {
         const confirmDelete = confirm("Bạn có chắc muốn xóa địa chỉ này không?");
         if (confirmDelete) {
-            $http.post(`/rest/dia-chi/${customerId}/sync-addresses`, [{ id: addressId, state: "deleted" }])
-                .then(function () {
-                    $scope.loadAddresses(customerId); // Tải lại danh sách
+            const deletedAddress = {
+                id: addressId,
+                state: "deleted"
+            };
+
+            $http.post(`/rest/dia-chi/${customerId}/sync-addresses`, [deletedAddress])
+                .then(function (response) {
+                    $scope.showNotification("Địa chỉ đã được xóa thành công!", "success");
+                    $scope.loadAddresses(customerId);
                 })
                 .catch(function (error) {
                     console.error("Lỗi khi xóa địa chỉ:", error);
+                    const errorMessage = error.data?.error || "Đã xảy ra lỗi khi xóa địa chỉ.";
+                    $scope.showNotification(errorMessage, "danger");
                 });
         }
     };
 
-    // Đặt địa chỉ mặc định
-    $scope.setDefaultAddress = function (addressId) {
-        $http.post(`/rest/dia-chi/${customerId}/sync-addresses`, [{ id: addressId, state: "edited", trangThai: 1 }])
-            .then(function () {
-                $scope.loadAddresses(customerId); // Tải lại danh sách địa chỉ
-            })
-            .catch(function (error) {
-                console.error("Lỗi khi đặt địa chỉ mặc định:", error);
-            });
-    };
+    // Tải danh sách địa chỉ khi khởi chạy
+    $scope.loadAddresses();
 
-    // Hiển thị modal sửa địa chỉ
-    $scope.editAddress = function (address) {
-        $scope.editingAddress = angular.copy(address);
-        new bootstrap.Modal(document.getElementById("editAddressModal")).show();
-    };
+    // Validate Địa chỉ
+    $scope.validateAddress = function (address) {
+        const addressRegex = /^[\p{L}\p{N}\s,.-]+$/u; // Regex: Chỉ cho phép chữ, số, dấu cách, dấu phẩy, gạch ngang, dấu chấm
+        const parts = address.split(',').map(part => part.trim()); // Tách địa chỉ qua dấu phẩy
 
-    // Cập nhật địa chỉ
-    $scope.updateAddress = function () {
-        const updatedAddress = {
-            ...$scope.editingAddress,
-            state: "edited"
-        };
+        if (!address || address.trim() === '') {
+            return "Địa chỉ không được để trống.";
+        }
 
-        $http.post(`/rest/dia-chi/${customerId}/sync-addresses`, [updatedAddress])
-            .then(function () {
-                $scope.loadAddresses(customerId); // Tải lại danh sách
-                document.getElementById("editAddressModal").querySelector(".btn-close").click();
-            })
-            .catch(function (error) {
-                console.error("Lỗi khi cập nhật địa chỉ:", error);
-            });
+        if (!addressRegex.test(address)) {
+            return "Địa chỉ chứa ký tự không hợp lệ.";
+        }
+
+        if (address.length < 10) {
+            return "Địa chỉ quá ngắn, vui lòng nhập ít nhất 10 ký tự.";
+        }
+
+        if (address.length > 255) {
+            return "Địa chỉ quá dài, vui lòng nhập ít hơn 255 ký tự.";
+        }
+
+        if (parts.length < 2) {
+            return "Địa chỉ phải có ít nhất 2 phần cách nhau bởi dấu phẩy (,).";
+        }
+
+        return null; // Nếu không có lỗi
     };
 
     // // Cảnh báo khi rời trang nếu có thay đổi chưa lưu

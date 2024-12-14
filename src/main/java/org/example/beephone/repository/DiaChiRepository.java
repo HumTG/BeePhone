@@ -39,10 +39,15 @@ public interface DiaChiRepository extends JpaRepository<dia_chi_khach_hang, Inte
 
     /* customer */
 
-    // Cập nhật tất cả địa chỉ của một khách hàng về trạng thái không mặc định (1)
     @Modifying
-    @Query("UPDATE dia_chi_khach_hang dc SET dc.trang_thai = 1 WHERE dc.khachHang.id = :customerId")
-    void diaChiKhongMacDinh(@Param("customerId") Integer customerId);
+    @Transactional
+    @Query("UPDATE dia_chi_khach_hang dc SET dc.dia_chi_chi_tiet = :addressDetail WHERE dc.id = :addressId")
+    void updateAddressDetail(@Param("addressId") Integer addressId, @Param("addressDetail") String addressDetail);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE dia_chi_khach_hang dc SET dc.trang_thai = 0 WHERE dc.khachHang.id = :customerId AND dc.id != :addressId")
+    void CapNhatDiaChiKhongTT(@Param("customerId") Integer customerId, @Param("addressId") Integer addressId);
 
     List<dia_chi_khach_hang> findByKhachHangId(Integer customerId);
 }
