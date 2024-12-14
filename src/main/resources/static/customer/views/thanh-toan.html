@@ -119,8 +119,16 @@
                     </label>
                 </div>
                 <div class="text-end mt-3">
-                    <button class="btn btn-pink w-100" ng-click="confirmOrder()" style="background-color: orange; color: white;">Thanh toán</button>
+                    <button
+                            class="btn btn-pink w-100"
+                            ng-click="confirmOrder()"
+                            ng-disabled="isLoading"
+                            style="background-color: orange; color: white; position: relative;">
+                        <span ng-if="!isLoading">Thanh toán</span>
+                        <span ng-if="isLoading" class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span>
+                    </button>
                 </div>
+
             </div>
         </div>
 

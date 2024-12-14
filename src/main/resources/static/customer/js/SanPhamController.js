@@ -416,6 +416,9 @@ app.controller('SanPhamController', function($scope, $http,$window) {
                 return;
             }
 
+            // Bật trạng thái loading
+            $scope.isLoading = true;
+
             let hoaDon = {
                 tien_sau_giam_gia : $scope.calculateCartTotal() - $scope.discountValue ,
                 thanh_tien : $scope.calculateCartTotal(),
@@ -475,6 +478,10 @@ app.controller('SanPhamController', function($scope, $http,$window) {
                     .catch(function(error) {
                         console.error("Đã xảy ra lỗi:", error);
                         toastr.error("Đã xảy ra lỗi khi đặt hàng!");
+                    })
+                    .finally(function() {
+                        // Tắt trạng thái loading
+                        $scope.isLoading = false;
                     });
         } else {
             toastr.error('Vui lòng đồng ý với các điều khoản chính sách giao hàng');
