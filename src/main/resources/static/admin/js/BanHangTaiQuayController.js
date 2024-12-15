@@ -389,7 +389,7 @@ app.controller('BanHangTaiQuayCtrl',function ($scope,$http){
             $scope.khachHang_new.email = '';
 
         })  .catch(function (error) {
-            console.error("Đã có lỗi xảy ra khi thêm khách hàng", error);
+            toastr.error("Có lỗi sảy ra khi thêm", 'lỗi');
         });
     }
 

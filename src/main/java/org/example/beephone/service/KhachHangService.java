@@ -237,6 +237,14 @@ public class KhachHangService {
 
     //thêm nhanh 1 khách hàng tại quầy
     public khach_hang themKhachHangTaiQuay(khach_hang khachHang){
+        //check tồn tại email,sdt
+        if(khachHangRepository.existsByEmail(khachHang.getEmail())){
+            throw new IllegalArgumentException("Email đã tồn tại!");
+        }
+        if(khachHangRepository.existsBySdt(khachHang.getSdt())){
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại!");
+        }
+
         khach_hang khachHangNew = new khach_hang();
 
         khachHangNew.setMa_khach_hang(generateMaKhachHang());

@@ -162,7 +162,11 @@ public class KhachHangController {
         try {
             service.themKhachHangTaiQuay(khachHang);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Lỗi khi thêm khách hàng: " + e.getMessage());
         }
