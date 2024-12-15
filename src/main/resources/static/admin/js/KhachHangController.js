@@ -419,12 +419,12 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
     $scope.validateDateOfBirth = function () {
         const now = new Date();
         const minDate = new Date(now.getFullYear() - 110, now.getMonth(), now.getDate());
-        const maxDate = new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
+        const maxDate = new Date(now.getFullYear() - 13, now.getMonth(), now.getDate());
 
         const dob = new Date($scope.khachHang.ngaySinh);
 
         if (dob < minDate || dob > maxDate) {
-            $scope.dateOfBirthError = "Ngày sinh phải từ 18 tuổi trở lên và không vượt quá 110 năm.";
+            $scope.dateOfBirthError = "Ngày sinh phải từ 13 tuổi trở lên và không vượt quá 110 năm.";
             return false;
         }
         $scope.dateOfBirthError = null;
@@ -433,8 +433,9 @@ app.controller('KhachHangController', function ($scope, $http, $window, $locatio
 
     // Check địa chỉ
     $scope.validateAddress = function () {
-        // Biểu thức regex kiểm tra định dạng Thành phố, Quận/Huyện, Xã
-        const addressRegex = /^[a-zA-ZÀ-ỹ\s]+,\s*[a-zA-ZÀ-ỹ\s]+,\s*[a-zA-ZÀ-ỹ\s]+$/;
+
+        // Biểu thức regex kiểm tra định dạng: cho phép cả chữ và số, cách nhau bởi dấu phẩy
+        const addressRegex = /^[a-zA-ZÀ-ỹ0-9\s]+,\s*[a-zA-ZÀ-ỹ0-9\s]+,\s*[a-zA-ZÀ-ỹ0-9\s]+$/;
 
         if (!$scope.address.diaChi || !addressRegex.test($scope.address.diaChi)) {
             $scope.addressError = "Địa chỉ không hợp lệ. Định dạng: Thành phố, Quận/Huyện, Xã.";
