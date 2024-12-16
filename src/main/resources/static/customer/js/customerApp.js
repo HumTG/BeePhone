@@ -93,7 +93,17 @@ app.controller('HomeController', function ($scope, $http, $window) {
         // Xóa trạng thái để không hiển thị lại khi tải lại trang
         localStorage.removeItem("loginSuccess");
         // Điều hướng về trang chủ hoặc trang đăng nhập
-        toastr.success('Đăng xuất thành công!', 'Success');
+        // toastr.success('Đăng xuất thành công!', 'Success');
+        // Hiển thị thông báo toastr
+        toastr.success('Đăng xuất thành công', 'Success', {
+            timeOut: 200,  // Hiển thị toastr trong 1 giây (1000ms)
+            onHidden: function() {
+                // Đợi 2 giây rồi reload trang
+                setTimeout(function() {
+                    window.location.reload(); // Tải lại trang sau khi 2 giây
+                }, 100); // 2000ms = 2 giây
+            }
+        });
     };
 
     // Các sản phẩm bán chạy
